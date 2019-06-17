@@ -255,7 +255,7 @@
                     <label for="occupancy">Select Max Occupancy adults</label>
                     <select id="occupancy" name="occupancy" class="form-control">
                         <option value="" disabled selected>Adults</option>
-                        <?php for ($i=0 ; $i<=16; $i++) { 
+                        <?php for ($i=0 ; $i<=9; $i++) { 
                           if (isset($view[0]->occupancy) && $i+1==$view[0]->occupancy) { ?>
                                  <option selected="" value="<?php echo $i+1; ?>"><?php echo $i+1; ?> adult(s)</option>
                             <?php  }  else { ?>
@@ -267,7 +267,7 @@
                     <label for="occupancy_child">Select Max Occupancy childs</label>
                     <select id="occupancy_child" name="occupancy_child" class="form-control">
                         <option value="" disabled selected>Children</option>
-                        <?php for ($i=0 ; $i<=16; $i++) { 
+                        <?php for ($i=0 ; $i<=4; $i++) { 
                           if (isset($view[0]->occupancy_child) && $i+0==$view[0]->occupancy_child) { ?>
                                  <option selected="" value="<?php echo $i+0; ?>"><?php echo $i+0 ?> child(s)</option>
                             <?php  }  else { ?>

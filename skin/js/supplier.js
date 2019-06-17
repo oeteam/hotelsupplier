@@ -487,7 +487,6 @@ function room_add_fun() {
       if ($("#room_id").val()!="") {
         $('.yourmodalid').trigger('click');
       } else {
-        alert('hi');
         $(".msg").append('<script type="text/javascript"> AddToast("success","Inserted Successfully","!");</script>');
         $("#allotement_form").attr('action',base_url+'hotelsupplier/add_room');
         $("#allotement_form").submit();
