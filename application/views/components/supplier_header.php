@@ -1,23 +1,23 @@
 <?php 
   $this->load->helper("common");
-  $id=$this->session->userdata('agent_id');
-  $name=$this->session->userdata('agent_name');
-  $flag=$this->session->userdata('currency');
-  $view = agent_image();
-  $contry = contry_image();
+  $id=$this->session->userdata('supplier_id');
+  $name=$this->session->userdata('supplier_name');
+  $flag=$this->session->userdata('supplier_currency');
+  // $view = agent_image();
+  // $contry = contry_image();
   $data = title();
   $flag_i = substr($flag, 0, 2);
   $flag_img = strtolower($flag_i);
   $record_num = $this->uri->segment_array();
+  $favicon = favicon();
 ?>
 <!DOCTYPE html>
 <html>
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/fav.ico">
+    <link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/<?php echo $favicon[0]->Fav_Icon ?>">
     <title>Hotel Supplier</title>
-    <link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/fav.ico">
     <!-- Bootstrap -->
     <link href="<?php echo base_url(); ?>skin/dist/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="<?php echo base_url(); ?>skin/assets/css/custom.css" rel="stylesheet" media="screen">

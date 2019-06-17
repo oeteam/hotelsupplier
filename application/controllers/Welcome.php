@@ -46,10 +46,10 @@ class Welcome extends CI_Controller {
               $login_id = $this->User_Model->update_login_record_agent($data,$result[0]->id);
               $newdata = array(
                       'logeed_id'  => $login_id,
-                      'agent_id'  => $result[0]->id,
-                      'agent_email'     => $result[0]->Email,
-                      'agent_name'     => $result[0]->First_Name." ".$result[0]->Last_Name,
-                      'currency'     => agentIp_currency($result[0]->id),
+                      'supplier_id'  => $result[0]->id,
+                      'supplier_email'     => $result[0]->Email,
+                      'supplier_name'     => $result[0]->First_Name." ".$result[0]->Last_Name,
+                      'supplier_currency'     => agentIp_currency($result[0]->id),
               );
               
               $this->session->set_userdata($newdata);
@@ -61,8 +61,8 @@ class Welcome extends CI_Controller {
         echo json_encode($Return);
     } 
     public function agent_logout() {
-      $session = $this->session->userdata('name');
-      $agent_id = $this->session->userdata('agent_id');
+      $session = $this->session->userdata('supplier_name');
+      $agent_id = $this->session->userdata('supplier_id');
       $active_data = array(
                 'active_status' => '0'
               );
@@ -71,15 +71,15 @@ class Welcome extends CI_Controller {
         'is_logged_in' => '0',
         'last_logout_date' => date('d-m-Y H:i:s')
       ); 
-      $this->User_Model->update_agent_login_record($last_data, $this->session->userdata('agent_id'), $this->session->userdata('logeed_id'));
+      $this->User_Model->update_agent_login_record($last_data, $this->session->userdata('supplier_id'), $this->session->userdata('logeed_id'));
           
       // Removing session data
       $sess_array = array('name' => '');
       $this->session->unset_userdata('logeed_id');
-      $this->session->unset_userdata('agent_id');
-      $this->session->unset_userdata('agent_email');
-      $this->session->unset_userdata('agent_name');
-      $this->session->unset_userdata('currency');
+      $this->session->unset_userdata('supplier_id');
+      $this->session->unset_userdata('supplier_email');
+      $this->session->unset_userdata('supplier_name');
+      $this->session->unset_userdata('supplier_currency');
       // $this->session->sess_destroy();
       redirect('../', 'refresh');
         // redirect("../backend/");

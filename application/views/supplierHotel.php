@@ -128,7 +128,7 @@
 
           <div class="modal-body">
             <h4>Do you want to delete this !</h4>
-            <form action="<?php echo base_url(); ?>backend/" class="delete_id" id="delete_form">
+            <form action="<?php echo base_url(); ?>welcome/" class="delete_id" id="delete_form">
                 <input type="hidden" id="delete_id" name="delete_id" value="<?php echo isset($_REQUEST['id']) ? $_REQUEST['id'] : '' ?>">
                 <button type="button" onclick="commonDelete();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
             </form>

@@ -83,3 +83,22 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+// Customer attachments folder from profile
+define('AGENT_PROFILE_ATTACHMENTS_FOLDER',FCPATH.'uploads/agent_profile_pic'.'/');
+define('USER_PROFILE_ATTACHMENTS_FOLDER',FCPATH.'uploads/user_profile_pic'.'/');
+define('GENERAL_ATTACHMENTS_FOLDER',FCPATH.'assets/images'.'/');
+define('ICON_UP_ATTACHMENTS_FOLDER',FCPATH.'assets/images/ico'.'/');
+define('HOTEL_GALLERY_ATTACHMENTS_FOLDER',FCPATH.'uploads/gallery'.'/');
+define('HOTEL_ROOM_ATTACHMENTS_FOLDER',FCPATH.'uploads/rooms'.'/');
+define('HOTEL_REVIEW_ATTACHMENTS_FOLDER',FCPATH.'uploads/hotel_review_pic'.'/');
+define('HOTEL_TRADE_LICENSE_FOLDER',FCPATH.'uploads/trade_license'.'/');
+define('HOTEL_AGENT_LOGO_FOLDER',FCPATH.'uploads/agent_logo'.'/');
+define('ABOUT_IMAGES_UPLOAD_FOLDER',FCPATH.'uploads/about'.'/');
+define('EVENT_IMAGES_UPLOAD_FOLDER',FCPATH.'uploads/events'.'/');
+define('TOUR_SERVICES_IMAGES_FOLDER',FCPATH.'uploads/tour_services_images'.'/');
+define('VISA_REQUEST_PASSPORT_IMAGES_FOLDER',FCPATH.'uploads/visa_request_images'.'/');
+define('VEHICLE_IMAGES_FOLDER',FCPATH.'uploads/vehicle_images'.'/');
+define('INVOICE_PDF_FOLDER',FCPATH.'uploads/attached_invoice_pdfs'.'/');
+define('BACKUPS_FOLDER',FCPATH.'backups'.'/');
+define('SEARCH_FOLDER',FCPATH.'uploads/search'.'/');
+define('SEARCH_ROOM_FOLDER',FCPATH.'uploads/searchroom'.'/');

@@ -417,7 +417,6 @@ function commonDelete() {
       data: $("#delete_form").serialize(),
       cache: false,
       success: function (response) {
-        alert(response);
           close_delete_modal();
           if(response.status=='1') {
              $(".msg").append('<script type="text/javascript"> AddToast("success","Deleted Successfully","!");</script>');
@@ -462,4 +461,102 @@ function ConSelect() {
           }
       });
       // CitySelectFun();
-  }
+}
+function room_add_fun() {
+    var room_name     = $("#room_name").val();
+    var room_type     = $("#room_type").val();
+    var room_facilties = $("#room_facilties").val();
+    var occupancy = $("#occupancy").val();
+    var occupancy_child = $("#occupancy_child").val();
+    if (room_name=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room name field is required","!");</script>');
+      $("#room_name").focus();
+    } else if(room_type=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room type field is required","!");</script>');
+      $("#room_type").focus();
+    }  else if(room_facilties=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room facilities field is required","!");</script>');
+      $("#room_facilties").focus();
+    } else if(occupancy==null) {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Occupancy Adult field is required","!");</script>');
+      $("#room_facilties").focus();
+    } else if(occupancy_child==null) {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Occupancy Child field is required","!");</script>');
+      $("#room_facilties").focus();
+    } else {
+      if ($("#room_id").val()!="") {
+        $('.yourmodalid').trigger('click');
+      } else {
+        alert('hi');
+        $(".msg").append('<script type="text/javascript"> AddToast("success","Inserted Successfully","!");</script>');
+        $("#allotement_form").attr('action',base_url+'hotelsupplier/add_room');
+        $("#allotement_form").submit();
+      }  
+    }
+}
+function ValidateFileUpload() {
+        var fuData = document.getElementById('room_image');
+        var FileUploadPath = fuData.value;
+
+//To check if user upload any file
+      
+        var Extension = FileUploadPath.substring(
+        FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+
+//The file uploaded is an image
+
+if (Extension == "bmp" || Extension == "jpeg" || Extension == "jpg") {
+
+// To Display
+          if (fuData.files && fuData.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+              }
+
+              reader.readAsDataURL(fuData.files[0]);
+          }
+
+      } 
+//The file upload is NOT an image
+else {
+      error = "Photo only allows file types of JPG, JPEG and BMP. ";
+      color = "red";
+      $("#room_image").val("");
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Photo only allows file types of JPG, JPEG and BMP. ","!");</script>');
+      }
+}
+function room_update_fun(){
+    if ($("#room_id").val()!="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
+    }
+    $("#allotement_form").attr('action',base_url+'hotelsupplier/add_room');
+    $("#allotement_form").submit();
+}
+function commonDeleteroom() {
+    $.ajax({
+      dataType: 'json',
+      type: "POST",
+      url: $("#delete_form").attr("action"),
+      data: $("#delete_form").serialize(),
+      cache: false,
+      success: function (response) {
+          close_delete_modal();
+          if(response.status=='1') {
+             $(".msg").append('<script type="text/javascript"> AddToast("success","Delete Request Send Successfully","!");</script>');
+          } else {
+             $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
+          }
+           var hotelid = $("#hotel-list li a.active").attr('id');
+            var room_table = $('#room_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/hotel_room_list/'+hotelid,
+              type : 'GET'
+          },
+       "fnDrawCallback": function(settings){
+          $('[data-toggle="tooltip"]').tooltip();          
+        }
+    });
+      }
+    });
+}

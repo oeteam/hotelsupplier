@@ -7,6 +7,8 @@ class HotelSupplier extends MY_Controller {
 	public function __construct()
      {
           parent::__construct();
+          $this->load->library('pagination');
+          $this->load->library("Ajax_pagination");
           $this->load->library('session');
           $this->load->helper('url');
           $this->load->helper('html');
@@ -15,28 +17,44 @@ class HotelSupplier extends MY_Controller {
           $this->load->helper('common');
      }
 	public function index()	{
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+     redirect("welcome/agent_logout");
     }
     $this->load->view('supplier');
   }
   public function hotels() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $data['contry']= $this->Supplier_Model->SelectCountry();
     $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
     $this->load->view('supplierHotel',$data);
   }
   public function rooms() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
-    $this->load->view('supplierRooms');
+    $config['first_link'] = 'First';
+    $config['div'] = 'hotel-list'; //Div tag id
+    $config['base_url'] = base_url() . "hotelsupplier/rooms";
+    $config['total_rows'] = $this->Supplier_Model->get_total_hotels($_REQUEST);
+    $config['per_page'] = 20;
+    $config['postVar'] = 'page';
+    $this->ajax_pagination->initialize($config);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $data["links"] = $this->ajax_pagination->create_links();
+    $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
+    $data['contry']= $this->Supplier_Model->SelectCountry();
+    $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    $this->load->view('supplierRooms',$data);
   }
   public function addhotelmodal() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $data['hotel_facilties'] = $this->Supplier_Model->hotel_facilties_get();
          $data['room_type'] = $this->Supplier_Model->room_type_get();
@@ -57,8 +75,8 @@ class HotelSupplier extends MY_Controller {
         echo json_encode($data);
   }
   public function add_new_hotel() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     if ($_REQUEST['hotels_edit_id']!="") {
          $update = $this->Supplier_Model->update_hotel($_REQUEST,$_REQUEST['hotels_edit_id']);
@@ -90,8 +108,8 @@ class HotelSupplier extends MY_Controller {
       redirect("hotelsupplier/hotels"); 
   }
   public function hotel_list() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $data = array();
     // Datatables Variables
@@ -129,8 +147,8 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($output);
   }
   public function checkHotel($hotel) {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $status = $this->Supplier_Model->checkHotel($hotel);
     if($status!=0) {
@@ -141,8 +159,8 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($return);
    }
    public function hotel_detail_view() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $data['view'] =$this->Supplier_Model->hotel_detail_get($_REQUEST['hotel_id']);
     $hotel_facilities = explode(",",$data['view'][0]->hotel_facilities); 
@@ -161,7 +179,7 @@ class HotelSupplier extends MY_Controller {
     $this->load->view('hotel_view',$data);
    }
    public function delete_hotelper() {
-    if ($this->session->userdata('agent_name')=="") {
+    if ($this->session->userdata('supplier_name')=="") {
         redirect("welcome");
     }
     $result = $this->Supplier_Model->deleteHotelPer($_REQUEST['delete_id']);
@@ -175,8 +193,8 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($Return);
   }
   public function hotelsearch() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
     }
     $data = array();
     // Datatables Variables
@@ -214,8 +232,8 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($output);
   }
   public function review_view() {
-    if ($this->session->userdata('agent_name')=="") {
-        redirect("welcome");
+    if ($this->session->userdata('supplier_name')=="") {
+       redirect("welcome/agent_logout");
     }
     $data = array();
     $result= $this->Supplier_Model->review_view($_REQUEST['hotel_id']);
@@ -286,7 +304,7 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($data);
   }
   public function average_ratings() {
-    if ($this->session->userdata('agent_name')=="") {
+    if ($this->session->userdata('supplier_name')=="") {
         redirect("welcome");
     }
    $data = array();
@@ -466,8 +484,8 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($data);
   }
   public function review_insert() {
-        if ($this->session->userdata('agent_name')=="") {
-           redirect("../backend/logout/agent_logout");
+          if ($this->session->userdata('supplier_name')=="") {
+           redirect("welcome/agent_logout");
          }
          if ($_REQUEST['review_uname']=="") {
            $Return['error'] = "Name field is required !";
@@ -485,5 +503,138 @@ class HotelSupplier extends MY_Controller {
          }
        echo json_encode($Return);
   }
-
+  public function addroommodal($hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+           redirect("welcome/agent_logout");
+    }
+    $data['hotelid'] = $hotelid;
+    $data['room_type'] = $this->Supplier_Model->room_type_get();
+    $data['room_facilties'] = $this->Supplier_Model->room_facilties_get();   
+    if (isset($_REQUEST['room_id'])) {
+      $data['title'] = "Edit Room";
+      $data['view'] =$this->Supplier_Model->hotel_detail_view_room_type($_REQUEST['room_id']);
+      $data['room_names'] = $this->Supplier_Model->room_names_get($data['view'][0]->hotel_id);
+      $this->load->view('room_add_modal',$data);       
+    } else {
+      $data['title'] = "Add Room";  
+      $this->load->view('room_add_modal',$data);  
+    }     
+  }
+  public function roomhotelsearch() {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $config['first_link'] = 'First';
+    $config['div'] = 'result_search'; //Div tag id
+    $config['base_url'] = base_url() . "lists/index";
+    $config['total_rows'] = $this->Supplier_Model->get_total_hotels($_REQUEST);
+    $config['per_page'] = 20;
+    $config['postVar'] = 'page';
+    $this->ajax_pagination->initialize($config);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $result["links"] = $this->ajax_pagination->create_links();
+    $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
+      $data['list'] ='<ul class="hotels">';
+      foreach ($HotelList as $key => $value) {
+        if($key==0) {
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+        } else {
+          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+        }
+      }
+      $data['list'].= '</ul><br>
+                      <div class="col-md-12 pull-right"><div class="hpadding20">
+                      <ul class="pagination right paddingbtm20">
+                      '.$result["links"].'
+                      </ul>
+                      </div></div>';
+    echo json_encode($data);
+  }
+  public function add_room() {
+      if ($_REQUEST['room_id']!="") {
+        $update = $this->Supplier_Model->update_room($_REQUEST);
+        if ($_FILES['image-file']['name']!="") {
+        handle_hotel_room_image_login_upload($_REQUEST['room_id']);
+      }
+      $description = 'Room details updated [id:'.$_REQUEST['room_id'].', Hotel Code: HE0'.$_REQUEST['hotel_id'].']';
+      AgentlogActivity($description);
+      } else {
+      $hotel_room_id = $this->Supplier_Model->add_new_room($_REQUEST);
+      handle_hotel_room_image_login_upload($hotel_room_id);
+      $description = 'New room added [id:'.$hotel_room_id.', Hotel Code: HE0'.$_REQUEST['hotel_id'].']';
+      AgentlogActivity($description);
+      }
+      redirect('hotelsupplier/rooms');
+  }
+   public function hotel_room_list($hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    if (isset($_REQUEST['filter'])) {
+      $filter = $_REQUEST['filter'];
+    } else {
+      $filter = "0";
+    }
+    $rooms = $this->Supplier_Model->hotel_rooms_list($hotelid,$filter);
+      foreach($rooms->result() as $key => $r) {
+        $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+        $edit = '<a href="#"  data-toggle="modal"onclick="editroom('.$r->id.');"  data-target="#large_modal" class="sb2-2-1-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';       
+        $delete = '<a  href="#" onclick="deleteroomfun('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';   
+        if ($r->delflg==1) {
+          $status = "<span class='text-success bold'>Active</span>";
+        } else {
+          $status = "<span class='text-danger bold'>Inactive</span>";
+        }
+        if ($r->images!="") {
+              $img_path = base_url()."uploads/rooms/".$r->id."/".$r->images."";
+          } else {
+              $img_path = base_url()."assets/images/user/1.png";
+          }
+      $data[] = array(
+        '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
+        '<span class="list-img"><img src="'.$img_path.'" alt=""></span>',
+        $r->room_name.' '.$edit,
+        // $r->room_type_name,
+        // $linked_room_type,
+        // $r->total_rooms,
+        // $r->standard_capacity,
+        // $r->occupancy,
+        // $r->occupancy_child,
+        // $r->max_total,
+        // $status,
+        $delete       
+      );
+        }
+    $output = array(
+        "draw" => $draw,
+       "recordsTotal" => $rooms->num_rows(),
+       "recordsFiltered" => $rooms->num_rows(),
+       "data" => $data
+    );
+    echo json_encode($output);
+    exit();
+  }
+  public function delete_room() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_room($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $description = 'Room details delete request send [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
 }

@@ -152,9 +152,9 @@ class Supplier_Model extends CI_Model {
 					  'country_code' => $data['country'],
 					  'Preferred_currency' 	=> $data['Preferred_currency'],
 					  'created_date' => date('Y-m-d'), 
-					  'created_by' => $this->session->userdata('agent_id'), 
+					  'created_by' => $this->session->userdata('supplier_id'), 
 					  'supplier' =>'1',
-					  'supplierid' => $this->session->userdata('agent_id')
+					  'supplierid' => $this->session->userdata('supplier_id')
 				);
 		$this->db->insert('hotel_tbl_hotels',$data);
         $hotel_id = $this->db->insert_id();
@@ -168,7 +168,7 @@ class Supplier_Model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('hotel_tbl_hotels');
 		$this->db->where('supplier','1');
-		$this->db->where('supplierid',$this->session->userdata('agent_id'));
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 	    $query=$this->db->get();
 		return $query;
@@ -271,7 +271,7 @@ class Supplier_Model extends CI_Model {
 					  'country_code' 		=> $data['country'],
 					  'Preferred_currency' 	=> $data['Preferred_currency'],
 					  'updated_date' 		=> date('Y-m-d'), 
-					  'updated_by' 			=> $this->session->userdata('agent_id'), 
+					  'updated_by' 			=> $this->session->userdata('supplier_id'), 
 				);
 
 		$this->db->where('id',$hotel_id);
@@ -324,10 +324,9 @@ class Supplier_Model extends CI_Model {
 			$this->db->where('rating',$request['rating']);
 		}
 		$this->db->where('supplier','1');
-		$this->db->where('supplierid',$this->session->userdata('agent_id'));
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$query=$this->db->get();
-		//echo $this->db->last_query();
 		return $query;
   	}
   	public function review_view($id) {
@@ -384,4 +383,159 @@ class Supplier_Model extends CI_Model {
       $this->db->update('hotel_tbl_hotels',$data);
       return true;
     }
+    public function get_total_hotels() {
+		$this->db->select('*');
+		$this->db->from('hotel_tbl_hotels');
+		if(isset($_REQUEST['hotel'])&&$_REQUEST['hotel']!="") {
+			$this->db->where('id',$_REQUEST['hotel']);
+		}
+		if(isset($_REQUEST['con'])&&$_REQUEST['con']!="") {
+			$this->db->where('country',$_REQUEST['con']);
+		}
+		if(isset($_REQUEST['state'])&&$_REQUEST['state']!="") {
+			$this->db->where('state',$_REQUEST['state']);
+		}
+		if(isset($_REQUEST['city'])&&$_REQUEST['city']!="") {
+			$this->db->like('city',$_REQUEST['city']);
+		}
+		if(isset($_REQUEST['prov'])&&$_REQUEST['prov']!="") {
+			$this->db->like('property_name',$_REQUEST['prov']);
+		}
+		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
+			$this->db->where('rating',$_REQUEST['rating']);
+		}
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$query=$this->db->get()->result();
+		return count($query);
+    }
+    public function hotel_search_list_rooms($limit,$start) {
+		$this->db->select('id,hotel_name');
+		$this->db->from('hotel_tbl_hotels');
+		if(isset($_REQUEST['hotel'])&&$_REQUEST['hotel']!="") {
+			$this->db->where('id',$_REQUEST['hotel']);
+		}
+		if(isset($_REQUEST['con'])&&$_REQUEST['con']!="") {
+			$this->db->where('country',$_REQUEST['con']);
+		}
+		if(isset($_REQUEST['state'])&&$_REQUEST['state']!="") {
+			$this->db->where('state',$_REQUEST['state']);
+		}
+		if(isset($_REQUEST['city'])&&$_REQUEST['city']!="") {
+			$this->db->like('city',$_REQUEST['city']);
+		}
+		if(isset($_REQUEST['prov'])&&$_REQUEST['prov']!="") {
+			$this->db->like('property_name',$_REQUEST['prov']);
+		}
+		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
+			$this->db->where('rating',$_REQUEST['rating']);
+		}
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$this->db->limit($limit, $start);
+		$query=$this->db->get()->result();
+		return $query;
+  	}
+  	public function hotel_list($limit,$start) {
+		$this->db->select('*');
+		$this->db->from('hotel_tbl_hotels');
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$this->db->limit($limit, $start);
+		$query=$this->db->get();
+		return $query;
+  	}
+  	public function update_room($request) {
+    	if (!isset($request['allotement_room_name'])) {
+    		$request['allotement_room_name']="";
+    	}
+    	if (!isset($request['allotement_room_type'])) {
+    		$request['allotement_room_type']="";
+    	}
+    	if (!isset($request['allotement_id'])) {
+    		$request['allotement_id']="";
+    	}
+    	$max_total = $request['occupancy'] + $request['occupancy_child'];
+		$data = array('hotel_id'           => $request['hotel_id'],
+					  'room_name'          => $request['room_name'],
+					  'room_type'          => $request['roomtype'], 
+					  'room_facilities'    => implode(",", $request['room_facilties']), 
+					  'occupancy'          => $request['occupancy'], 
+					  'occupancy_child'    => $request['occupancy_child'], 
+					  'max_total'		   => $max_total,
+					  'standard_capacity'  => $max_total,
+					  'updated_date'       => date('Y-m-d'), 
+					  'updated_by' => $this->session->userdata('agent_id'), 
+				);
+		$this->db->where('id',$request['room_id']);
+		$this->db->update('hotel_tbl_hotel_room_type',$data);
+		return true;
+	}
+	public function add_new_room($request) {
+    	if (!isset($request['allotement_room_name'])) {
+    		$request['allotement_room_name']="";
+    	}
+    	if (!isset($request['allotement_room_type'])) {
+    		$request['allotement_room_type']="";
+    	}
+    	if (!isset($request['allotement_id'])) {
+    		$request['allotement_id']="";
+    	}
+    	$max_total = $request['occupancy'] + $request['occupancy_child'];
+		$data = array('hotel_id'               => $request['hotel_id'],
+					  'room_name'              => $request['room_name'],
+					  'room_type'              => $request['roomtype'], 
+					  // 'allotement'             => $request['allotement'], 
+					  // 'price'                  => $request['price'], 
+					  'room_facilities'        => implode(",", $request['room_facilties']), 
+					  'occupancy'              => $request['occupancy'], 
+					  'occupancy_child'        => $request['occupancy_child'], 
+					  'max_total'		   	   => $max_total,
+					  'standard_capacity'      => $max_total,
+					  'created_date'           => date('Y-m-d'), 
+					  'created_by'             => $this->session->userdata('agent_id'), 
+				);
+		$this->db->insert('hotel_tbl_hotel_room_type',$data);
+        $hotel_room_id = $this->db->insert_id();
+		return $hotel_room_id;
+	}
+	public function hotel_rooms_list($id,$filter) {
+        $this->db->select('hotel_tbl_hotel_room_type.*,hotel_tbl_room_type.Room_Type as room_type_name');
+        $this->db->from('hotel_tbl_hotel_room_type');
+        $this->db->join('hotel_tbl_room_type','hotel_tbl_room_type.id = hotel_tbl_hotel_room_type.room_type', 'left');
+        $this->db->where('hotel_tbl_hotel_room_type.hotel_id',$id);
+        $this->db->where('hotel_tbl_hotel_room_type.delflg',1);
+        $this->db->where('hotel_tbl_hotel_room_type.delrequest',$filter);
+        $this->db->order_by('hotel_tbl_hotel_room_type.id','desc');
+        return $query=$this->db->get();
+    }
+    public function hotel_detail_view_room_type($id) {
+        $this->db->select('hotel_tbl_hotel_room_type.*,hotel_tbl_room_type.*,hotel_tbl_hotel_room_type.id as room_id');
+        $this->db->from('hotel_tbl_hotel_room_type');
+		$this->db->join('hotel_tbl_room_type', 'hotel_tbl_room_type.id = hotel_tbl_hotel_room_type.room_type', 'left');
+        $this->db->where('hotel_tbl_hotel_room_type.delflg',1);
+        $this->db->where('hotel_tbl_hotel_room_type.id',$id);
+        $query=$this->db->get();
+        return $query->result();
+    }
+    public function room_names_get($hotel_id) {
+    	$this->db->select('room_name');
+        $this->db->from('hotel_tbl_hotel_room_type');
+        $this->db->where('hotel_id',$hotel_id);
+        $this->db->where('delflg',1);
+        $query=$this->db->get();
+        return $query->result();
+    }
+    public function delete_room($id) {
+		$data = array('delrequest' => 1,
+					  'updated_date' => date('Y-m-d'), 
+					  'updated_by' => $this->session->userdata('supplier_id'), 
+				);
+		$this->db->where('id',$id);
+		$this->db->update('hotel_tbl_hotel_room_type',$data);
+		return true;
+	}
 }

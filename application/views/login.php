@@ -1,8 +1,12 @@
+<?php
+$favicon = favicon();
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <title>Hotel Supplier  - Otelseasy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/<?php echo $favicon[0]->Fav_Icon ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <link href="<?php echo base_url('login/css/bootstrap.css') ?>" rel='stylesheet' type='text/css' />

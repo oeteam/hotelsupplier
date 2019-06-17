@@ -3964,3 +3964,12 @@ function defaultNationalityGET() {
   $query = $ci->db->get()->result(); 
   return $query[0]->Country;
 }
+function favicon() {
+    $ci =& get_instance();
+    $ci->db->select('Fav_Icon');
+    $ci->db->from('hotel_tbl_general_settings');
+    $ci->db->where('id',1);
+    $query=$ci->db->get();
+    $icon= $query->result();
+    return $icon;
+}
