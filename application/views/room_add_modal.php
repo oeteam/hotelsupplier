@@ -188,6 +188,11 @@
     .modal-footer {
         padding: 10px;
     }
+    .dropdown-menu {
+       max-width: 100% ! important;
+       height: 250px;
+       overflow: scroll;
+    }
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
   <div class="modal-content">
@@ -335,10 +340,10 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-      $('#room_facilties').multiselect();
-  });
-  $('#room_facilties').multiselect({
-        includeSelectAllOption: true,
-        selectAllValue: 0
+    $('#room_facilties').multiselect({
+          allSelectedText: 'All',
+          includeSelectAllOption: true,
+          selectAllValue: 0
+    });
   });
   </script>
