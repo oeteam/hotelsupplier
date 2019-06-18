@@ -28,9 +28,10 @@
 }
 </style>
   
-  <div class="clearfix"></div>
-  <div class="row" style=" margin-top: 20px;">
-    <div class="col-md-offset-2 col-md-8" style="height: 58px">
+<div class="clearfix" style="margin-top: 20px;"></div>
+<div class="col-md-8 col-md-offset-2">
+  <div class="row">
+    <div class="col-md-12" style="height: 58px">
       <span class="msg"></span>
       <div class="clearfix"></div>
       <div class="content5">
@@ -98,8 +99,8 @@
     </div>
   </div>
   <div class="clearfix"></div>
-  <div class="row" style=" margin-top: 42px;">
-    <div class="col-md-offset-2 col-md-8">
+  <div class="row" style="">
+    <div class="col-md-12">
       <h3>Hotel List</h3>
       <table class="table table-hover" id="hotel_table">
         <thead>
@@ -119,6 +120,7 @@
       </table>
     </div>
   </div>
+</div>
 <div id="myModal" class="modal fade" role="dialog">
 </div>
 <div id="delModal" class="delete_modal modal">
