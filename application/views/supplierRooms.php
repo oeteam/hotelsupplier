@@ -47,139 +47,147 @@
   padding: 15px;
 }
 .hotel-list li a.active {
-  color: blue;
-  text-decoration:underline; 
+  color: #0583ae;
+  font-weight: bolder;
+  text-decoration: underline;
 }
 .hotel-list li a:hover:not(.active) {
-  background-color: #555;
-  color: white;
+  color: #0583ae;
+  cursor: pointer;
+}
+.tabs {
+  padding: 0px;
+}
+.pagination  li a {
+  line-height: 0px;
 }
 </style>
-<div class="clearfix"></div>
-<div class="row" style=" margin-top: 20px;">
-  <div class="col-md-offset-2 col-md-8" style="height: 58px">
-     <span class="msg"></span>
-     <div class="content5">
-          <div class="row">
-            <div class="col-md-12" >
-                <div class="col-md-2 form-group">
-                  <label>Hotelname</label>
-                  <select class="form-control" name="HotelSelect" id="HotelSelect">
-                    <option value="">Select Hotel</option>
-                    <?php foreach ($hotels as $value) { ?>
-                      <option value="<?php echo $value->id ?>"><?php echo $value->hotel_name?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-                <div class="col-md-2 form-group">
-                  <label>Country</label>
-                  <select name="con" id="con" class="form-control" onchange ="ConSelect();">
-                    <option value=""> Country </option>
-                    <?php $count=count($contry);
-                    for ($i=0; $i <$count ; $i++) { ?>
-                    <option value="<?php echo $contry[$i]->id;?>" sortname="<?php echo  $contry[$i]->sortname; ?>"><?php echo $contry[$i]->name; ?></option>
-                    <?php  } ?>
-                  </select>
-                </div>
-                <div class="col-md-2 form-group">
-                  <label>State</label>
-                  <input type="hidden" id="hiddenSt">
-                    <div class="multi-select-mod multi-select-trans multi-select-trans1">
-                    <select name="state" id="state"  class="form-control">
-                    <option value="">Select</option>
-                    </select> 
+<div class="clearfix" style="margin-top: 20px;"></div>
+<div class="col-md-8 col-md-offset-2">
+  <div class="row">
+    <div class="col-md-12">
+       <span class="msg"></span>
+       <div class="content5">
+            <div class="row">
+              <div class="col-md-12" >
+                  <div class="col-md-2 form-group">
+                    <label>Hotelname</label>
+                    <select class="form-control" name="HotelSelect" id="HotelSelect">
+                      <option value="">Select Hotel</option>
+                      <?php foreach ($hotels as $value) { ?>
+                        <option value="<?php echo $value->id ?>"><?php echo $value->hotel_name?></option>
+                      <?php } ?>
+                    </select>
                   </div>
-                </div>
-                <div class="col-md-2 form-group">
-                  <label>Cityname</label>
-                  <input type="text" name="city" class="form-control" id="citys">
-                </div>
-                <div class="col-md-2 form-group">
-                  <label title="Property Name">Prov.</label>
-                  <input type="text" name="prov" class="form-control" id="prov">
-                </div>
-                
-                <div class="col-md-2 form-group">
-                  <label>Rating</label>
-                  <select class="form-control" name="starRate" id="starRate">
-                    <option value="">Select</option>
-                    <option value="all">All</option>
-                    <option value="5">5</option>
-                    <option value="4">4</option>
-                    <option value="3">3</option>
-                    <option value="2">2</option>
-                    <option value="1">1</option>
-                    <option value="10">Apartment</option>
-                  </select>
-                </div>
-                <div class="clearfix"></div>
+                  <div class="col-md-2 form-group">
+                    <label>Country</label>
+                    <select name="con" id="con" class="form-control" onchange ="ConSelect();">
+                      <option value=""> Country </option>
+                      <?php $count=count($contry);
+                      for ($i=0; $i <$count ; $i++) { ?>
+                      <option value="<?php echo $contry[$i]->id;?>" sortname="<?php echo  $contry[$i]->sortname; ?>"><?php echo $contry[$i]->name; ?></option>
+                      <?php  } ?>
+                    </select>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label>State</label>
+                    <input type="hidden" id="hiddenSt">
+                      <div class="multi-select-mod multi-select-trans multi-select-trans1">
+                      <select name="state" id="state"  class="form-control">
+                      <option value="">Select</option>
+                      </select> 
+                    </div>
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label>Cityname</label>
+                    <input type="text" name="city" class="form-control" id="citys">
+                  </div>
+                  <div class="col-md-2 form-group">
+                    <label title="Property Name">Prov.</label>
+                    <input type="text" name="prov" class="form-control" id="prov">
+                  </div>
+                  
+                  <div class="col-md-2 form-group">
+                    <label>Rating</label>
+                    <select class="form-control" name="starRate" id="starRate">
+                      <option value="">Select</option>
+                      <option value="all">All</option>
+                      <option value="5">5</option>
+                      <option value="4">4</option>
+                      <option value="3">3</option>
+                      <option value="2">2</option>
+                      <option value="1">1</option>
+                      <option value="10">Apartment</option>
+                    </select>
+                  </div>
+                  <div class="clearfix"></div>
+                  <br>
+                  <div class="col-md-12 form-group">
+                    <button class="pull-right btn btn-success ml10" data-toggle="modal" data-target="#myModal" onclick="add_roommodal();">Add</button> 
+                    <button class="pull-right btn btn-success ml10" id="roomhotelSearch">Search</button>
+                  </div>         
+               </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 hotel-list" id="hotel-list">
+                  <?php if(isset($HotelList) && $HotelList!="") {
+                     foreach ($HotelList as $key => $value) {
+                      if($key==0) { ?>
+                        <li><a class="active" id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
+                      <?php } else { ?>
+                        <li><a id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
+                      <?php } 
+                    }
+                  }
+                  ?>
                 <br>
-                <div class="col-md-12 form-group">
-                  <button class="pull-right btn btn-success ml10" data-toggle="modal" data-target="#myModal" onclick="add_roommodal();">Add</button> 
-                  <button class="pull-right btn btn-success ml10" id="roomhotelSearch">Search</button>
-                </div>         
-             </div>
+                <br>
+                <div class="clearfix"></div>
+                <ul class="pagination right">
+                <?php echo $links ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+        <div class="box-inn-sp">
+          <div class="inn-title">
+               <h3>Room List</h3>
           </div>
           <div class="row">
-              <div class="col-md-12 hotel-list" id="hotel-list">
-                <?php if(isset($HotelList) && $HotelList!="") {
-                   foreach ($HotelList as $key => $value) {
-                    if($key==0) { ?>
-                      <li><a class="active" id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
-                    <?php } else { ?>
-                      <li><a id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
-                    <?php } 
-                  }
-                }
-                ?>
-              <br>
-               <div class="col-md-12 pull-right"><div class="hpadding20">
-                      <ul class="pagination right paddingbtm20">
-                      <?php echo $links ?>
-                      </ul>
-                      </div></div>
+            <div class="col-md-12 mar_top_10">
+              <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
+                <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Rooms</a></li>
+                <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li>
+              </ul>
+            </div>
           </div>
       </div>
+      <div class="tab-inn">
+        <table class="table table-hover" id="room_table">
+          <thead>
+              <tr>
+                  <th><input type="checkbox" class="check-all"></th>
+                  <th>Image</th>
+                  <th>Roomname</th>
+                  <!-- <th>country</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Status</th> -->
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+  </div>
   </div>
 </div>
-  </div>
-   <div class="clearfix"></div>
-  <div class="row" style=" margin-top: 226px;">
-    <div class="col-md-offset-2 col-md-8">
-      <div class="box-inn-sp">
-        <div class="inn-title">
-             <h3>Room List</h3>
-        </div>
-        <div class="row">
-          <div class="col-md-12 mar_top_10">
-            <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
-              <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Rooms</a></li>
-              <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li>
-            </ul>
-          </div>
-        </div>
-    </div>
-    <div class="tab-inn">
-      <table class="table table-hover" id="room_table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" class="check-all"></th>
-                <th>Image</th>
-                <th>Roomname</th>
-                <!-- <th>country</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Status</th> -->
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-  <div id="myModal" class="modal fade" role="dialog">
+<div id="myModal" class="modal fade" role="dialog">
 </div>
 <div id="delModal" class="delete_modal modal">
         <div class="modal-content modal-content  col-md-6 col-md-offset-3">

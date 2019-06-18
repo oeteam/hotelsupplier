@@ -546,12 +546,13 @@ class HotelSupplier extends MY_Controller {
           $data['list'].= '<li><a id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
         }
       }
-      $data['list'].= '</ul><br>
-                      <div class="col-md-12 pull-right"><div class="hpadding20">
-                      <ul class="pagination right paddingbtm20">
+      $data['list'].= '</ul>
+                        <br>
+                        <br>
+                        <div class="clearfix"></div>
+                      <ul class="pagination right ">
                       '.$result["links"].'
-                      </ul>
-                      </div></div>';
+                      </ul>';
     echo json_encode($data);
   }
   public function add_room() {
