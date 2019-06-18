@@ -337,6 +337,11 @@
                 Rooms
               </a>
           </li>
+          <li>
+              <a href="<?php echo base_url('HotelSupplier/contracts')?>">              
+                Contracts
+              </a>
+          </li>
       </ul>
     </div>
   </div>

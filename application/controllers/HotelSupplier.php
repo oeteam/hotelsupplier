@@ -637,4 +637,34 @@ class HotelSupplier extends MY_Controller {
     }
     echo json_encode($Return);
   }
+  public function contracts() {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $config['first_link'] = 'First';
+    $config['div'] = 'hotel-list'; //Div tag id
+    $config['base_url'] = base_url() . "hotelsupplier/contracts";
+    $config['total_rows'] = $this->Supplier_Model->get_total_hotels($_REQUEST);
+    $config['per_page'] = 20;
+    $config['postVar'] = 'page';
+    $this->ajax_pagination->initialize($config);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $data["links"] = $this->ajax_pagination->create_links();
+    $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
+    $data['contry']= $this->Supplier_Model->SelectCountry();
+    $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    $this->load->view('supplierContracts',$data);
+  }
+  public function addcontractmodal($hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+           redirect("welcome/agent_logout");
+    }
+    $data['hotelid'] = $hotelid;
+    $data['title'] = "Add Contract";  
+    $this->load->view('contract_add_modal',$data);      
+  }
 }
