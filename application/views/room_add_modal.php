@@ -1,7 +1,7 @@
  <!-- Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
   <!-- Select2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <style type="text/css">
   .modal-backdrop {
     z-index: 500;
@@ -342,8 +342,8 @@
   $(document).ready(function() {
     $('#room_facilties').multiselect({
           allSelectedText: 'All',
-          includeSelectAllOption: true,
-          selectAllValue: 0
-    });
+	  includeSelectAllOption: true,
+	  selectAllValue: 0
+	  });
   });
   </script>

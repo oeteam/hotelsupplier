@@ -538,4 +538,37 @@ class Supplier_Model extends CI_Model {
 		$this->db->update('hotel_tbl_hotel_room_type',$data);
 		return true;
 	}
+	public function add_contract($request){
+    	$id=$request['id'];
+    	$array= array(	
+			        	'board' 	=> $request['board'],
+			        	'max_child_age' 	=> '12',
+			        	'from_date' 		=> $request['date_picker'],
+			        	'to_date' 			=> $request['date_picker1'],
+			        	'contract_flg' 	=> $request['roomstatus'],
+			        	'markup' 			=> $request['markup'],
+			        	'markupType' => $request['markup_type'],
+			        	'hotel_id' 			=> $id,
+			        	'BookingCode' 		=> $request['BookingCode'],
+			        	'Created_Date' => date("Y-m-d H:i:s"),
+        				'Created_By' =>  $this->session->userdata('supplier_id'),
+					);
+		$this->db->insert('hotel_tbl_contract',$array);
+		$con_id = $this->db->insert_id();
+		
+		if($con_id!=""){
+        	$contract_id='CON0'.$con_id;
+        }
+        else{
+        	$contract_id="CON01";
+    	}
+    	$array = array(
+    					'contract_id' => $contract_id,
+    					'Updated_Date' => date("Y-m-d H:i:s"),
+        				'Updated_By' =>  $this->session->userdata('supplier_id'),
+					);
+		$this->db->where('id', $con_id);
+		$this->db->update('hotel_tbl_contract', $array);
+		return $con_id;
+    }
 }

@@ -1,7 +1,7 @@
  <!-- Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
   <!-- Select2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <style type="text/css">
   .modal-backdrop {
     z-index: 500;
@@ -194,6 +194,15 @@
       position: absolute;
       z-index: -99999;
     }
+    .dropdown-menu {
+       max-width: 100% ! important;
+       height: 250px;
+       overflow: scroll;
+    }
+   .status {
+      font-size: 12px;
+    }
+
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
   <div class="modal-content">
@@ -239,138 +248,65 @@
                     <label for="alternate2" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                 </div>
             </div>
-        </div>
-       
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label for="tax">Tax Pecentage : </label>
-                <input id="tax" name="tax" type="number" value="<?php echo isset($view[0]->tax_percentage) ? $view[0]->tax_percentage : '' ?>">
+            <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
+               <div class="form-group col-md-4">
+                <label for="tax">Applicable Week Days</label>
+                  <div class="multi-select-mod multi-select-trans">
+                      <select id="bulk-alt-days" name="bulk-alt-days[]"  multiple="" class="form-control">
+                          <option selected="" value="Sun">Sunday</option>
+                          <option selected="" value="Mon">Monday</option>
+                          <option selected="" value="Tue">Tuesday</option>
+                          <option selected="" value="Wed">Wednesday</option>
+                          <option selected="" value="Thu">Thursday</option>
+                          <option selected="" value="Fri">Friday</option>
+                          <option selected="" value="Sat">Saturday</option>
+                      </select>
+                  </div>
             </div>
+            <?php } ?>
+           
             <div class="form-group col-md-4">
-                <label for="max_age">Max child age : </label>
-                <select name="max_age" id="max_age" class="form-control">
-                    <?php for ($i=1; $i <= 18; $i++) { 
-                        if ($view[0]->max_child_age==$i) { ?>
-                            <option selected="selected" value="<?php echo $i ?>"><?php echo $i ?></option>
-                    <?php } else { ?>
-                            <option  value="<?php echo $i ?>"><?php echo $i ?></option>
-                    <?php } } ?>
-                </select>
-            </div>
-           <!--  <div class="form-group col-md-4">
-                <label for="markup">Markup(%) :</label>
-                <input id="markup"  name="markup" type="number" value="<?php echo isset($view[0]->markup) ? $view[0]->markup : '' ?>">
-            </div> -->
-        <!-- </div>
-        <div class="row"> -->
-            <div class="form-group col-md-4">
-                <label for="contract_type">Contract Type</label>
-                <select name="contract_type" id="contract_type" class="form-control" onchange="maincontractCheck();">
-                    <?php foreach ($contract_type as $key => $value1) { 
-                         if(isset($_REQUEST['id']) && $view[0]->contract_type==$value1  ) { ?>
-                        <option selected="" value="<?php echo $value1 ?>"><?php echo $value1 ?></option>
-                    <?php } else { ?>
-                        <option value="<?php echo $value1 ?>"><?php echo $value1 ?></option>
-                    <?php } } ?>
-                </select>
+                <label for="max_age">Contract Status</label><br>
+                <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
+                <input name="roomstatus" type="radio" class="with-gap" id="nochange" value="0"/>
+                <label for="nochange" class="status">No Change</label>
+                <?php } ?>
+                <input name="roomstatus" type="radio" class="with-gap" id="open" checked value="0" />
+                <label for="open" class="status">Open</label>
+                <input name="roomstatus" type="radio" class="with-gap" id="close" value="1" />
+                <label for="close" class="status">Close</label>
             </div>
             <div class="form-group col-md-4">
-                <label>Contract Name</label><span>*</span>
-                <input type="text" name="contract_name" id="contract_name" class="form-control" value="<?php echo isset($view[0]->contractName) ? $view[0]->contractName : '' ?>">
+                <label for="markup_type">Markup Type</label>
+                      <select id="markup_type" name="markup_type" class="form-control">
+                          <option value="">Select</option>
+                          <option value="percentage">Percentage</option>
+                          <option value="flat">Flat</option>
+                      </select>
             </div>
             <div class="form-group col-md-4">
-                <label>Booking Code</label>
-                <input type="text" name="BookingCode" id="BookingCode" class="form-control" value="<?php echo isset($view[0]->BookingCode) ? $view[0]->BookingCode : '' ?>">
+                <label for="max_age">Contract Markup</label><br>
+                <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
+                <input name="contractmarkup" type="radio" class="with-gap" id="contractmarkup" value="nochange" onclick="contractmarkupfun()" />
+                <label for="contractmarkup" class="status">No Change</label>
+                <input name="contractmarkup" type="radio" class="with-gap" id="contractrate" value="contractrate" onclick="contractmarkupfun()" />
+                <label for="contractmarkup" class="status">Contract Rate</label>
+                <?php } ?>
+                <input  type="text" name="markup"  class="form-control" id="markup">
             </div>
-             <div class="form-group col-md-4">
-                <label for="contract_type">Contract Agreement</label>
-                <select name="contract_agreement" id="contract_agreement" class="form-control">
-                    <option value="fit" <?php echo isset($view[0]->contract_agreement)&&$view[0]->contract_agreement == 'fit' ? 'selected' : '' ?>>Fit</option>
-                   <option value="offer" <?php echo isset($view[0]->contract_agreement)&&$view[0]->contract_agreement == 'offer' ? 'selected' : '' ?>>Offer</option> 
-                    <option value="commissionable" <?php echo isset($view[0]->contract_agreement)&&$view[0]->contract_agreement == 'commissionable' ? 'selected' : '' ?>>Commissionable</option>                
-                </select>
-            </div>
-            <div class="form-group col-md-4 linked_contract">
-                <input type="hidden" class="lin_con" value="<?php echo isset($view[0]->linkedContract) ? $view[0]->linkedContract : '' ?>">
-                <label>Linked Contract</label><span>*</span>
-                <select class="form-control" id="linked_contract" name="linked_contract">
-                    <option>--Select Contract--</option>
-                </select>
-            </div>
-            
-        </div>
-        <div class="row">
             <div class="form-group col-md-4">
-                <p>
-                  <input type="checkbox" class="filled-in non-refundable" name="nonRefundable" <?php echo isset($view[0]->nonRefundable) && $view[0]->nonRefundable==1 ? 'checked' : '' ?> id="non-refundable"  />
-                  <label for="non-refundable">Non Refundable</label>
-                </p>
-            </div>
-            <div class="form-group col-md-4">        
-                <span>Active Markets</span>
-                <?php
-                $tempmarket = array();
-                if (isset($view[0]->market) && $view[0]->market!="") {
-                    $tempmarket = explode(",", $view[0]->market);
-                }
-                ?>
-                <input type="hidden" id="market_check" value="<?php echo isset($view[0]->market) ? $view[0]->market : '' ?>">
-                <div class="multi-select-mod">
-                <select name="market[]" id="market" class="form-control"  multiple="" onchange="selectCountry();">
-                    <?php foreach ($market as $key => $value) { ?>
-                        <option <?php echo in_array($value->continent,$tempmarket)!='' ? 'selected' : '' ?>  value="<?php echo $value->continent ?>"><?php echo $value->continent ?></option>
-                    <?php } ?>
-                </select>     
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Nationality Permission</h4>
-                <br>
-            </div>
-            <div class="row">
-                <input type="hidden" id="permission_check" value="<?php echo isset($view[0]->nationalityPermission) ? $view[0]->nationalityPermission : '' ?>">
-                <div class="col-md-12">
-                    <div class="col-xs-5">
-                        <span>Active Nationality</span>
-                        <select name="nationality_from[]" id="undo_redo" class="form-control" size="13" multiple="multiple">
-                        </select>
-                    </div>
-                    
-                    <div class="col-xs-2">
-                        <button type="button" id="undo_redo_undo" class="mt-6 no-border btn-sm btn-primary btn-block">Undo</button>
-                        <button type="button" id="undo_redo_rightAll" class="no-border btn-sm btn-default btn-block"><i class="fa fa-forward"></i></button>
-                        <button type="button" id="undo_redo_rightSelected" class="no-border btn-sm btn-default btn-block"><i class="fa fa-chevron-right"></i></button>
-                        <button type="button" id="undo_redo_leftSelected" class="no-border btn-sm btn-default btn-block"><i class="fa fa-chevron-left"></i></button>
-                        <button type="button" id="undo_redo_leftAll" class="no-border btn-sm btn-default btn-block"><i class="fa fa-backward"></i></button>
-                        <button type="button" id="undo_redo_redo" class="no-border btn-sm btn-primary btn-block">Redo</button>
-                    </div>
-                    
-                    <div class="col-xs-5">
-                        <span>Inactive Nationality</span>
-                        <form id="country_permission_form" method="post">
-                        <select name="nationality_to[]" id="undo_redo_to" class="form-control" size="13" multiple="multiple">
-                            <?php foreach ($nationality as $key => $value) { ?>
-                                <option value="<?php echo $value->id ?>" continent="<?php echo $value->continent!="" ? $value->continent : 'other' ?>"><?php echo $value->name ?></option>
-                            <?php } ?>
-                        </select>
-                         
-                          <input type="hidden" name="context" id="context"></p>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                <label for="bookingCode">Booking Code</label>
+                <input  type="text" name="bookingCode"  class="form-control" id="bookingCode">
+            </div> 
         </div>
         </form>
       </div>
-      <div class="modal-footer">
-      <div class="form-group col-md-12">
-            <input type="button" class="sss pull-right btn-sm btn-success" onclick="room_add_fun();"    value="<?php echo isset($view[0]->room_id) ? 'Update' : 'Add' ?>" > 
-            <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+       <div class="modal-footer">
+          <button type="button" class="btn-sm btn-success" name="contract_submit" id="contract_submit">Submit</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+           <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+    
       </div>
-      </div>
-  </div>
+    </div>
 </span>
 <!-- <?php if (isset($view[0]->room_id)) { ?> data-toggle="modal" data-target="#yourmodalid" onclick="update_fun();" <?php }else { ?> onclick="room_allotement_add_fun();" <?php  }?>
  -->
@@ -393,11 +329,23 @@
       </div>
     </div>
 </div>
-  
-
-<script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
-
 <script type="text/javascript">
+   function cancellationfun() {
+    var cancel = $("#cancellation").val();
+    if(cancel == "refundable") {
+      $(".deadline").removeClass('hide');
+    } else {
+      $(".deadline").addClass('hide');
+    }   
+   }
+   function contractmarkupfun() {
+    var con = $("input[name='contractmarkup']:checked"). val();
+    if(con=="contractrate") {
+      $('#markup').removeClass("hide");
+    } else {
+      $('#markup').addClass("hide");
+    }
+   }
    var nextDay = new Date($("#date_picker1").val());
     nextDay.setDate(nextDay.getDate() + 1);
     $("#date_picker").datepicker({
@@ -429,10 +377,12 @@
         $( "#date_picker1" ).trigger('focus');
     });
   $(document).ready(function() {
-      $('#room_facilties').multiselect();
-  });
-  $('#room_facilties').multiselect({
-        includeSelectAllOption: true,
-        selectAllValue: 0
+    $('#bulk-alt-days').multiselect({
+          allSelectedText: 'All',
+          includeSelectAllOption: true,
+          selectAllValue: 0
+    });
   });
   </script>
+  <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
+

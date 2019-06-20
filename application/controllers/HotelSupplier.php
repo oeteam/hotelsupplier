@@ -640,7 +640,7 @@ class HotelSupplier extends MY_Controller {
   }
   public function contracts() {
     if ($this->session->userdata('supplier_name')=="") {
-        redirect("welcome/agent_logout");
+      redirect("welcome/agent_logout");
     }
     $config['first_link'] = 'First';
     $config['div'] = 'hotel-list'; //Div tag id
@@ -662,10 +662,16 @@ class HotelSupplier extends MY_Controller {
   }
   public function addcontractmodal($hotelid) {
     if ($this->session->userdata('supplier_name')=="") {
-           redirect("welcome/agent_logout");
+      redirect("welcome/agent_logout");
     }
     $data['hotelid'] = $hotelid;
     $data['title'] = "Add Contract";  
     $this->load->view('contract_add_modal',$data);      
+  }
+  public function add_contract(){
+    $view = $this->Supplier_Model->add_contract($_REQUEST);
+    $description = 'New contract added [Hotel Code: HE0'.$_REQUEST['id'].', Contract ID: CON0'.$view.']';
+    AgentlogActivity($description);
+    redirect("hotelsupplier/contracts");
   }
 }

@@ -1,4 +1,7 @@
-<!-- <script type="text/javascript" src='http://maps.google.com/maps/api/js?key=AIzaSyAbjpN_xqyT_yhaKh0ikHujN_xCX7KWot4&libraries=places'></script>  -->
+ <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+  <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/locationpicker.jquery.js"></script>
 <style type="text/css">
   .modal-backdrop {
@@ -173,6 +176,24 @@
         position: absolute;
         z-index: -1;
     }
+    .modal-header {
+        background-color: black;
+        color: white;
+    }
+    .modal-header .close {
+        color: white;
+    }
+    .modal-body {
+        padding: 40px;
+    }
+    .modal-footer {
+        padding: 10px;
+    }
+    .dropdown-menu {
+       max-width: 100% ! important;
+       height: 250px;
+       overflow: scroll;
+    }
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 70%;">
     <!-- Modal content-->
@@ -340,7 +361,7 @@
                                         $selected_hotel_fac = "";
                                         ?>
                                     <div class="multi-select-mod multi-select-trans">
-                                        <select multiple id="hotel_facilties" name="hotel_facilties[]">
+                                        <select multiple="" id="hotel_facilties" name="hotel_facilties[]">
                                            <?php 
                                             foreach ($hotel_facilties as $key => $value) { 
                                                 if($hotel_facilities[$i]==$value->id) {
@@ -370,10 +391,10 @@
                                     <div class="multi-select-mod multi-select-trans">
                                         <select  id="room_facilties1" multiple name="room_facilties1[]">
                                             <?php foreach ($room_facilties as $key => $value) { 
-                                                if($room_facilty[$i]==$value->id) {
-                                                  $selected_room_fac = "selected"; ?>
-                                                    <?php 
-                                                  $i++; } else {
+                                                if(isset($room_facilty[$i]) && $room_facilty[$i]==$value->id) {
+                                                  $selected_room_fac = "selected"; 
+                                                  $i++;
+                                                } else {
                                                     $selected_room_fac = "";
                                                   } ?>
                                                 <option <?php echo $selected_room_fac; ?> data-icon="<?php echo base_url() ?>"  value="<?php echo $value->id ?>"><?php echo $value->Room_Facility ?></option>
@@ -836,13 +857,14 @@
         $("#custom-select-option-box").toggle();
     });
     $('#room_facilties1').multiselect({
-        includeSelectAllOption: true,
-        columns: 3,    
-        selectAllValue: 0
+          allSelectedText: 'All',
+          includeSelectAllOption: true,
+          selectAllValue: 0
     });
     $('#hotel_facilties').multiselect({
-        includeSelectAllOption: true,
-        selectAllValue: 0
+         allSelectedText: 'All',
+          includeSelectAllOption: true,
+          selectAllValue: 0
     });
     function ConSelectFun() {
     var hiddenState = $("#hiddenState").val();

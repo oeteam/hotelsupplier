@@ -559,3 +559,32 @@ function commonDeleteroom() {
       }
     });
 }
+ $('#contract_submit').click(function () {
+    var contractmarkup = $("#contractmarkup").val();
+    var markup = $("#markup").val();
+    var markup_type = $("#markup_type").val();
+    var bookingcode = $("#bookingcode").val();
+    if(contractmarkup=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Amount field is required","!");</script>');
+      $("#contractmarkup").focus();
+    } 
+    else if(markup=="") 
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Markup field is required","!");</script>');
+      $("#markup").focus();
+    }
+    else if(bookingcode=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Booking Code field is required","!");</script>');
+      $("#bookingcode").focus();
+    } else if(markup_type=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Markup Type field is required","!");</script>');
+      $("#markup_type").focus();
+    }
+    else {
+       $(".msg").append('<script type="text/javascript"> AddToast("success","Contract added successfully","!");</script>');
+       $("#add_contract").attr('action',base_url+'hotelsupplier/add_contract');
+       $("#add_contract").submit();
+     }
+   });
