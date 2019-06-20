@@ -3,6 +3,9 @@
   <!-- Select2 JS -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <style type="text/css">
+      .ui-datepicker {
+        z-index: 9999999 ! important;
+      }
   .modal-backdrop {
     z-index: 500;
   }
@@ -248,6 +251,8 @@
                     <label for="alternate2" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                 </div>
             </div>
+          </div>
+            <div class="row">
             <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
                <div class="form-group col-md-4">
                 <label for="tax">Applicable Week Days</label>
@@ -346,6 +351,7 @@
       $('#markup').addClass("hide");
     }
    }
+  $(document).ready(function() {
    var nextDay = new Date($("#date_picker1").val());
     nextDay.setDate(nextDay.getDate() + 1);
     $("#date_picker").datepicker({
@@ -376,7 +382,6 @@
     $("#alternate2").click(function() {
         $( "#date_picker1" ).trigger('focus');
     });
-  $(document).ready(function() {
     $('#bulk-alt-days').multiselect({
           allSelectedText: 'All',
           includeSelectAllOption: true,

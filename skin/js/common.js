@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	favourite_dropdown();
+	// favourite_dropdown();
 });
 function favourite_dropdown() {
   $.ajax({    

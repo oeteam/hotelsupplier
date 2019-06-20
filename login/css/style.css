@@ -246,16 +246,17 @@ ul.navig li a.active{
 	-moz-background-size:cover;
 	-o-background-size:cover;
 	-ms-background-size:cover;
-	min-height:670px;
+	min-height:420px;
 	position:relative;
 }
 .banner-top {
 	position: absolute;
-	width: 35%;
+	width: 30%;
 	padding: 2em 30px;
 	background: white;
-	top: 20.5%;
-	left: 13.5%;
+	top: 10%;
+	/*left: 13.5%;*/
+	right: 5%;
 }
 .banner-top h1 {
 	font-size: 2.4em;
