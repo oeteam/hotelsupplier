@@ -549,7 +549,8 @@ class Supplier_Model extends CI_Model {
 			        	'markup' 			=> $request['markup'],
 			        	'markupType' => $request['markup_type'],
 			        	'hotel_id' 			=> $id,
-			        	'BookingCode' 		=> $request['BookingCode'],
+			        	'BookingCode' 		=> $request['bookingCode'],
+			        	'contract_typ' => 'Main',
 			        	'Created_Date' => date("Y-m-d H:i:s"),
         				'Created_By' =>  $this->session->userdata('supplier_id'),
 					);
