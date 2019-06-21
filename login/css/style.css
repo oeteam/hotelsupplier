@@ -302,7 +302,7 @@ select {
 .bnr-one:nth-child(1){
 	margin-top:0;
 }
-.bnr-right input[type="text"] {
+.bnr-right input {
 	width: 95%;
 	color: #9E9E9E;
 	outline: none;
@@ -310,6 +310,7 @@ select {
 	font-size: 14px;
 	padding: 10px 10px;
 	/*border: none;*/
+	border: 1px solid #9E9E9E;
 	border-style: solid;
 	-webkit-appearance: none;
 }
@@ -963,6 +964,10 @@ ul.navig li a {
 .bnr-right input[type="text"] {
 	width: 99%;
 	padding: 6px 10px;
+}
+.banner-bottom .bnr-right input:hover,.banner-bottom .bnr-right input:focus {
+	border: 4px solid #337ab7 ! important;
+
 }
 select {
 	padding: 6px 0px 6px 10px;

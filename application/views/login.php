@@ -82,7 +82,7 @@ $favicon = favicon();
 							<p>Password</p>
 						</div>
 						<div class="bnr-right">
-							<input  type="text" required="" name="password" placeholder="password">
+							<input  type="password" required="" name="password" placeholder="password">
 						</div>
 						<div class="clearfix"></div>
 					</div>
