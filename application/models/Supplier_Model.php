@@ -414,7 +414,7 @@ class Supplier_Model extends CI_Model {
 		$this->db->select('id,hotel_name');
 		$this->db->from('hotel_tbl_hotels');
 		if(isset($_REQUEST['hotel'])&&$_REQUEST['hotel']!="") {
-			//$this->db->where('id',$_REQUEST['hotel']);
+			$this->db->where('id',$_REQUEST['hotel']);
 		}
 		if(isset($_REQUEST['con'])&&$_REQUEST['con']!="") {
 			$this->db->where('country',$_REQUEST['con']);
@@ -431,8 +431,8 @@ class Supplier_Model extends CI_Model {
 		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
 			$this->db->where('rating',$_REQUEST['rating']);
 		}
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$this->db->limit($limit, $start);
 		$query=$this->db->get()->result();
@@ -576,7 +576,7 @@ class Supplier_Model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('hotel_tbl_contract');
 		$this->db->where('hotel_id',$hotel);
-		//$this->db->where('Created_By',$this->session->userdata('supplier_id'));
+		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$query=$this->db->get()->result();
 		return count($query);
@@ -585,10 +585,35 @@ class Supplier_Model extends CI_Model {
 		$this->db->select('id,contract_id');
 		$this->db->from('hotel_tbl_contract');
 		$this->db->where('hotel_id',$hotel);
-		//$this->db->where('Created_By',$this->session->userdata('supplier_id'));
+		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$this->db->limit($limit, $start);
 		$query=$this->db->get()->result();
 		return $query;
   	}
+  	public function getRooms($hotelid) {
+  		$this->db->select('id,room_name');
+		$this->db->from('hotel_tbl_hotel_room_type');
+		$this->db->where('hotel_id',$hotelid);
+		$this->db->where('delrequest','0');
+		$this->db->order_by('id','desc');
+		$query=$this->db->get()->result();
+		return $query;
+  	}
+  	public function add_allotment($request){
+  		if (isset($request['room'])) {
+	        foreach ($request['room'] as $key => $value) {	
+		    	$array= array(	
+					        	'allotement'		=> $request['allotment'],
+							    'cut_off'			=> $request['cutoff'],
+							    'allotement_date'	=> $request['date_picker'],
+							    'room_id'			=> $value,
+							    'hotel_id'		=> $request['hotelid'],
+						    	'contract_id' 	=> $request['contractid']
+							);
+				$this->db->insert('hotel_tbl_allotement',$array);
+			}
+		}
+		return true;
+    }
 }

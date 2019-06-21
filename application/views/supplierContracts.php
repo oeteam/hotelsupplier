@@ -50,10 +50,10 @@
   color: blue;
   text-decoration:underline; 
 }
-.hotel-list li a:hover:not(.active) {
+/*.hotel-list li a:hover:not(.active) {
   background-color: #555;
   color: white;
-}
+}*/
 .contractlist ul {
   list-style-type: none;
   margin: 0;
@@ -80,10 +80,10 @@
   color: blue;
   text-decoration:underline; 
 }
-.contractlist li a:hover:not(.active) {
-  background-color: #555;
+/*.contractlist li a:hover:not(.active) {
+  //background-color: #555;
   color: white;
-}
+}*/
 .contractlist {
     background-color: #e8e8e8;
     min-height: 77px;
@@ -264,17 +264,26 @@
           keyboard: false
       });
     }
-    function editroom(id) {
-       var hotelid = $("#hotel-list li a.active").attr('id');
-        $("#myModal").load(base_url+'HotelSupplier/addroommodal/'+hotelid+'/?room_id='+id);
-          $('#myModal').modal({
-              backdrop: 'static',
-              keyboard: false
-          });
+    function add_allotment_modal() {
+      var contractid = $("#contractlist li a.active").attr('id');
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/add_allotment_modal/'+contractid+'/'+hotelid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
     }
-    function deleteroomfun(id) {
-      deletepopupfun(base_url+"hotelsupplier/delete_room",id);
-    }
+    // function editroom(id) {
+    //    var hotelid = $("#hotel-list li a.active").attr('id');
+    //     $("#myModal").load(base_url+'HotelSupplier/addroommodal/'+hotelid+'/?room_id='+id);
+    //       $('#myModal').modal({
+    //           backdrop: 'static',
+    //           keyboard: false
+    //       });
+    // }
+    // function deleteroomfun(id) {
+    //   deletepopupfun(base_url+"hotelsupplier/delete_room",id);
+    // }
 
 
   $("#roomhotelSearch").click(function() {

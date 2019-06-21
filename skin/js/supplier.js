@@ -588,3 +588,33 @@ function commonDeleteroom() {
        $("#add_contract").submit();
      }
    });
+  $('#allotment-submit').click(function () {
+    var room = $("#room").val();
+    var allotment = $("#allotment").val();
+    var price = $("#price").val();
+    var cutoff = $("#cutoff").val();
+    if(room=="") 
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room field is required","!");</script>');
+      $("#room").focus();
+    }
+    else if(allotment=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Allotment field is required","!");</script>');
+      $("#allotment").focus();
+    } 
+    else if(price=="") 
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Price field is required","!");</script>');
+      $("#price").focus();
+    }
+    else if(cutoff=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
+      $("#cutoff").focus();
+    } else {
+       $(".msg").append('<script type="text/javascript"> AddToast("success","Allotment added successfully","!");</script>');
+       $("#add_allotment").attr('action',base_url+'hotelsupplier/add_allotment');
+       $("#add_allotment").submit();
+     }
+   });

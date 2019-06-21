@@ -602,16 +602,9 @@ class HotelSupplier extends MY_Controller {
           }
       $data[] = array(
         '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
-        '<span class="list-img"><img src="'.$img_path.'" alt=""></span>',
-        $r->room_name.' '.$edit,
-        // $r->room_type_name,
-        // $linked_room_type,
-        // $r->total_rooms,
-        // $r->standard_capacity,
-        // $r->occupancy,
-        // $r->occupancy_child,
-        // $r->max_total,
-        // $status,
+        $r->room_name.'-'.$r->room_type_name.' '.$edit,
+        $r->occupancy,
+        $r->occupancy_child,
         $delete       
       );
         }
@@ -722,5 +715,21 @@ class HotelSupplier extends MY_Controller {
                       '.$result["links"].'
                       </ul>';
     echo json_encode($data);
+  }
+  public function add_allotment_modal($contractid,$hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['rooms'] = $this->Supplier_Model->getRooms($hotelid);
+    $data['contractid'] = $contractid;
+    $data['hotelid'] = $hotelid;
+    $data['title'] = "Add Allotment";  
+    $this->load->view('allotment_add_modal',$data);      
+  }
+  public function add_allotment(){
+    $view = $this->Supplier_Model->add_allotment($_REQUEST);
+    $description = 'New allotment added [Hotel Code: HE0'.$_REQUEST['hotelid'].', Contract ID: CON0'.$_REQUEST['contractid'].']';
+    AgentlogActivity($description);
+    redirect("hotelsupplier/contracts");
   }
 }

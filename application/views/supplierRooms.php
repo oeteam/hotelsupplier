@@ -171,11 +171,10 @@
           <thead>
               <tr>
                   <th><input type="checkbox" class="check-all"></th>
-                  <th>Image</th>
                   <th>Roomname</th>
-                  <!-- <th>country</th>
-                  <th>Phone</th>
-                  <th>Email</th>
+                  <th>Adult Occupancy</th>
+                  <th>Child Occupancy</th>
+                  <!-- <th>Email</th>
                   <th>Status</th> -->
                   <th>Action</th>
               </tr>
