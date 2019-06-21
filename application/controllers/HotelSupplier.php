@@ -658,6 +658,20 @@ class HotelSupplier extends MY_Controller {
     $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
     $data['contry']= $this->Supplier_Model->SelectCountry();
     $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    $params['first_link'] = 'First';
+    $params['div'] = 'contractlist'; //Div tag id
+    $params['base_url'] = base_url() . "hotelsupplier/contracts";
+    $params['total_rows'] = $this->Supplier_Model->get_total_contracts($data['HotelList'][0]->id);
+    $params['per_page'] = 20;
+    $params['postVar'] = 'page';
+    $this->ajax_pagination->initialize($params);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $data["clinks"] = $this->ajax_pagination->create_links();
+    $data['contractlist']= $this->Supplier_Model->contractlist($params['per_page'],$page,$data['HotelList'][0]->id);
     $this->load->view('supplierContracts',$data);
   }
   public function addcontractmodal($hotelid) {
@@ -673,5 +687,40 @@ class HotelSupplier extends MY_Controller {
     $description = 'New contract added [Hotel Code: HE0'.$_REQUEST['id'].', Contract ID: CON0'.$view.']';
     AgentlogActivity($description);
     redirect("hotelsupplier/contracts");
+  }
+  public function hotel_contract_list($hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $config['first_link'] = 'First';
+    $config['div'] = 'contractlist'; //Div tag id
+    $config['base_url'] = base_url() . "hotelsupplier/hotel_contract_list";
+    $config['total_rows'] = $this->Supplier_Model->get_total_contracts($hotelid);
+    $config['per_page'] = 20;
+    $config['postVar'] = 'page';
+    $this->ajax_pagination->initialize($config);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $result["links"] = $this->ajax_pagination->create_links();
+    $contractlist = $this->Supplier_Model->contractList($config['per_page'],$page,$hotelid);
+      $data['list'] ='<ul class="contracts">';
+      foreach ($contractlist as $key => $value) {
+        if($key==0) {
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+        } else {
+          $data['list'].= '<li><a id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+        }
+      }
+      $data['list'].= '</ul>
+                        <br>
+                        <br>
+                        <div class="clearfix"></div>
+                      <ul class="pagination right ">
+                      '.$result["links"].'
+                      </ul>';
+    echo json_encode($data);
   }
 }

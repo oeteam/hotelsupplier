@@ -54,6 +54,41 @@
   background-color: #555;
   color: white;
 }
+.contractlist ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+.contractlist li {
+  display: inline;
+  margin-top: 10px;
+}
+.contractlist li a {
+  display: inline-block;
+  height: 30px;
+  overflow: hidden;
+  float: left;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: auto;
+  padding: 15px;
+}
+.contractlist li a.active {
+  color: blue;
+  text-decoration:underline; 
+}
+.contractlist li a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+.contractlist {
+    background-color: #e8e8e8;
+    min-height: 77px;
+}
+
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-8 col-md-offset-2">
@@ -126,9 +161,9 @@
                 <?php if(isset($HotelList) && $HotelList!="") {
                    foreach ($HotelList as $key => $value) {
                     if($key==0) { ?>
-                      <li><a class="active" id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
+                      <li><a class="active" id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
                     <?php } else { ?>
-                      <li><a id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
+                      <li><a id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
                     <?php } 
                   }
                 }
@@ -144,7 +179,29 @@
   </div>
 </div>
   </div>
-   <div class="clearfix"></div>
+    <div class="clearfix"></div><br><br>
+    <div class="col-md-12 contractlist" id="contractlist">
+        <?php if(isset($contractlist) && $contractlist!="") {
+           foreach ($contractlist as $key => $value) {
+            if($key==0) { ?>
+              <li><a class="active" id="<?php echo $value->id ?>"><?php echo $value->contract_id ?></a></li>
+            <?php } else { ?>
+              <li><a id="<?php echo $value->id ?>"><?php echo $value->contract_id?></a></li>
+            <?php } 
+          }
+        }
+        ?>
+        <br>
+        <div class="col-md-12 pull-right"><div class="hpadding20">
+          <ul class="pagination right paddingbtm20">
+          <?php echo $clinks ?>
+          </ul>
+        </div></div>
+    </div>
+    <div class="clearfix"></div><br><br>
+    <div class="col-md-12 form-group">
+      <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal();">Add Allotment</button> 
+    </div>  
   <!-- <div class="row" >
     <div class="col-md-12">
       <div class="box-inn-sp">
@@ -261,44 +318,18 @@
       }
     });      
   }
-   $(document).ready(function() {
-    var hotelid = $("#hotel-list li a.active").attr('id');
-    var room_table = $('#room_table').dataTable({
-          "bDestroy": true,
-          "ajax": {
-              url : base_url+'HotelSupplier/hotel_room_list/'+hotelid,
-              type : 'GET'
-          },
-       "fnDrawCallback": function(settings){
-          $('[data-toggle="tooltip"]').tooltip();          
-        }
-    });
-  });
-   function loadrooms(id) {
-    var room_table = $('#room_table').dataTable({
-          "bDestroy": true,
-          "ajax": {
-              url : base_url+'HotelSupplier/hotel_room_list/'+id,
-              type : 'GET'
-          },
-       "fnDrawCallback": function(settings){
-          $('[data-toggle="tooltip"]').tooltip();          
-        }
-    });
+   function loadcontracts(id) {
+   var hotelid = $("#hotel-list li a.active").attr('id');
+   $.ajax({
+      dataType: 'json',
+      type: 'post',
+      url:  base_url+'HotelSupplier/hotel_contract_list/'+hotelid,
+      cache: false,
+      success: function (response) {
+        $("#contractlist").html(response.list);
+      }
+    });    
    }
-  function filter(val) {
-    var hotelid = $("#hotel-list li a.active").attr('id');
-    var room_table = $('#room_table').dataTable({
-          "bDestroy": true,
-          "ajax": {
-              url : base_url+'HotelSupplier/hotel_room_list/'+hotelid+'?filter='+val,
-              type : 'GET'
-          },
-       "fnDrawCallback": function(settings){
-          $('[data-toggle="tooltip"]').tooltip();          
-        }
-    });
-  }
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

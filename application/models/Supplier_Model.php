@@ -387,7 +387,7 @@ class Supplier_Model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('hotel_tbl_hotels');
 		if(isset($_REQUEST['hotel'])&&$_REQUEST['hotel']!="") {
-			//$this->db->where('id',$_REQUEST['hotel']);
+			$this->db->where('id',$_REQUEST['hotel']);
 		}
 		if(isset($_REQUEST['con'])&&$_REQUEST['con']!="") {
 			$this->db->where('country',$_REQUEST['con']);
@@ -404,8 +404,8 @@ class Supplier_Model extends CI_Model {
 		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
 			$this->db->where('rating',$_REQUEST['rating']);
 		}
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$query=$this->db->get()->result();
 		return count($query);
@@ -571,4 +571,23 @@ class Supplier_Model extends CI_Model {
 		$this->db->update('hotel_tbl_contract', $array);
 		return $con_id;
     }
+    public function get_total_contracts($hotel) {
+		$this->db->select('*');
+		$this->db->from('hotel_tbl_contract');
+		$this->db->where('hotel_id',$hotel);
+		//$this->db->where('Created_By',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$query=$this->db->get()->result();
+		return count($query);
+    }
+    public function contractList($limit,$start,$hotel) {
+		$this->db->select('id,contract_id');
+		$this->db->from('hotel_tbl_contract');
+		$this->db->where('hotel_id',$hotel);
+		//$this->db->where('Created_By',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$this->db->limit($limit, $start);
+		$query=$this->db->get()->result();
+		return $query;
+  	}
 }
