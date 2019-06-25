@@ -776,7 +776,7 @@ class HotelSupplier extends MY_Controller {
         if (count($data)!=0) {
           $output['list'] .= '<td>'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$data[0]->cut_off.'</p></td>';
         } else {
-          $output['list'] .= '<td><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
+          $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
         } 
       }
       $output['list'] .= '</tr>';
