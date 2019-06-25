@@ -307,11 +307,12 @@ th {
         $.ajax({
         dataType: 'json',
         type: 'post',
-        url:  base_url+'HotelSupplier/roomhotelsearch?hotel='+hotelid+
+        url:  base_url+'HotelSupplier/contracthotelsearch?hotel='+hotelid+
             '&con='+Con+'&state='+state+'&city='+city+'&prov='+prov+'&rating='+rating,
         cache: false,
         success: function (response) {
           $("#hotel-list").html(response.list);
+          $("#contractlist").html(response.list2);
         }
       });      
   });

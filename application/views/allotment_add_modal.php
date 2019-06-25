@@ -205,6 +205,9 @@
    .status {
       font-size: 12px;
     }
+    .week {
+      font-weight: 100 !important;
+    }
 
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
@@ -218,7 +221,7 @@
         <input type="hidden" name="contractid" id="contractid" value="<?php echo $contractid ?>" >
         <input type="hidden" name="hotelid" id="hotelid" value="<?php echo $hotelid ?>" >
         <div class="row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="room">Room</label>
                    <div class="multi-select-mod multi-select-trans">
                       <select id="room" name="room[]"  multiple="" class="form-control">
@@ -228,33 +231,67 @@
                       </select>
                     </div>
             </div>
-            <div class="form-group col-md-6">
-                <label for="datepicker">Date</label>
-                <input type="text" class="datePicker-hide datepicker input-group-addon" id="date_picker" name="date_picker" placeholder="dd/mm/yyyy" value="<?php echo isset($view[0]->from_date) ?  $view[0]->from_date : date('Y-m-d') ?>" />
-                <div class="input-group">
-                    <input class="form-control datepicker date-pic" id="alternate1" name="" value="<?php echo isset($view[0]->from_date) ?  date('d/m/Y',strtotime($view[0]->from_date)) : date('d/m/Y') ?>">
-                    <label for="alternate1" class="input-group-addon"><i class="fa fa-calendar"></i></label>
-                </div>
+            <div class="col-sm-4">
+              <label for="" class="control-label">From date</label>
+                  <div class="">
+                      <input type="text" class="datePicker-hide datepicker input-group-addon" id="bulk-alt-fromDate"  name="bulk-alt-fromDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view[0]->from_date) ?  $view[0]->from_date : date('Y-m-d') ?>" >
+                      <div class="input-group">
+                        <input class="form-control datepicker date-pic" id="alternate1" name="" value="<?php echo isset($view[0]->from_date) ?  date('d/m/Y',strtotime($view[0]->from_date)) : date('d/m/Y') ?>" >
+                        <label for="alternate1" class="input-group-addon"><i class="fa fa-calendar"></i></label>
+                      </div>
+                  </div>
+            </div>
+            <div class="col-sm-4">
+              <label for="" class="control-label">To date</label>
+              <div class="">
+                  <input type="text"  class="datePicker-hide datepicker input-group-addon" id="bulk-alt-toDate"  name="bulk-alt-toDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view[0]->to_date) ? $view[0]->to_date : date('Y-m-d',strtotime('+1 month')) ?>">
+                  <div class="input-group">
+                      <input class="form-control datepicker date-pic" id="alternate2" name="" value="<?php echo isset($view[0]->to_date) ? date('d/m/Y',strtotime($view[0]->to_date)) : date('d/m/Y',strtotime('+1 month')) ?>" >
+                      <label for="alternate2" class="input-group-addon"><i class="fa fa-calendar"></i></label>
+                  </div>
+              </div>
             </div>
           </div>
           <div class="row">
-            <div class="form-group col-md-6">
+            <div class="col-sm-12">
+              <label>Weekdays</label><br>
+              <input type="checkbox" class="filled-in" id="sun" name="bulk-alt-days[]" value="Sun" />
+              <label for="sun" class="week">Sunday</label>
+              &nbsp &nbsp
+              <input type="checkbox" class="filled-in" id="mon" name="bulk-alt-days[]" value="Mon" />
+              <label for="mon" class="week">Monday</label>
+               &nbsp &nbsp
+              <input type="checkbox" class="filled-in" id="tue" name="bulk-alt-days[]" value="Tue" />
+              <label for="tue" class="week">Tuesday</label>
+              &nbsp&nbsp
+              <input type="checkbox" class="filled-in" id="wed" name="bulk-alt-days[]" value="Wed" />
+              <label for="wed" class="week">Wednesday</label>
+              &nbsp &nbsp
+              <input type="checkbox" class="filled-in" id="thu" name="bulk-alt-days[]" value="Thu" />
+              <label for="thu" class="week">Thursday</label>
+              &nbsp &nbsp
+              <input type="checkbox" class="filled-in" id="fri" name="bulk-alt-days[]" value="Fri" />
+              <label for="fri" class="week">Friday</label>
+              &nbsp &nbsp
+              <input type="checkbox" class="filled-in" id="sat" name="bulk-alt-days[]" value="Sat" />
+              <label for="sat" class="week">Saturday</label>       
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-4">
                 <label for="allotment">Allotment</label>
                 <input  type="number" name="allotment"  class="form-control" id="allotment">
                 
             </div>
-            <div class="form-group col-md-6">
+             <div class="form-group col-md-4">
                 <label for="price">Price</label>
                 <input  type="number" name="price"  class="form-control" id="price">
             </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="cutoff">Cut-off</label>
-                <input  type="number" name="cutoff"  class="form-control" id="cutoff">
-                
+                <input  type="number" name="cutoff"  class="form-control" id="cutoff"> 
             </div>
-        </div>
+          </div>
         </form>
       </div>
        <div class="modal-footer">
@@ -303,9 +340,9 @@
     }
    }
   $(document).ready(function() {
-   var nextDay = new Date($("#date_picker1").val());
+   var nextDay = new Date($("#bulk-alt-toDate").val());
     nextDay.setDate(nextDay.getDate() + 1);
-    $("#date_picker").datepicker({
+    $("#bulk-alt-fromDate").datepicker({
         altField: "#alternate1",
         dateFormat: "yy-mm-dd",
         altFormat: "dd/mm/yy",
@@ -315,11 +352,11 @@
         onSelect: function(dateText) {
         var nextDay = new Date(dateText);
           nextDay.setDate(nextDay.getDate() + 1);
-        $("#date_picker1").datepicker('option', 'minDate', nextDay);
+        $("#bulk-alt-toDate").datepicker('option', 'minDate', nextDay);
       }
     });
 
-    $("#date_picker1").datepicker({
+    $("#bulk-alt-toDate").datepicker({
         altField: "#alternate2",
         dateFormat: "yy-mm-dd",
         altFormat: "dd/mm/yy",
@@ -328,10 +365,10 @@
         changeMonth : true,
     });
     $("#alternate1").click(function() {
-        $( "#date_picker" ).trigger('focus');
+        $( "#bulk-alt-fromDate" ).trigger('focus');
     });
     $("#alternate2").click(function() {
-        $( "#date_picker1" ).trigger('focus');
+        $( "#bulk-alt-toDate" ).trigger('focus');
     });
     $('#room').multiselect({
           allSelectedText: 'All',

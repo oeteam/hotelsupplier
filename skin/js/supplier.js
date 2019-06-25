@@ -593,11 +593,31 @@ function commonDeleteroom() {
     var allotment = $("#allotment").val();
     var price = $("#price").val();
     var cutoff = $("#cutoff").val();
+    var from_date = $("#bulk-alt-fromDate").val();
+    var to_date = $("#bulk-alt-toDate").val();
+    var dayss = [];
+    $("input:checkbox[name=bulk-alt-days]:checked").each(function(){
+     dayss.push($(this).val());
+    });
     if(room=="") 
     {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Room field is required","!");</script>');
       $("#room").focus();
     }
+    else if(from_date=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","From date field is required","!");</script>');
+      $("#bulk-alt-fromDate").focus();
+    }
+    else if(to_date=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","To date field is required","!");</script>');
+      $("#bulk-alt-toDate").focus();
+    }
+    // else if(dayss=="")
+    // {
+    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Days field is required","!");</script>');
+    // }
     else if(allotment=="")
     {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Allotment field is required","!");</script>');
