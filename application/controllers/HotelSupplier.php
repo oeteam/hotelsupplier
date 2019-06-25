@@ -749,7 +749,6 @@ class HotelSupplier extends MY_Controller {
     }
     $result["links"] = $this->ajax_pagination->create_links();
     $rooms = $this->Supplier_Model->getRooms_contracts($hotelid,$config['per_page'],$page);
-    // print_r($rooms);exit;
     $output['list'] = '<thead><tr><th>Room</th>';
     for($i=0;$i<7;$i++) {
       if ($i==0) {
@@ -762,7 +761,7 @@ class HotelSupplier extends MY_Controller {
     }
     $output['list'] .= '</tr></thead><tbody>';
     foreach ($rooms as $key => $value) {
-      $output['list'] .= '<tr><td class="roomname">'.$value->room_name.'</td>';
+      $output['list'] .= '<tr><td class="roomname">'.$value->roomName.'</td>';
       for($i=0;$i<7;$i++) {
          $ndate = date('Y-m-d',strtotime("+".$i." day"));
          $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);

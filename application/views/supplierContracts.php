@@ -350,6 +350,7 @@ th {
         $("#contractlist").html(response.list);
       }
     });    
+    $("#contractlist").find('a').first('.active').trigger("click");
   }
   function loadallotment(id) {
      var hotelid = $("#hotel-list li a.active").attr('id');
@@ -363,6 +364,9 @@ th {
       }
     });     
    }
+   $(document).ready(function() {
+    $("#contractlist").find('a').first('.active').trigger("click");
+   })
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 
