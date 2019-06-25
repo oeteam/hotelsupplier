@@ -243,7 +243,7 @@ th {
         </div>
     </div>
     <div class="tab-inn">
-      <table class="table table-hover table-bordered" id="allotment_table"
+      <table class="table table-hover table-bordered" id="allotment_table">
       </table>
     </div>
   </div>
