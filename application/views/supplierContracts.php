@@ -37,7 +37,7 @@
   display: inline;
   margin-top: 10px;
 }
-.hotel-list li a {
+.hotel-list  li a {
   display: inline-block;
   height: 30px;
   overflow: hidden;
@@ -49,7 +49,7 @@
   width: auto;
   padding: 15px;
 }
-.hotel-list li a.active {
+.hotel-list .hotels li a.active {
   color: #0583ae;
   font-weight: bolder;
   text-decoration: underline;
@@ -120,8 +120,13 @@ th {
   text-align: center;
   font-weight: bold;
 }
-
-
+.hotel-list .pagination  li a {
+  line-height: 0px;
+}
+.pagination li a.active {
+  background: #0074b9;
+  color: white;
+}
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-8 col-md-offset-2">
@@ -191,6 +196,7 @@ th {
           </div>
           <div class="row">
               <div class="col-md-12 hotel-list" id="hotel-list">
+                <ul class="hotels">
                 <?php if(isset($HotelList) && $HotelList!="") {
                    foreach ($HotelList as $key => $value) {
                     if($key==0) { ?>
@@ -201,6 +207,7 @@ th {
                   }
                 }
                 ?>
+              </ul>
               <br>
                <div class="col-md-12 pull-right"><div class="hpadding20">
                       <ul class="pagination right paddingbtm20">
@@ -217,19 +224,14 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
+              <li><a class="active cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
             <?php } else { ?>
-              <li><a id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
+              <li><a class="cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
             <?php } 
           }
         }
         ?>
         <br>
-        <div class="col-md-12 pull-right"><div class="hpadding20">
-          <ul class="pagination right paddingbtm20">
-          <?php echo $clinks ?>
-          </ul>
-        </div></div>
     </div>
     <div class="clearfix"></div><br><br>
     <div class="col-md-12 form-group">
@@ -239,7 +241,22 @@ th {
     <div class="col-md-12">
       <div class="box-inn-sp">
         <div class="inn-title">
-             <h3>Allotment List</h3>
+             <h3>Allotment List
+             <small class="pull-right">
+             <div class="ctrl-page left-gap">
+                <!-- <label class="ctrl-label">
+                    <select class="in-select" id="selectCalendarType">
+                        <option value="week" selected="selected">by week</option>
+                        <option value="month">by month</option>
+                    </select>
+                </label> -->
+                <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnLastTimeSpan">Pre 7d</a>
+                <div style="width: 100px;display: block;float: left;">
+                <input type="text" id="txtCurrentDate" class="form-control" value="<?php echo date('Y-m-d') ?>">
+                </div>
+                <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnNextTimeSpan">Next 7d</a>
+            </div>
+            </small></h3>
         </div>
     </div>
     <div class="tab-inn">
@@ -335,12 +352,12 @@ th {
           '&con='+Con+'&state='+state+'&city='+city+'&prov='+prov+'&rating='+rating+'&page='+page,
       cache: false,
       success: function (response) {
-        $("#hotel-list").html(response.list);
+        $("#hotel-list").find('.hotels').html(response.list);
       }
     });      
   }
   function loadcontracts(id) {
-   var hotelid = $("#hotel-list li a.active").attr('id');
+   var hotelid = $("#hotel-list .hotels li a.active").attr('id');
    $.ajax({
       dataType: 'json',
       type: 'post',
@@ -350,8 +367,11 @@ th {
         $("#contractlist").html(response.list);
       }
     });    
+    $("#contractlist").find('a').first('.active').trigger("click");
   }
   function loadallotment(id) {
+     $(".cm-contract").removeClass("active");
+     $("#"+id).addClass("active");
      var hotelid = $("#hotel-list li a.active").attr('id');
      $.ajax({
       dataType: 'json',
@@ -363,6 +383,9 @@ th {
       }
     });     
    }
+   $(document).ready(function() {
+    $("#contractlist").find('a').first('.active').trigger("click");
+   })
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

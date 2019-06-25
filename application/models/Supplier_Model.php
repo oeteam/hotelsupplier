@@ -581,13 +581,12 @@ class Supplier_Model extends CI_Model {
 		$query=$this->db->get()->result();
 		return count($query);
     }
-    public function contractList($limit,$start,$hotel) {
+    public function contractList($hotel) {
 		$this->db->select('id,contract_id');
 		$this->db->from('hotel_tbl_contract');
 		$this->db->where('hotel_id',$hotel);
 		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
-		$this->db->limit($limit, $start);
 		$query=$this->db->get()->result();
 		return $query;
   	}
@@ -646,12 +645,13 @@ class Supplier_Model extends CI_Model {
 		$query=$this->db->get()->result();
 		return count($query);
     }
-    public function getRooms_contracts($hotelid,$limit,$start) {
-  		$this->db->select('id,room_name');
-		$this->db->from('hotel_tbl_hotel_room_type');
-		$this->db->where('hotel_id',$hotelid);
-		$this->db->where('delrequest','0');
-		$this->db->limit($limit, $start);
+    public function getRooms_contracts($hotelid) {
+  		$this->db->select('a.id,CONCAT(a.room_name," ",b.Room_Type) as roomName');
+		$this->db->from('hotel_tbl_hotel_room_type a');
+        $this->db->join('hotel_tbl_room_type b','b.id = a.room_type', 'left');
+		$this->db->where('a.hotel_id',$hotelid);
+		$this->db->where('a.delrequest','0');
+		// $this->db->limit($limit, $start);
 		$query=$this->db->get()->result();
 		return $query;
   	}

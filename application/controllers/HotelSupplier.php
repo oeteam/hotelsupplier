@@ -538,21 +538,15 @@ class HotelSupplier extends MY_Controller {
     }
     $result["links"] = $this->ajax_pagination->create_links();
     $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
-      $data['list'] ='<ul class="hotels">';
+      $data['list'] ='';
       foreach ($HotelList as $key => $value) {
         if($key==0) {
-          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
         } else {
-          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
         }
       }
-      $data['list'].= '</ul>
-                        <br>
-                        <br>
-                        <div class="clearfix"></div>
-                      <ul class="pagination right ">
-                      '.$result["links"].'
-                      </ul>';
+      // $data['list'].= '</ul>';
     echo json_encode($data);
   }
   public function add_room() {
@@ -651,20 +645,7 @@ class HotelSupplier extends MY_Controller {
     $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
     $data['contry']= $this->Supplier_Model->SelectCountry();
     $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
-    $params['first_link'] = 'First';
-    $params['div'] = 'contractlist'; //Div tag id
-    $params['base_url'] = base_url() . "hotelsupplier/contracts";
-    $params['total_rows'] = $this->Supplier_Model->get_total_contracts($data['HotelList'][0]->id);
-    $params['per_page'] = 20;
-    $params['postVar'] = 'page';
-    $this->ajax_pagination->initialize($params);
-    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
-      $page = 0;
-    } else {
-      $page = $_REQUEST['page'];
-    }
-    $data["clinks"] = $this->ajax_pagination->create_links();
-    $data['contractlist']= $this->Supplier_Model->contractlist($params['per_page'],$page,$data['HotelList'][0]->id);
+    $data['contractlist']= $this->Supplier_Model->contractlist($data['HotelList'][0]->id);
     $this->load->view('supplierContracts',$data);
   }
   public function addcontractmodal($hotelid) {
@@ -685,34 +666,15 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
         redirect("welcome/agent_logout");
     }
-    $config['first_link'] = 'First';
-    $config['div'] = 'contractlist'; //Div tag id
-    $config['base_url'] = base_url() . "hotelsupplier/hotel_contract_list";
-    $config['total_rows'] = $this->Supplier_Model->get_total_contracts($hotelid);
-    $config['per_page'] = 20;
-    $config['postVar'] = 'page';
-    $this->ajax_pagination->initialize($config);
-    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
-      $page = 0;
-    } else {
-      $page = $_REQUEST['page'];
-    }
-    $result["links"] = $this->ajax_pagination->create_links();
-    $contractlist = $this->Supplier_Model->contractList($config['per_page'],$page,$hotelid);
+    $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list'].= '<li><a class="active" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="active cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list'].= '<li><a onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
         }
       }
-       $data['list'].= '<br>
-                        <div class="col-md-12 pull-right"><div class="hpadding20">
-                        <ul class="pagination right ">
-                      '.$result["links"].'
-                      </ul>
-                      </div></div>';
     echo json_encode($data);
   }
   public function add_allotment_modal($contractid,$hotelid) {
@@ -735,24 +697,10 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
     }
-    $config['first_link'] = 'First';
-    $config['div'] = 'allotment_table'; //Div tag id
-    $config['base_url'] = base_url() . "hotelsupplier/allotment_list";
-    $config['total_rows'] = $this->Supplier_Model->get_total_rooms($hotelid);
-    $config['per_page'] = 1;
-    $config['postVar'] = 'page';
-    $this->ajax_pagination->initialize($config);
-    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
-      $page = 0;
-    } else {
-      $page = $_REQUEST['page'];
-    }
-    $result["links"] = $this->ajax_pagination->create_links();
-    $rooms = $this->Supplier_Model->getRooms_contracts($hotelid,$config['per_page'],$page);
-    // print_r($rooms);exit;
+    $rooms = $this->Supplier_Model->getRooms_contracts($hotelid);
     $output['list'] = '<thead><tr><th>Room</th>';
     for($i=0;$i<7;$i++) {
-      if ($i==0) {
+      if ($i==0 && date('Y-m-d',strtotime("+".$i." day"))==date('Y-m-d')) {
         $output['list'] .= '<th>Today</th>';
       } else {
         $output['list'] .= '<th>'.date('D',strtotime("+".$i." day")).'</th>';
@@ -762,7 +710,7 @@ class HotelSupplier extends MY_Controller {
     }
     $output['list'] .= '</tr></thead><tbody>';
     foreach ($rooms as $key => $value) {
-      $output['list'] .= '<tr><td class="roomname">'.$value->room_name.'</td>';
+      $output['list'] .= '<tr><td class="roomname">'.$value->roomName.'</td>';
       for($i=0;$i<7;$i++) {
          $ndate = date('Y-m-d',strtotime("+".$i." day"));
          $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
@@ -780,10 +728,7 @@ class HotelSupplier extends MY_Controller {
       }
       $output['list'] .= '</tr>';
     }
-      $output['list'] .= '</tbody> <tfoot><td> <div class="clearfix"></div>
-                      <ul class="pagination right ">
-                      '.$result["links"].'
-                      </ul></td></tfoot>';
+      $output['list'] .= '</tbody>';
     echo json_encode($output);
     exit();
   }
@@ -806,7 +751,7 @@ class HotelSupplier extends MY_Controller {
     $hotelid="";
     $result["links"] = $this->ajax_pagination->create_links();
     $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
-      $data['list'] ='';
+      $data['list'] ='<ul class="hotels">';
       foreach ($HotelList as $key => $value) {
         if($key==0) {
           $hotelid = $value->id;
@@ -815,40 +760,23 @@ class HotelSupplier extends MY_Controller {
           $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
         }
       }
-      $data['list'].= '<br>
+      $data['list'].= '</ul>
+                        <br>
                         <div class="col-md-12 pull-right"><div class="hpadding20">
                       <ul class="pagination right ">
                       '.$result["links"].'
                       </ul>
                       </div></div>';
-    $params['first_link'] = 'First';
-    $params['div'] = 'contractlist'; //Div tag id
-    $params['base_url'] = base_url() . "hotelsupplier/hotel_contract_list";
-    $params['total_rows'] = $this->Supplier_Model->get_total_contracts($hotelid);
-    $params['per_page'] = 20;
-    $params['postVar'] = 'page';
-    $this->ajax_pagination->initialize($params);
-    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
-      $page = 0;
-    } else {
-      $page = $_REQUEST['page'];
-    }
-    $result["links"] = $this->ajax_pagination->create_links();
-    $contractlist = $this->Supplier_Model->contractList($config['per_page'],$page,$hotelid);
+    $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list2'].= '<li><a class="active" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list2'].= '<li><a onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
         }
       }
-      $data['list2'].= '<br>
-                        <div class="col-md-12 pull-right"><div class="hpadding20">
-                        <ul class="pagination right ">
-                      '.$result["links"].'
-                      </ul>
-                      </div></div>';
+      $data['list2'].= '<br>';
     echo json_encode($data);
   }
 }

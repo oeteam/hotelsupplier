@@ -41,7 +41,7 @@ class Ajax_pagination {
     var $first_tag_close    = '&nbsp;';
     var $last_tag_open        = '&nbsp;';
     var $last_tag_close        = '';
-    var $cur_tag_open        = '<li class="active">&nbsp;<a>';
+    var $cur_tag_open        = '<li>&nbsp;<a class="active">';
     var $cur_tag_close        = '</a></li>';
     var $next_tag_open        = '&nbsp;';
     var $next_tag_close        = '&nbsp;';
