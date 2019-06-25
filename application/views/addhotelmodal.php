@@ -406,7 +406,7 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <p><label>Complimentry</label></p>
-                                     <input type="checkbox" class="filled-in" id="wifi" <?php echo isset($view[0]->wifi) && $view[0]->wifi=="on" ? "checked" : '' ?> name="wifi" value="on" />
+                                    <input type="checkbox" class="filled-in" id="wifi" <?php echo isset($view[0]->wifi) && $view[0]->wifi=="on" ? "checked" : '' ?> name="wifi" value="on" />
                                     <label for="wifi">Wifi</label>
                                     &nbsp&nbsp&nbsp
                                     <input type="checkbox" class="filled-in" name="internet" <?php echo isset($view[0]->internet) && $view[0]->internet=="on" ? "checked" : '' ?> id="Internet" value="on" />

@@ -601,18 +601,28 @@ class Supplier_Model extends CI_Model {
 		return $query;
   	}
   	public function add_allotment($request){
-  		if (isset($request['room'])) {
-	        foreach ($request['room'] as $key => $value) {	
-		    	$array= array(	
-					        	'allotement'		=> $request['allotment'],
-							    'cut_off'			=> $request['cutoff'],
-							    'allotement_date'	=> $request['date_picker'],
-							    'amount' 			=>$request['price'],
-							    'room_id'			=> $value,
-							    'hotel_id'		=> $request['hotelid'],
-						    	'contract_id' 	=> $request['contractid']
-							);
-				$this->db->insert('hotel_tbl_allotement',$array);
+  		$start_date=date_create($request['bulk-alt-fromDate']);
+        $end_date=date_create($request['bulk-alt-toDate']);
+        $no_of_days=date_diff($start_date,$end_date);
+        $tot_days = $no_of_days->format("%a");
+	    if (isset($request['room'])) {
+		    foreach ($request['room'] as $key => $value) {	
+    			foreach ($_REQUEST['bulk-alt-days'] as $DayCKkey => $DayCKvalue) {
+		        	for($i = 0; $i <= $tot_days; $i++) {
+	        			if ($DayCKvalue==date('D', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'))) { 
+					       $result[$i]= date('Y-m-d', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'));
+					       $array= array('allotement'		=>  $request['allotment'],
+		    					    'cut_off'			=> $request['cutoff'],
+		    					    'allotement_date'	=> $result[$i],
+		    					    'amount' 			=>$request['price'],
+		    					    'room_id'			=> $value,
+								    'hotel_id'		=> $request['hotelid'],
+							    	'contract_id' 	=> $request['contractid']
+							    );
+					        $this->db->insert('hotel_tbl_allotement',$array);
+					    }
+					}
+			    }
 			}
 		}
 		return true;
