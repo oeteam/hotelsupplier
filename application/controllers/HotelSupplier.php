@@ -700,7 +700,7 @@ class HotelSupplier extends MY_Controller {
     $rooms = $this->Supplier_Model->getRooms_contracts($hotelid);
     $output['list'] = '<thead><tr><th>Room</th>';
     for($i=0;$i<7;$i++) {
-      if ($i==0) {
+      if ($i==0 && date('Y-m-d',strtotime("+".$i." day"))==date('Y-m-d')) {
         $output['list'] .= '<th>Today</th>';
       } else {
         $output['list'] .= '<th>'.date('D',strtotime("+".$i." day")).'</th>';

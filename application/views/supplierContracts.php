@@ -241,7 +241,22 @@ th {
     <div class="col-md-12">
       <div class="box-inn-sp">
         <div class="inn-title">
-             <h3>Allotment List</h3>
+             <h3>Allotment List
+             <small class="pull-right">
+             <div class="ctrl-page left-gap">
+                <!-- <label class="ctrl-label">
+                    <select class="in-select" id="selectCalendarType">
+                        <option value="week" selected="selected">by week</option>
+                        <option value="month">by month</option>
+                    </select>
+                </label> -->
+                <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnLastTimeSpan">Pre 7d</a>
+                <div style="width: 100px;display: block;float: left;">
+                <input type="text" id="txtCurrentDate" class="form-control" value="<?php echo date('Y-m-d') ?>">
+                </div>
+                <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnNextTimeSpan">Next 7d</a>
+            </div>
+            </small></h3>
         </div>
     </div>
     <div class="tab-inn">
