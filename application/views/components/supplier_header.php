@@ -327,8 +327,8 @@
         $linkend = end($link_array);
       ?>
       <ul class="nav nav-tabs myTab2pos">
-          <li class="<?php echo $linkend=="HotelSupplier" ? 'active' : '' ?>">
-              <a href="<?php echo base_url('HotelSupplier')?>">
+          <li class="<?php echo $linkend=="hotelsupplier" ? 'active' : '' ?>">
+              <a href="<?php echo base_url('hotelsupplier')?>">
                   Booking
 
               </a>

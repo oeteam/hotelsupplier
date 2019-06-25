@@ -58,13 +58,13 @@
 .tabs {
   padding: 0px;
 }
-.pagination  li a {
+.hotel-list .pagination  li a {
   line-height: 0px;
 }
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-8 col-md-offset-2">
-  <div class="row">
+  <div class="row hotel-list">
     <div class="col-md-12">
        <span class="msg"></span>
        <div class="content5">
