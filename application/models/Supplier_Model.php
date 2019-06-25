@@ -607,6 +607,7 @@ class Supplier_Model extends CI_Model {
 					        	'allotement'		=> $request['allotment'],
 							    'cut_off'			=> $request['cutoff'],
 							    'allotement_date'	=> $request['date_picker'],
+							    'amount' 			=>$request['price'],
 							    'room_id'			=> $value,
 							    'hotel_id'		=> $request['hotelid'],
 						    	'contract_id' 	=> $request['contractid']
@@ -615,5 +616,15 @@ class Supplier_Model extends CI_Model {
 			}
 		}
 		return true;
+    }
+    public function allotmentList($roomid,$contractid,$ndate) {
+    	$this->db->select('a.*,c.closedDate');
+		$this->db->from('hotel_tbl_allotement a');
+		$this->db->join('hotel_tbl_closeout_period c','FIND_IN_SET(c.roomType,a.room_id) > 0 and c.contract_id=a.contract_id and c.closedDate=a.allotement_date','left');
+		$this->db->where('a.allotement_date',$ndate);
+		$this->db->where('a.contract_id',$contractid);
+		$this->db->where('a.room_id',$roomid);
+		$query=$this->db->get()->result();
+		return $query;
     }
 }

@@ -279,7 +279,7 @@
         }
     });
   });
-   function loadrooms(id) {
+  function loadrooms(id) {
     var room_table = $('#room_table').dataTable({
           "bDestroy": true,
           "ajax": {

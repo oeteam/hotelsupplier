@@ -63,6 +63,7 @@
 .contractlist li {
   display: inline;
   margin-top: 10px;
+  cursor: pointer;
 }
 .contractlist li a {
   display: inline-block;
@@ -88,6 +89,34 @@
     background-color: #e8e8e8;
     min-height: 77px;
 }
+thead{
+    background: #0074b9;
+    color: white;
+    font-size: 15px;
+}
+th {
+  width: 12.5%;
+}
+.closeout {
+    text-align: right;
+    font-weight: bold;
+    font-size: 10px;
+}
+.amount {
+    color: orange;
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1px;
+}
+.allotment {
+  text-align: center;
+}
+.date {
+  text-align: center;
+  font-weight: bold;
+}
+
 
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
@@ -184,9 +213,9 @@
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active" id="<?php echo $value->id ?>"><?php echo $value->contract_id ?></a></li>
+              <li><a class="active" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
             <?php } else { ?>
-              <li><a id="<?php echo $value->id ?>"><?php echo $value->contract_id?></a></li>
+              <li><a id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
             <?php } 
           }
         }
@@ -202,41 +231,19 @@
     <div class="col-md-12 form-group">
       <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal();">Add Allotment</button> 
     </div>  
-  <!-- <div class="row" >
+  <div class="row" >
     <div class="col-md-12">
       <div class="box-inn-sp">
         <div class="inn-title">
-             <h3>Room List</h3>
-        </div>
-        <div class="row">
-          <div class="col-md-12 mar_top_10">
-            <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
-              <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Rooms</a></li>
-              <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li>
-            </ul>
-          </div>
+             <h3>Allotment List</h3>
         </div>
     </div>
     <div class="tab-inn">
-      <table class="table table-hover" id="room_table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" class="check-all"></th>
-                <th>Image</th>
-                <th>Roomname</th>
-                <!-- <th>country</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Status</th> -->
-               <!--  <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
+      <table class="table table-hover table-bordered" id="allotment_table"
       </table>
     </div>
   </div>
-</div>  -->
+</div> 
 </div>
   <div id="myModal" class="modal fade" role="dialog">
 </div>
@@ -327,7 +334,7 @@
       }
     });      
   }
-   function loadcontracts(id) {
+  function loadcontracts(id) {
    var hotelid = $("#hotel-list li a.active").attr('id');
    $.ajax({
       dataType: 'json',
@@ -338,6 +345,18 @@
         $("#contractlist").html(response.list);
       }
     });    
+  }
+  function loadallotment(id) {
+     var hotelid = $("#hotel-list li a.active").attr('id');
+     $.ajax({
+      dataType: 'json',
+      type: 'post',
+      url:  base_url+'HotelSupplier/allotment_list/'+id+'/'+hotelid,
+      cache: false,
+      success: function (response) {
+        $("#allotment_table").html(response.list);
+      }
+    });     
    }
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>

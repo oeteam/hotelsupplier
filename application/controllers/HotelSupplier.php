@@ -732,4 +732,43 @@ class HotelSupplier extends MY_Controller {
     AgentlogActivity($description);
     redirect("hotelsupplier/contracts");
   }
+  public function allotment_list($contractid,$hotelid) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $rooms = $this->Supplier_Model->getRooms($hotelid);
+    $output['list'] = '<thead><tr><th>Room</th>';
+    for($i=0;$i<7;$i++) {
+      if ($i==0) {
+        $output['list'] .= '<th>Today</th>';
+      } else {
+        $output['list'] .= '<th>'.date('D',strtotime("+".$i." day")).'</th>';
+      }
+      $ndate = date('Y-m-d',strtotime("+".$i." day"));
+        // $allotment[]= $this->Supplier_Model->allotmentList($contractid,$ndate);
+    }
+    $output['list'] .= '</tr></thead><tbody>';
+    foreach ($rooms as $key => $value) {
+      $output['list'] .= '<tr><td class="roomname">'.$value->room_name.'</td>';
+      for($i=0;$i<7;$i++) {
+         $ndate = date('Y-m-d',strtotime("+".$i." day"));
+         $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
+        if (count($data)!=0 && $data[0]->closedDate=="") {
+           $close = '<p class="closeout"><span class="text-success">ON</span></p>';
+         } else {
+           $close = '<p class="closeout"><span class="text-danger">OFF</span></p>';
+
+         }
+        if (count($data)!=0) {
+          $output['list'] .= '<td>'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$data[0]->cut_off.'</p></td>';
+        } else {
+          $output['list'] .= '<td><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
+        } 
+      }
+      $output['list'] .= '</tr>';
+    }
+      $output['list'] .= '</tbody>';
+    echo json_encode($output);
+    exit();
+  }
 }
