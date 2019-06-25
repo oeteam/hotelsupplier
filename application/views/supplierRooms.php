@@ -292,6 +292,13 @@
     });
    }
   function filter(val) {
+    if (val==0) {
+      $('.Accepted').addClass('active');
+      $('.Pending').removeClass('active');
+    } else {
+      $('.Pending').addClass('active');
+      $('.Accepted').removeClass('active');
+    }
     var hotelid = $("#hotel-list li a.active").attr('id');
     var room_table = $('#room_table').dataTable({
           "bDestroy": true,

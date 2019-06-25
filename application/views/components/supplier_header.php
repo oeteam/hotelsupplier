@@ -321,23 +321,29 @@
               <!-- LEFT MENU -->
               <div class="row" style="background: black">
     <div class="col-md-offset-2 col-md-8" style="height: 58px">
+      <?php
+        $link = $_SERVER['PHP_SELF'];
+        $link_array = explode('/',$link);
+        $linkend = end($link_array);
+      ?>
       <ul class="nav nav-tabs myTab2pos">
-          <li>
+          <li class="<?php echo $linkend=="HotelSupplier" ? 'active' : '' ?>">
               <a href="<?php echo base_url('HotelSupplier')?>">
                   Booking
+
               </a>
           </li>
-          <li>
+          <li class="<?php echo $linkend=="hotels" ? 'active' : '' ?>">
               <a href="<?php echo base_url('HotelSupplier/hotels')?>">              
                 Hotels
               </a>
           </li>
-          <li>
+          <li class="<?php echo $linkend=="rooms" ? 'active' : '' ?>">
               <a href="<?php echo base_url('HotelSupplier/rooms')?>">              
                 Rooms
               </a>
           </li>
-          <li>
+          <li class="<?php echo $linkend=="contracts" ? 'active' : '' ?>">
               <a href="<?php echo base_url('HotelSupplier/contracts')?>">              
                 Contracts
               </a>

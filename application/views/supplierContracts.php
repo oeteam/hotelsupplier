@@ -4,6 +4,9 @@
  .nav-tabs li {
   background: black;
  }
+.hotel-list li,.contractlist li {
+  cursor: pointer;
+ }
  .myTab2pos {
   padding : 10px;
  }
@@ -47,8 +50,9 @@
   padding: 15px;
 }
 .hotel-list li a.active {
-  color: blue;
-  text-decoration:underline; 
+  color: #0583ae;
+  font-weight: bolder;
+  text-decoration: underline;
 }
 /*.hotel-list li a:hover:not(.active) {
   background-color: #555;
@@ -78,7 +82,7 @@
   padding: 15px;
 }
 .contractlist li a.active {
-  color: blue;
+  color: #0074b9;
   text-decoration:underline; 
 }
 /*.contractlist li a:hover:not(.active) {
