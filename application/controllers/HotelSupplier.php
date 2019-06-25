@@ -736,7 +736,21 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
     }
-    $rooms = $this->Supplier_Model->getRooms($hotelid);
+    $config['first_link'] = 'First';
+    $config['div'] = 'allotment_table'; //Div tag id
+    $config['base_url'] = base_url() . "hotelsupplier/allotment_list";
+    $config['total_rows'] = $this->Supplier_Model->get_total_rooms($hotelid);
+    $config['per_page'] = 1;
+    $config['postVar'] = 'page';
+    $this->ajax_pagination->initialize($config);
+    if (!isset($_REQUEST['page']) || $_REQUEST['page']=="") {
+      $page = 0;
+    } else {
+      $page = $_REQUEST['page'];
+    }
+    $result["links"] = $this->ajax_pagination->create_links();
+    $rooms = $this->Supplier_Model->getRooms_contracts($hotelid,$config['per_page'],$page);
+    // print_r($rooms);exit;
     $output['list'] = '<thead><tr><th>Room</th>';
     for($i=0;$i<7;$i++) {
       if ($i==0) {
@@ -767,7 +781,10 @@ class HotelSupplier extends MY_Controller {
       }
       $output['list'] .= '</tr>';
     }
-      $output['list'] .= '</tbody>';
+      $output['list'] .= '</tbody> <tfoot><td> <div class="clearfix"></div>
+                      <ul class="pagination right ">
+                      '.$result["links"].'
+                      </ul></td></tfoot>';
     echo json_encode($output);
     exit();
   }

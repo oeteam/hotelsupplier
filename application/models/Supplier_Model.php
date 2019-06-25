@@ -637,4 +637,22 @@ class Supplier_Model extends CI_Model {
 		$query=$this->db->get()->result();
 		return $query;
     }
+    public function get_total_rooms($hotel) {
+		$this->db->select('*');
+		$this->db->from('hotel_tbl_hotel_room_type');
+		$this->db->where('hotel_id',$hotel);
+		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
+		$this->db->order_by('id','desc');
+		$query=$this->db->get()->result();
+		return count($query);
+    }
+    public function getRooms_contracts($hotelid,$limit,$start) {
+  		$this->db->select('id,room_name');
+		$this->db->from('hotel_tbl_hotel_room_type');
+		$this->db->where('hotel_id',$hotelid);
+		$this->db->where('delrequest','0');
+		$this->db->limit($limit, $start);
+		$query=$this->db->get()->result();
+		return $query;
+  	}
 }
