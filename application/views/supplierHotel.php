@@ -26,6 +26,10 @@
 .details {
   margin-top: 230px;
 }
+.tabs {
+  padding: 0px;
+}
+
 </style>
   
 <div class="clearfix" style="margin-top: 20px;"></div>
@@ -101,7 +105,20 @@
   <div class="clearfix"></div>
   <div class="row" style="">
     <div class="col-md-12">
-      <h3>Hotel List</h3>
+      <div class="box-inn-sp">
+        <div class="inn-title">
+             <h3>Hotel List</h3>
+        </div>
+        <div class="row">
+          <div class="col-md-12 mar_top_10">
+            <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
+              <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Hotel</a></li>
+              <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li>
+            </ul>
+          </div>
+        </div>
+    </div>
+    <div class="tab-inn">
       <table class="table table-hover" id="hotel_table">
         <thead>
             <tr>
@@ -118,6 +135,7 @@
         <tbody>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </div>
@@ -198,7 +216,26 @@
             
           
   });
-
+  function filter(val) {
+    if (val==0) {
+      $('.Accepted').addClass('active');
+      $('.Pending').removeClass('active');
+    } else {
+      $('.Pending').addClass('active');
+      $('.Accepted').removeClass('active');
+    }
+    // var hotelid = $("#hotel-list li a.active").attr('id');
+    // var room_table = $('#room_table').dataTable({
+    //       "bDestroy": true,
+    //       "ajax": {
+    //           url : base_url+'HotelSupplier/hotel_room_list/'+hotelid+'?filter='+val,
+    //           type : 'GET'
+    //       },
+    //    "fnDrawCallback": function(settings){
+    //       $('[data-toggle="tooltip"]').tooltip();          
+    //     }
+    // });
+  }
  </script>
  <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

@@ -583,7 +583,7 @@ class HotelSupplier extends MY_Controller {
     if (isset($_REQUEST['filter'])) {
       $filter = $_REQUEST['filter'];
     } else {
-      $filter = "0";
+      $filter = 0;
     }
     $rooms = $this->Supplier_Model->hotel_rooms_list($hotelid,$filter);
       foreach($rooms->result() as $key => $r) {
