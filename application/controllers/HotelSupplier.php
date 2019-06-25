@@ -699,21 +699,20 @@ class HotelSupplier extends MY_Controller {
     }
     $result["links"] = $this->ajax_pagination->create_links();
     $contractlist = $this->Supplier_Model->contractList($config['per_page'],$page,$hotelid);
-      $data['list'] ='<ul class="contracts">';
+      $data['list'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list'].= '<li><a class="active" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="active" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list'].= '<li><a id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
         }
       }
-      $data['list'].= '</ul>
-                        <br>
-                        <br>
-                        <div class="clearfix"></div>
-                      <ul class="pagination right ">
+       $data['list'].= '<br>
+                        <div class="col-md-12 pull-right"><div class="hpadding20">
+                        <ul class="pagination right ">
                       '.$result["links"].'
-                      </ul>';
+                      </ul>
+                      </div></div>';
     echo json_encode($data);
   }
   public function add_allotment_modal($contractid,$hotelid) {
@@ -807,22 +806,21 @@ class HotelSupplier extends MY_Controller {
     $hotelid="";
     $result["links"] = $this->ajax_pagination->create_links();
     $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
-      $data['list'] ='<ul class="hotels">';
+      $data['list'] ='';
       foreach ($HotelList as $key => $value) {
         if($key==0) {
           $hotelid = $value->id;
-          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
         } else {
-          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadrooms('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
         }
       }
-      $data['list'].= '</ul>
-                        <br>
-                        <br>
-                        <div class="clearfix"></div>
+      $data['list'].= '<br>
+                        <div class="col-md-12 pull-right"><div class="hpadding20">
                       <ul class="pagination right ">
                       '.$result["links"].'
-                      </ul>';
+                      </ul>
+                      </div></div>';
     $params['first_link'] = 'First';
     $params['div'] = 'contractlist'; //Div tag id
     $params['base_url'] = base_url() . "hotelsupplier/hotel_contract_list";
@@ -837,21 +835,20 @@ class HotelSupplier extends MY_Controller {
     }
     $result["links"] = $this->ajax_pagination->create_links();
     $contractlist = $this->Supplier_Model->contractList($config['per_page'],$page,$hotelid);
-      $data['list2'] ='<ul class="contracts">';
+      $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list2'].= '<li><a class="active" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="active" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list2'].= '<li><a id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
         }
       }
-      $data['list2'].= '</ul>
-                        <br>
-                        <br>
-                        <div class="clearfix"></div>
-                      <ul class="pagination right ">
+      $data['list2'].= '<br>
+                        <div class="col-md-12 pull-right"><div class="hpadding20">
+                        <ul class="pagination right ">
                       '.$result["links"].'
-                      </ul>';
+                      </ul>
+                      </div></div>';
     echo json_encode($data);
   }
 }
