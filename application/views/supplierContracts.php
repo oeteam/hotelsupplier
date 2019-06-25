@@ -37,7 +37,7 @@
   display: inline;
   margin-top: 10px;
 }
-.hotel-list li a {
+.hotel-list  li a {
   display: inline-block;
   height: 30px;
   overflow: hidden;
@@ -49,7 +49,7 @@
   width: auto;
   padding: 15px;
 }
-.hotel-list li a.active {
+.hotel-list .hotels li a.active {
   color: #0583ae;
   font-weight: bolder;
   text-decoration: underline;
@@ -120,8 +120,13 @@ th {
   text-align: center;
   font-weight: bold;
 }
-
-
+.hotel-list .pagination  li a {
+  line-height: 0px;
+}
+.pagination li a.active {
+  background: #0074b9;
+  color: white;
+}
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-8 col-md-offset-2">
@@ -191,6 +196,7 @@ th {
           </div>
           <div class="row">
               <div class="col-md-12 hotel-list" id="hotel-list">
+                <ul class="hotels">
                 <?php if(isset($HotelList) && $HotelList!="") {
                    foreach ($HotelList as $key => $value) {
                     if($key==0) { ?>
@@ -201,6 +207,7 @@ th {
                   }
                 }
                 ?>
+              </ul>
               <br>
                <div class="col-md-12 pull-right"><div class="hpadding20">
                       <ul class="pagination right paddingbtm20">
@@ -217,19 +224,14 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
+              <li><a class="active cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
             <?php } else { ?>
-              <li><a id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
+              <li><a class="cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
             <?php } 
           }
         }
         ?>
         <br>
-        <div class="col-md-12 pull-right"><div class="hpadding20">
-          <ul class="pagination right paddingbtm20">
-          <?php echo $clinks ?>
-          </ul>
-        </div></div>
     </div>
     <div class="clearfix"></div><br><br>
     <div class="col-md-12 form-group">
@@ -335,12 +337,12 @@ th {
           '&con='+Con+'&state='+state+'&city='+city+'&prov='+prov+'&rating='+rating+'&page='+page,
       cache: false,
       success: function (response) {
-        $("#hotel-list").html(response.list);
+        $("#hotel-list").find('.hotels').html(response.list);
       }
     });      
   }
   function loadcontracts(id) {
-   var hotelid = $("#hotel-list li a.active").attr('id');
+   var hotelid = $("#hotel-list .hotels li a.active").attr('id');
    $.ajax({
       dataType: 'json',
       type: 'post',
@@ -353,6 +355,8 @@ th {
     $("#contractlist").find('a').first('.active').trigger("click");
   }
   function loadallotment(id) {
+     $(".cm-contract").removeClass("active");
+     $("#"+id).addClass("active");
      var hotelid = $("#hotel-list li a.active").attr('id');
      $.ajax({
       dataType: 'json',
