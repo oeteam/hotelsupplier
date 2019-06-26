@@ -205,10 +205,7 @@
    .status {
       font-size: 12px;
     }
-    .week {
-      font-weight: 100 !important;
-    }
-
+    
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
   <div class="modal-content">
@@ -255,40 +252,53 @@
           <div class="row">
             <div class="col-sm-12">
               <label>Weekdays</label><br>
-              <input type="checkbox" class="filled-in" id="sun" name="bulk-alt-days[]" value="Sun" />
-              <label for="sun" class="week">Sunday</label>
-              &nbsp &nbsp
-              <input type="checkbox" class="filled-in" id="mon" name="bulk-alt-days[]" value="Mon" />
-              <label for="mon" class="week">Monday</label>
-               &nbsp &nbsp
-              <input type="checkbox" class="filled-in" id="tue" name="bulk-alt-days[]" value="Tue" />
-              <label for="tue" class="week">Tuesday</label>
-              &nbsp&nbsp
-              <input type="checkbox" class="filled-in" id="wed" name="bulk-alt-days[]" value="Wed" />
-              <label for="wed" class="week">Wednesday</label>
-              &nbsp &nbsp
-              <input type="checkbox" class="filled-in" id="thu" name="bulk-alt-days[]" value="Thu" />
-              <label for="thu" class="week">Thursday</label>
-              &nbsp &nbsp
-              <input type="checkbox" class="filled-in" id="fri" name="bulk-alt-days[]" value="Fri" />
-              <label for="fri" class="week">Friday</label>
-              &nbsp &nbsp
-              <input type="checkbox" class="filled-in" id="sat" name="bulk-alt-days[]" value="Sat" />
-              <label for="sat" class="week">Saturday</label>       
+              <input type="checkbox" id="all" name="all" />
+              <label style="font-weight: 100 !important;">All </label>
+              &nbsp 
+              <input type="checkbox" class="filled-in week" id="sun" name="bulk-alt-days[]" value="Sun" />
+              <label for="sun" style="font-weight: 100 !important;">Sunday</label>
+              &nbsp 
+              <input type="checkbox" class="filled-in week" id="mon" name="bulk-alt-days[]" value="Mon" />
+              <label for="mon" style="font-weight: 100 !important;">Monday</label>
+               &nbsp 
+              <input type="checkbox" class="filled-in week" id="tue" name="bulk-alt-days[]" value="Tue" />
+              <label for="tue" style="font-weight: 100 !important;">Tuesday</label>
+              &nbsp
+              <input type="checkbox" class="filled-in week" id="wed" name="bulk-alt-days[]" value="Wed" />
+              <label for="wed" style="font-weight: 100 !important;">Wednesday</label>
+              &nbsp 
+              <input type="checkbox" class="filled-in week" id="thu" name="bulk-alt-days[]" value="Thu" />
+              <label for="thu" style="font-weight: 100 !important;">Thursday</label>
+              &nbsp 
+              <input type="checkbox" class="filled-in week" id="fri" name="bulk-alt-days[]" value="Fri" />
+              <label for="fri" style="font-weight: 100 !important;">Friday</label>
+              &nbsp 
+              <input type="checkbox" class="filled-in week" id="sat" name="bulk-alt-days[]" value="Sat" />
+              <label for="sat" style="font-weight: 100 !important;">Saturday</label>       
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-4">
-                <label for="allotment">Allotment</label>
+                <label for="allotment">Allotment</label><br>
+                <input type="radio" id="allotment_change" name="allotment_change" value="no_change" />
+                <label for="allotment_change" style="font-weight: 100 !important;">No Change</label>
+                <br>
                 <input  type="number" name="allotment"  class="form-control" id="allotment">
                 
             </div>
              <div class="form-group col-md-4">
                 <label for="price">Price</label>
+                <br>
+                <input type="radio" id="price_change" name="price_change" value="no_change" />
+                <label for="price_change" style="font-weight: 100 !important;">No Change</label>
+                <br>
                 <input  type="number" name="price"  class="form-control" id="price">
             </div>
             <div class="form-group col-md-4">
-                <label for="cutoff">Cut-off</label>
+                <label for="cutoff">Cut-off</label><br>
+                <input type="radio" id="cutoff_change" name="cutoff_change" value="no_change" />
+                <label for="cutoff_change" style="font-weight: 100 !important;">No Change</label>
+                <br>
                 <input  type="number" name="cutoff"  class="form-control" id="cutoff"> 
             </div>
           </div>
@@ -339,7 +349,16 @@
       $('#markup').addClass("hide");
     }
    }
+
   $(document).ready(function() {
+   $('input[name="all"]'). click(function(){
+      if($(this). prop("checked") == true){
+        $(".week").prop('checked', true);
+      }
+      else if($(this). prop("checked") == false){
+       $('.week').prop("checked", false);
+     }
+   });
    var nextDay = new Date($("#bulk-alt-toDate").val());
     nextDay.setDate(nextDay.getDate() + 1);
     $("#bulk-alt-fromDate").datepicker({

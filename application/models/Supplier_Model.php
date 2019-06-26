@@ -604,13 +604,32 @@ class Supplier_Model extends CI_Model {
         $end_date=date_create($request['bulk-alt-toDate']);
         $no_of_days=date_diff($start_date,$end_date);
         $tot_days = $no_of_days->format("%a");
+
 	    if (isset($request['room'])) {
 		    foreach ($request['room'] as $key => $value) {	
     			foreach ($_REQUEST['bulk-alt-days'] as $DayCKkey => $DayCKvalue) {
 		        	for($i = 0; $i <= $tot_days; $i++) {
 	        			if ($DayCKvalue==date('D', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'))) { 
-					       $result[$i]= date('Y-m-d', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'));
-					       $array= array('allotement'		=>  $request['allotment'],
+					        $result[$i]= date('Y-m-d', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'));
+					       	$this->db->select('*');
+					      	$this->db->from('hotel_tbl_allotement');
+					    	$this->db->where('room_id',$value);
+					    	$this->db->where('hotel_id',$request['hotelid']);
+					    	$this->db->where('allotement_date',$result[$i]);
+					    	$this->db->where('contract_id',$request['contractid']);
+					    	$query=$this->db->get();
+				        	$query_out[$i] = $query->result();
+				    		if (count($query_out[$i])!=0) {
+				    			$data['amount'] = $request['price'];
+					    		$data['allotement'] = $request['allotment'];
+					    		$data['cut_off'] =  $request['cutoff'];
+						    	$this->db->where('contract_id',$request['contractid']);
+					    		$this->db->where('room_id',$value);
+					    		$this->db->where('hotel_id',$request['hotelid']);
+					    		$this->db->where('allotement_date',$query_out[$i][0]->allotement_date);
+					    		$this->db->update('hotel_tbl_allotement',$data);
+				    		} else {
+				    			$array= array('allotement'		=>  $request['allotment'],
 		    					    'cut_off'			=> $request['cutoff'],
 		    					    'allotement_date'	=> $result[$i],
 		    					    'amount' 			=>$request['price'],
@@ -619,6 +638,7 @@ class Supplier_Model extends CI_Model {
 							    	'contract_id' 	=> $request['contractid']
 							    );
 					        $this->db->insert('hotel_tbl_allotement',$array);
+				    		}
 					    }
 					}
 			    }

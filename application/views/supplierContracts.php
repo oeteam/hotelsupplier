@@ -239,6 +239,14 @@ th {
     </div>  
   <div class="row" >
     <div class="col-md-12">
+      <p class="text-center spin-wrapper"><strong>We are getting the results.Please wait few moments..</strong></p>
+    </div>
+    <div class="col-md-2 col-md-offset-5">
+      <div class="spin-wrapper" style="">
+        <img style="width: 100px;" src="<?php echo base_url(); ?>/assets/images/ellipsis-spinner.gif" alt="">
+      </div>
+    </div>
+    <div class="col-md-12 pre-page hide">
       <div class="box-inn-sp">
         <div class="inn-title">
              <h3>Allotment List
@@ -292,6 +300,17 @@ th {
           keyboard: false
       });
     }
+     function divLoading(flag) {
+    var spinWrapper = $('.spin-wrapper');
+      if (flag === 'start') {
+          spinWrapper.show();
+      }
+      if (flag === 'stop') {
+          spinWrapper.fadeOut();
+          $(".pre-page").removeClass("hide");
+      }
+  }
+
     function add_allotment_modal() {
       var contractid = $("#contractlist li a.active").attr('id');
       var hotelid = $("#hotel-list li a.active").attr('id');
@@ -370,6 +389,7 @@ th {
     $("#contractlist").find('a').first('.active').trigger("click");
   }
   function loadallotment(id) {
+     divLoading("start");
      $(".cm-contract").removeClass("active");
      $("#"+id).addClass("active");
      var hotelid = $("#hotel-list li a.active").attr('id');
@@ -380,6 +400,7 @@ th {
       cache: false,
       success: function (response) {
         $("#allotment_table").html(response.list);
+        divLoading("stop");
       }
     });     
    }

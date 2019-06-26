@@ -638,3 +638,4 @@ function commonDeleteroom() {
        $("#add_allotment").submit();
      }
    });
+  

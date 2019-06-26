@@ -767,7 +767,7 @@ class HotelSupplier extends MY_Controller {
                       '.$result["links"].'
                       </ul>
                       </div></div>';
-    $contractlist = $this->Supplier_Model->contractList($hotelid);
+      $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
