@@ -591,10 +591,11 @@ class Supplier_Model extends CI_Model {
 		return $query;
   	}
   	public function getRooms($hotelid) {
-  		$this->db->select('id,room_name');
-		$this->db->from('hotel_tbl_hotel_room_type');
-		$this->db->where('hotel_id',$hotelid);
-		$this->db->where('delrequest','0');
+  		$this->db->select('a.id,CONCAT(a.room_name," ",b.Room_Type) as roomName');
+		$this->db->from('hotel_tbl_hotel_room_type a');
+        $this->db->join('hotel_tbl_room_type b','b.id = a.room_type', 'left');
+		$this->db->where('a.hotel_id',$hotelid);
+		$this->db->where('a.delrequest','0');
 		$this->db->order_by('id','desc');
 		$query=$this->db->get()->result();
 		return $query;
@@ -611,33 +612,52 @@ class Supplier_Model extends CI_Model {
 		        	for($i = 0; $i <= $tot_days; $i++) {
 	        			if ($DayCKvalue==date('D', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'))) { 
 					        $result[$i]= date('Y-m-d', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'));
-					       	$this->db->select('*');
-					      	$this->db->from('hotel_tbl_allotement');
-					    	$this->db->where('room_id',$value);
-					    	$this->db->where('hotel_id',$request['hotelid']);
-					    	$this->db->where('allotement_date',$result[$i]);
-					    	$this->db->where('contract_id',$request['contractid']);
-					    	$query=$this->db->get();
-				        	$query_out[$i] = $query->result();
+
+				        	$query_out[$i]=$this->db->query('select * from hotel_tbl_allotement where room_id = '.$value.' AND allotement_date = "'.$result[$i].'" AND hotel_id = '.$request['hotelid'].' AND contract_id = "'.$request['contractid'].'" ')->result();
+
 				    		if (count($query_out[$i])!=0) {
-				    			$data['amount'] = $request['price'];
-					    		$data['allotement'] = $request['allotment'];
-					    		$data['cut_off'] =  $request['cutoff'];
+				    			if (isset($request['price']) && $request['price']!="") {
+					    			$data['amount'] = $request['price'];
+				    			}
+				    			if (isset($request['allotment']) && $request['allotment']!="") {
+					    			$data['allotement'] = $request['allotment'];
+				    			}
+				    			if (isset($request['cutoff']) && $request['cutoff']!="") {
+					    			$data['cut_off'] =  $request['cutoff'];
+				    			}
 						    	$this->db->where('contract_id',$request['contractid']);
 					    		$this->db->where('room_id',$value);
 					    		$this->db->where('hotel_id',$request['hotelid']);
 					    		$this->db->where('allotement_date',$query_out[$i][0]->allotement_date);
-					    		$this->db->update('hotel_tbl_allotement',$data);
+					    		if (isset($data)) {
+						    		$this->db->update('hotel_tbl_allotement',$data);
+					    		}
 				    		} else {
-				    			$array= array('allotement'		=>  $request['allotment'],
-		    					    'cut_off'			=> $request['cutoff'],
-		    					    'allotement_date'	=> $result[$i],
-		    					    'amount' 			=>$request['price'],
-		    					    'room_id'			=> $value,
-								    'hotel_id'		=> $request['hotelid'],
-							    	'contract_id' 	=> $request['contractid']
-							    );
-					        $this->db->insert('hotel_tbl_allotement',$array);
+				    			if (isset($request['price']) && $request['price']!="") {
+					    			$array['amount'] = $request['price'];
+				    			}
+				    			if (isset($request['allotment']) && $request['allotment']!="") {
+					    			$array['allotement'] = $request['allotment'];
+				    			}
+				    			if (isset($request['cutoff']) && $request['cutoff']!="") {
+					    			$array['cut_off'] =  $request['cutoff'];
+				    			}
+				    			$array['allotement_date'] =  $result[$i];
+				    			$array['room_id'] =  $value;
+				    			$array['hotel_id'] =  $request['hotelid'];
+				    			$array['contract_id'] =  $request['contractid'];
+				    			// $array= array(
+				    			// 	'allotement'		=>  $request['allotment'],
+		    					//     'cut_off'			=> $request['cutoff'],
+		    					//     'allotement_date'	=> $result[$i],
+		    					//     'amount' 			=>$request['price'],
+		    					//     'room_id'			=> $value,
+								   //  'hotel_id'		=> $request['hotelid'],
+							    // 	'contract_id' 	=> $request['contractid']
+							    // );
+				    			if ((isset($request['price']) && $request['price']!="") || (isset($request['allotment']) && $request['allotment']!="") || (isset($request['cutoff']) && $request['cutoff']!="")) {
+					        		$this->db->insert('hotel_tbl_allotement',$array);
+				    			}
 				    		}
 					    }
 					}
@@ -646,10 +666,82 @@ class Supplier_Model extends CI_Model {
 		}
 		return true;
     }
+    public function add_closedout($request){
+    	$start_date=date_create($request['bulk-alt-fromDate']);
+        $end_date=date_create($request['bulk-alt-toDate']);
+        $no_of_days=date_diff($start_date,$end_date);
+        $tot_days = $no_of_days->format("%a");
+    	if (isset($request['room'])) {
+		    foreach ($request['room'] as $key => $value) {	
+    			foreach ($_REQUEST['bulk-alt-days'] as $DayCKkey => $DayCKvalue) {
+		        	for($i = 0; $i <= $tot_days; $i++) {
+	        			if ($DayCKvalue==date('D', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'))) { 
+					        $result[$i]= date('Y-m-d', strtotime($request['bulk-alt-fromDate']. ' + '.$i.'  days'));
+						    /* closed out check */
+							if ($request['closedout']!='NoChange') {
+
+								$query1=$this->db->query('select * from hotel_tbl_closeout_period where closedDate = "'.$result[$i].'" AND hotel_id = '.$request['hotelid'].' AND contract_id = "'.$request['contractid'].'" ')->result();
+
+								if ($request['closedout']=='Close') {
+					      	  		if (count($query1)!=0) {
+					      	  			$InroomArr[0] = $value;
+										$explodeCoRR = explode(",", $query1[0]->roomType);
+				      	  				$arr_1 = array_merge($explodeCoRR,$InroomArr);
+				      	  				$implode_room_types = implode(",", array_unique($arr_1));
+				      	  				$data1= array('roomType'      =>$implode_room_types,
+											          'reason'       => "",
+											        );
+										$this->db->where('closedDate',$result[$i]);
+										$this->db->where('hotel_id',$request['hotelid']);
+										$this->db->where('contract_id',$request['contractid']);
+										$this->db->update('hotel_tbl_closeout_period',$data1);
+									} else {
+					      	  			$data2= array( 'hotel_id'     => $request['hotelid'],
+											          'contract_id'  => $request['contractid'],
+											          'closedDate'   => $result[$i],
+											          'reason'       => "",
+											          'roomType'     => $value,
+											          'delflg'       => 1,
+											        );
+										$this->db->insert('hotel_tbl_closeout_period',$data2);
+									}
+								}
+
+								if ($request['closedout']=='Open') {
+									if (count($query1)!=0) {
+										$InroomArr[0] = $value;
+										$explodeCoRR = explode(",", $query1[0]->roomType);
+				      	  				$arr_1 = array_diff($explodeCoRR,$InroomArr);
+				      	  				if (count($arr_1)!=0) {
+				      	  					$implode_room_types = implode(",", $arr_1);
+					      	  				$data1= array('roomType'   	 => $implode_room_types,
+											          'reason'     	 => "",
+										        );
+											$this->db->where('closedDate',$result[$i]);
+											$this->db->where('hotel_id',$request['hotelid']);
+											$this->db->where('contract_id',$request['contractid']);
+											$this->db->update('hotel_tbl_closeout_period',$data1);
+				      	  				} else {
+						  	  				$this->db->where('closedDate',$result[$i]);
+											$this->db->where('hotel_id',$request['hotelid']);
+											$this->db->where('contract_id',$request['contractid']);
+											$this->db->delete('hotel_tbl_closeout_period');
+				      	  				}
+									}
+								}
+							}
+					    }
+						
+					}
+			    }
+			}
+		}
+		return true;
+	}
     public function allotmentList($roomid,$contractid,$ndate) {
     	$this->db->select('a.*,c.closedDate');
 		$this->db->from('hotel_tbl_allotement a');
-		$this->db->join('hotel_tbl_closeout_period c','FIND_IN_SET(c.roomType,a.room_id) > 0 and c.contract_id=a.contract_id and c.closedDate=a.allotement_date','left');
+		$this->db->join('hotel_tbl_closeout_period c','FIND_IN_SET(a.room_id,c.roomType) > 0 and c.contract_id=a.contract_id and c.closedDate=a.allotement_date','left');
 		$this->db->where('a.allotement_date',$ndate);
 		$this->db->where('a.contract_id',$contractid);
 		$this->db->where('a.room_id',$roomid);

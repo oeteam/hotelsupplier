@@ -670,9 +670,9 @@ class HotelSupplier extends MY_Controller {
       $data['list'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list'].= '<li><a class="active cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list'].= '<li><a class="cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a></li>';
         }
       }
     echo json_encode($data);
@@ -688,6 +688,7 @@ class HotelSupplier extends MY_Controller {
     $this->load->view('allotment_add_modal',$data);      
   }
   public function add_allotment(){
+    $query = $this->Supplier_Model->add_closedout($_REQUEST);
     $view = $this->Supplier_Model->add_allotment($_REQUEST);
     if ($view==true) {
       $Return['status'] = '1';
@@ -790,9 +791,9 @@ class HotelSupplier extends MY_Controller {
       $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
         if($key==0) {
-          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'" >'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a></li>';
         } else {
-          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment('.$value->id.')" id="'.$value->id.'">'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a></li>';
         }
       }
       $data['list2'].= '<br>';

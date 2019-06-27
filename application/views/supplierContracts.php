@@ -231,9 +231,9 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id ?></a></li>
+              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id ?></a></li>
             <?php } else { ?>
-              <li><a class="cm-contract" id="<?php echo $value->id ?>" onclick="loadallotment(<?php echo $value->id ?>)"><?php echo $value->contract_id?></a></li>
+              <li><a class="cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?></a></li>
             <?php } 
           }
         }
