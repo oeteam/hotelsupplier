@@ -613,25 +613,25 @@ function commonDeleteroom() {
     {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","To date field is required","!");</script>');
       $("#bulk-alt-toDate").focus();
-    }
+    // }
     // else if(dayss=="")
     // {
     //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Days field is required","!");</script>');
     // }
-    else if(allotment=="")
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","Allotment field is required","!");</script>');
-      $("#allotment").focus();
-    } 
-    else if(price=="") 
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","Price field is required","!");</script>');
-      $("#price").focus();
-    }
-    else if(cutoff=="")
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
-      $("#cutoff").focus();
+    // else if(allotment=="")
+    // {
+    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Allotment field is required","!");</script>');
+    //   $("#allotment").focus();
+    // } 
+    // else if(price=="") 
+    // {
+    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Price field is required","!");</script>');
+    //   $("#price").focus();
+    // }
+    // else if(cutoff=="")
+    // {
+    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
+    //   $("#cutoff").focus();
     } else {
        $(".msg").append('<script type="text/javascript"> AddToast("success","Allotment added successfully","!");</script>');
        $("#add_allotment").attr('action',base_url+'hotelsupplier/add_allotment');

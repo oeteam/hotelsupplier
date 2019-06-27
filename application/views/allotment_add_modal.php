@@ -205,7 +205,12 @@
    .status {
       font-size: 12px;
     }
-    
+    .pad-0 {
+      padding: 0px;
+    }
+    .close {
+      opacity: 10;
+    }
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
   <div class="modal-content">
@@ -223,7 +228,7 @@
                    <div class="multi-select-mod multi-select-trans">
                       <select id="room" name="room[]"  multiple="" class="form-control">
                         <?php foreach ($rooms as $value) { ?>  
-                          <option value="<?php echo $value->id ?>"><?php echo $value->room_name ?></option>
+                          <option value="<?php echo $value->id ?>"><?php echo $value->roomName ?></option>
                         <?php } ?>
                       </select>
                     </div>
@@ -253,7 +258,7 @@
             <div class="col-sm-12">
               <label>Weekdays</label><br>
               <input type="checkbox" id="all" name="all" />
-              <label style="font-weight: 100 !important;">All </label>
+              <label style="font-weight: 100 !important;" for="all">All </label>
               &nbsp 
               <input type="checkbox" class="filled-in week" id="sun" name="bulk-alt-days[]" value="Sun" />
               <label for="sun" style="font-weight: 100 !important;">Sunday</label>
@@ -277,29 +282,55 @@
               <label for="sat" style="font-weight: 100 !important;">Saturday</label>       
             </div>
           </div>
+          <div class="clearfix"></div>
           <div class="row">
             <div class="form-group col-md-4">
                 <label for="allotment">Allotment</label><br>
-                <input type="radio" id="allotment_change" name="allotment_change" value="no_change" />
-                <label for="allotment_change" style="font-weight: 100 !important;">No Change</label>
-                <br>
-                <input  type="number" name="allotment"  class="form-control" id="allotment">
-                
+                <div class="col-md-6 pad-0">
+                  <input type="checkbox" id="allotment_change" name="allotment_change" value="no_change" />
+                  <label for="allotment_change" style="font-weight: 100 !important;">NoChange</label>
+                </div>
+                <div class="col-md-6 pad-0">
+                  <input  type="number" id="allotment" name="allotment"  class="form-control" id="allotment">
+                </div>
             </div>
              <div class="form-group col-md-4">
                 <label for="price">Price</label>
                 <br>
-                <input type="radio" id="price_change" name="price_change" value="no_change" />
-                <label for="price_change" style="font-weight: 100 !important;">No Change</label>
-                <br>
-                <input  type="number" name="price"  class="form-control" id="price">
+                <div class="col-md-6 pad-0">
+                  <input type="checkbox" id="price_change" name="price_change" value="no_change" />
+                  <label for="price_change" style="font-weight: 100 !important;">NoChange</label>
+                </div>
+                <div class="col-md-6 pad-0">
+                  <input  type="number" id="price" name="price"  class="form-control" id="price">
+                </div>
             </div>
             <div class="form-group col-md-4">
                 <label for="cutoff">Cut-off</label><br>
-                <input type="radio" id="cutoff_change" name="cutoff_change" value="no_change" />
-                <label for="cutoff_change" style="font-weight: 100 !important;">No Change</label>
-                <br>
-                <input  type="number" name="cutoff"  class="form-control" id="cutoff"> 
+                <div class="col-md-6 pad-0">
+                  <input type="checkbox" id="cutoff_change" name="cutoff_change" value="no_change" />
+                  <label for="cutoff_change" style="font-weight: 100 !important;">NoChange</label>
+                </div>
+                <div class="col-md-6 pad-0">
+                  <input  type="number" id="cutoff" name="cutoff"  class="form-control" id="cutoff"> 
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Room status</label><br>
+              <div class="col-md-4 pad-0">
+                  <input type="radio" name="closedout" id="no_change" checked="" value="NoChange" />
+                  <label for="no_change" style="font-weight: 100 !important;">NoChange</label>
+              </div>
+              <div class="col-md-4 pad-0">
+                  <input type="radio" name="closedout" id="Close" value="Close" />
+                  <label for="Close" style="font-weight: 100 !important;">Close</label>
+              </div>
+              <div class="col-md-4 pad-0">
+                  <input type="radio" name="closedout" id="Open" value="Open" />
+                  <label for="Open" style="font-weight: 100 !important;">Open</label>
+              </div>
             </div>
           </div>
         </form>
@@ -394,6 +425,30 @@
           includeSelectAllOption: true,
           selectAllValue: 0
     });
+
+    $("#allotment_change").change(function() {
+        if($(this). prop("checked") == true){
+          $("#allotment").prop('disabled', true);
+        } else {
+         $('#allotment').prop("disabled", false);
+       }
+    })
+
+    $("#price_change").change(function() {
+        if($(this). prop("checked") == true){
+          $("#price").prop('disabled', true);
+        } else {
+         $('#price').prop("disabled", false);
+       }
+    })
+
+    $("#cutoff_change").change(function() {
+        if($(this). prop("checked") == true){
+          $("#cutoff").prop('disabled', true);
+        } else {
+         $('#cutoff').prop("disabled", false);
+       }
+    })
   });
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
