@@ -693,26 +693,38 @@ class HotelSupplier extends MY_Controller {
     AgentlogActivity($description);
     redirect("hotelsupplier/contracts");
   }
-  public function allotment_list($contractid,$hotelid) {
+  public function allotment_list() {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
+    }
+    $contractid = $_REQUEST['contractid'];
+    $hotelid = $_REQUEST['hotelid'];
+    $todate = $_REQUEST['todate'];
+    $fromdate = $_REQUEST['fromdate'];
+    if($_REQUEST['value']=="prev") {
+      $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
+    } else if($_REQUEST['value']=="next") {
+      $chdate = $todate;
+    } else if($_REQUEST['value']=="") {
+      $chdate = $fromdate;
     }
     $rooms = $this->Supplier_Model->getRooms_contracts($hotelid);
     $output['list'] = '<thead><tr><th>Room</th>';
     for($i=0;$i<7;$i++) {
-      if ($i==0 && date('Y-m-d',strtotime("+".$i." day"))==date('Y-m-d')) {
+      if ($i==0 && date('Y-m-d',strtotime($chdate . "+".$i." day"))==date('Y-m-d')) {
         $output['list'] .= '<th>Today</th>';
       } else {
-        $output['list'] .= '<th>'.date('D',strtotime("+".$i." day")).'</th>';
+        $output['list'] .= '<th>'.date('D',strtotime($chdate . "+".$i." day")).'</th>';
       }
       $ndate = date('Y-m-d',strtotime("+".$i." day"));
         // $allotment[]= $this->Supplier_Model->allotmentList($contractid,$ndate);
     }
+      // print_r(date('Y-m-d',strtotime($chdate . "+1 day")));exit;
     $output['list'] .= '</tr></thead><tbody>';
     foreach ($rooms as $key => $value) {
       $output['list'] .= '<tr><td class="roomname">'.$value->roomName.'</td>';
       for($i=0;$i<7;$i++) {
-         $ndate = date('Y-m-d',strtotime("+".$i." day"));
+         $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
          $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
         if (count($data)!=0 && $data[0]->closedDate=="") {
            $close = '<p class="closeout"><span class="text-success">ON</span></p>';
@@ -729,6 +741,8 @@ class HotelSupplier extends MY_Controller {
       $output['list'] .= '</tr>';
     }
       $output['list'] .= '</tbody>';
+      $output['chdate'] = $chdate;
+      $output['todate'] = date('Y-m-d',strtotime($chdate . "+7 day"));
     echo json_encode($output);
     exit();
   }

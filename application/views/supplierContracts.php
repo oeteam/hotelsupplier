@@ -270,6 +270,8 @@ th {
     <div class="tab-inn">
       <table class="table table-hover table-bordered" id="allotment_table">
       </table>
+      <input type="hidden" id="fromdate" value="<?php echo date('Y-m-d') ?>">
+      <input type="hidden" id="todate" value="<?php echo date('Y-m-d',strtotime('+7 day')) ?>">
     </div>
   </div>
 </div> 
@@ -390,13 +392,15 @@ th {
   }
   function loadallotment(id) {
      divLoading("start");
+     var todate       = $("#todate").val();
+     var fromdate     = $("#fromdate").val();
      $(".cm-contract").removeClass("active");
      $("#"+id).addClass("active");
      var hotelid = $("#hotel-list li a.active").attr('id');
      $.ajax({
       dataType: 'json',
       type: 'post',
-      url:  base_url+'HotelSupplier/allotment_list/'+id+'/'+hotelid,
+      url:  base_url+'HotelSupplier/allotment_list?value=&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+id,
       cache: false,
       success: function (response) {
         $("#allotment_table").html(response.list);
@@ -407,6 +411,48 @@ th {
    $(document).ready(function() {
     $("#contractlist").find('a').first('.active').trigger("click");
    })
+   $("#btnLastTimeSpan").click(function() {
+        $(".pre-page").addClass("hide");
+        divLoading("start");
+        var todate       = $("#todate").val();
+        var fromdate     = $("#fromdate").val();
+        var hotelid = $("#hotel-list li a.active").attr('id');
+        var contractid = $("#contractlist li a.active").attr('id');
+        $.ajax({
+        dataType: 'json',
+        type: 'post',
+        url:  base_url+'HotelSupplier/allotment_list?value=prev&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        cache: false,
+        success: function (response) {
+          $("#allotment_table").html(response.list);
+          $('#txtCurrentDate').val(response.chdate);
+          $('#fromdate').val(response.chdate);
+          $('#todate').val(response.todate);
+          divLoading("stop");
+        }
+      });      
+  });
+  $("#btnNextTimeSpan").click(function() {
+        $(".pre-page").addClass("hide");
+        divLoading("start");
+        var todate       = $("#todate").val();
+        var fromdate     = $("#fromdate").val();
+        var hotelid = $("#hotel-list li a.active").attr('id');
+        var contractid = $("#contractlist li a.active").attr('id');
+        $.ajax({
+        dataType: 'json',
+        type: 'post',
+        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        cache: false,
+        success: function (response) {
+          $("#allotment_table").html(response.list);
+          $('#txtCurrentDate').val(response.chdate);
+          $('#fromdate').val(response.chdate);
+          $('#todate').val(response.todate);
+          divLoading("stop");
+        }
+      });      
+  });
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 
