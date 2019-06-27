@@ -675,4 +675,94 @@ class Supplier_Model extends CI_Model {
 		$query=$this->db->get()->result();
 		return $query;
   	}
+  	public function closeOutSingleUpdate($closedDate,$hotel_id,$contract_id,$room_id) {
+		$this->db->select('*');
+    	$this->db->from('hotel_tbl_contract');
+    	$this->db->where('contract_id',$contract_id);
+    	$contract_type = $this->db->get()->result();
+
+		// if ($contract_type[0]->contract_type=="Main") {
+			$this->db->select('*');
+			$this->db->from('hotel_tbl_closeout_period');
+	        $this->db->where('hotel_id',$hotel_id);
+	        $this->db->where('contract_id',$contract_id);
+	        $this->db->where('closedDate',$closedDate);
+	        $final = $query=$this->db->get()->result();
+	        if (count($final)==0) {
+	        	$data= array( 
+				 'hotel_id' 	  => $hotel_id,
+				 'contract_id' 	  => $contract_id,
+				 'closedDate' 	  => $closedDate,
+				 'roomType' 	  => $room_id,
+				 'CreatedDate'   => date('Y-m-d H:i:s'),
+		     	 'CreatedBy'     => $this->session->userdata('id'),
+				);
+				$this->db->insert('hotel_tbl_closeout_period',$data);
+	        } else {
+	        	$exploderoomType = explode(",", $final[0]->roomType);
+	        	foreach ($exploderoomType as $key => $value) {
+	        		if ($value!=$room_id) {
+	        			$implodeData[$key] = $value; 
+	        		} else {
+	        			$implodeData[$key] = $value; 
+	        		}
+	        	}
+	        	$implodeRoomType = implode(",", $implodeData).",".$room_id;
+
+	        	$data1= array( 
+				 'roomType' 	  => $implodeRoomType,
+				 'UpdatedDate'   => date('Y-m-d H:i:s'),
+		     	 'UpdatedBy'     => $this->session->userdata('id'),
+				);
+
+				$this->db->where('hotel_id',$hotel_id);
+	        	$this->db->where('contract_id',$contract_id);
+	        	$this->db->where('closedDate',$closedDate);
+				$this->db->update('hotel_tbl_closeout_period',$data1);
+	        }
+    	// }
+        return true;
+	}
+	public function closeOutSingleDelete($closedDate,$hotel_id,$contract_id,$room_id) {
+		$this->db->select('*');
+    	$this->db->from('hotel_tbl_contract');
+    	$this->db->where('hotel_id',$hotel_id);
+    	$this->db->where('contract_id',$contract_id);
+    	$contract_type = $this->db->get()->result();
+		// if ($contract_type[0]->contract_type=="Main") {
+			$this->db->select('*');
+			$this->db->from('hotel_tbl_closeout_period');
+	        $this->db->where('hotel_id',$hotel_id);
+	        $this->db->where('contract_id',$contract_id);
+	        $this->db->where('closedDate',$closedDate);
+	        $query = $this->db->get()->result();
+
+	        if (count($query)!=0) {
+	        	if ($query[0]->roomType==$room_id) {
+	        		$this->db->from('hotel_tbl_closeout_period');
+			        $this->db->where('hotel_id',$hotel_id);
+			        $this->db->where('contract_id',$contract_id);
+			        $this->db->where('closedDate',$closedDate);
+					$this->db->delete('hotel_tbl_closeout_period');
+	        	} else {
+	        		$exploderoomType = explode(",", $query[0]->roomType);
+	        		foreach ($exploderoomType as $key => $value) {
+		        		if ($value!=$room_id) {
+		        			$implodeData[$key] = $value; 
+		        		} 
+		        	}
+		        	$implodeRoomType = implode(",", $implodeData);
+		        	$data1= array( 
+					 'roomType' 	  => $implodeRoomType,
+					);
+
+					$this->db->where('hotel_id',$hotel_id);
+		        	$this->db->where('contract_id',$contract_id);
+		        	$this->db->where('closedDate',$closedDate);
+					$this->db->update('hotel_tbl_closeout_period',$data1);
+	        	}
+	        }
+		// }
+        return true;
+	}
 }

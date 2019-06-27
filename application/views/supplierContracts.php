@@ -127,6 +127,13 @@ th {
   background: #0074b9;
   color: white;
 }
+.cutoff {
+  text-align: center;
+  font-size: smaller;
+}
+.closeout {
+  cursor: pointer;
+}
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-8 col-md-offset-2">
@@ -260,7 +267,14 @@ th {
                 </label> -->
                 <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnLastTimeSpan">Pre 7d</a>
                 <div style="width: 100px;display: block;float: left;">
-                <input type="text" id="txtCurrentDate" class="form-control" value="<?php echo date('Y-m-d') ?>">
+                  <div class="">
+                    <input type="text"  class="datePicker-hide datepicker input-group-addon" id="txtCurrentDate"  name="txtCurrentDate" placeholder="dd/mm/yyyy" value="<?php echo date('Y-m-d') ?>">
+                    <div class="input-group">
+                        <input class="form-control datepicker date-pic" id="alternate3" name="" value="<?php echo isset($view[0]->to_date) ? date('d/m/Y',strtotime($view[0]->to_date)) : date('d/m/Y') ?>" >
+                        <label for="alternate3" class="input-group-addon"><i class="fa fa-calendar"></i></label>
+                    </div>
+                  </div>
+                <!-- <input type="text" id="txtCurrentDate" class="form-control" value="<?php echo date('Y-m-d') ?>"> -->
                 </div>
                 <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnNextTimeSpan">Next 7d</a>
             </div>
@@ -410,6 +424,20 @@ th {
    }
    $(document).ready(function() {
     $("#contractlist").find('a').first('.active').trigger("click");
+    $("#txtCurrentDate").datepicker({
+        altField: "#alternate3",
+        dateFormat: "yy-mm-dd",
+        altFormat: "dd/mm/yy",
+        minDate: new Date(<?php date('d/m/Y') ?>),
+        changeYear : true,
+        changeMonth : true,
+        onSelect: function(dateText) {
+          $('#fromdate').val($( "#txtCurrentDate" ).val());
+      }
+    });
+    $("#alternate3").click(function() {
+        $( "#txtCurrentDate" ).trigger('focus');
+    });
    })
    $("#btnLastTimeSpan").click(function() {
         $(".pre-page").addClass("hide");

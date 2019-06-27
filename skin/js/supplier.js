@@ -589,6 +589,7 @@ function commonDeleteroom() {
      }
    });
   $('#allotment-submit').click(function () {
+    var contractid = $("#contractid").val();
     var room = $("#room").val();
     var allotment = $("#allotment").val();
     var price = $("#price").val();
@@ -633,9 +634,40 @@ function commonDeleteroom() {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
       $("#cutoff").focus();
     } else {
-       $(".msg").append('<script type="text/javascript"> AddToast("success","Allotment added successfully","!");</script>');
-       $("#add_allotment").attr('action',base_url+'hotelsupplier/add_allotment');
-       $("#add_allotment").submit();
+      $.ajax({
+      dataType: 'json',
+      type: "POST",
+      url: base_url+'hotelsupplier/add_allotment',
+      data:$("#add_allotment").serialize(),
+      cache: false,
+      success: function (response) {
+          close_delete_modal();
+          $(".pre-page").addClass("hide");
+          if(response.status=='1') {
+            $(".msg").append('<script type="text/javascript"> AddToast("success","Allotment added successfully","!");</script>');
+          } else {
+            $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
+          }
+          loadallotment(contractid);  
+        }
+      });
      }
    });
-  
+function closeoutUpdate(value,contractid,roomid,hotelid,ndate) {
+  alert(ndate);
+    $.ajax({
+      dataType: 'json',
+      type: "POST",
+      url: base_url+'hotelsupplier/closeoutupdate/value='+value+'&contractid='+contractid+'&roomid='+roomid+'&hotelid='+hotelid+'&ndate='+ndate,
+      cache: false,
+      success: function (response) {
+          $(".pre-page").addClass("hide");
+          if(response.status=='1') {
+             $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
+          } else {
+             $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
+          }
+          loadallotment(contractid);  
+      }
+    });
+}

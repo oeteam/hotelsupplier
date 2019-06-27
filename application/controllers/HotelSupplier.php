@@ -689,9 +689,14 @@ class HotelSupplier extends MY_Controller {
   }
   public function add_allotment(){
     $view = $this->Supplier_Model->add_allotment($_REQUEST);
-    $description = 'New allotment added [Hotel Code: HE0'.$_REQUEST['hotelid'].', Contract ID: CON0'.$_REQUEST['contractid'].']';
-    AgentlogActivity($description);
-    redirect("hotelsupplier/contracts");
+    if ($view==true) {
+      $Return['status'] = '1';
+       $description = 'New allotment added [Hotel Code: HE0'.$_REQUEST['hotelid'].', Contract ID: CON0'.$_REQUEST['contractid'].']';
+       AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
   }
   public function allotment_list() {
     if ($this->session->userdata('supplier_name')=="") {
@@ -704,7 +709,7 @@ class HotelSupplier extends MY_Controller {
     if($_REQUEST['value']=="prev") {
       $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
     } else if($_REQUEST['value']=="next") {
-      $chdate = $todate;
+      $chdate = $fromdate;
     } else if($_REQUEST['value']=="") {
       $chdate = $fromdate;
     }
@@ -727,13 +732,13 @@ class HotelSupplier extends MY_Controller {
          $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
          $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
         if (count($data)!=0 && $data[0]->closedDate=="") {
-           $close = '<p class="closeout"><span class="text-success">ON</span></p>';
+           $close = '<p class="closeout" onClick="closeoutUpdate(1,'.$contractid.','.$value->id.','.$hotelid.',"'.$ndate.'")"><span class="text-success">ON</span></p>';
          } else {
-           $close = '<p class="closeout"><span class="text-danger">OFF</span></p>';
+           $close = '<p class="closeout" onClick="closeoutUpdate(2,'.$contractid.','.$value->id.','.$hotelid.',"'.$ndate.'");"><span class="text-danger">OFF</span></p>';
 
          }
         if (count($data)!=0) {
-          $output['list'] .= '<td>'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$data[0]->cut_off.'</p></td>';
+          $output['list'] .= '<td>'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$data[0]->cut_off.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p></td>';
         } else {
           $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
         } 
@@ -792,5 +797,18 @@ class HotelSupplier extends MY_Controller {
       }
       $data['list2'].= '<br>';
     echo json_encode($data);
+  }
+  public function closeoutupdate() {
+    if($_REQUEST['value']==2) {
+        $result = $this->Hotels_Model->closeOutSingleUpdate($_REQUEST['ndate'],$_REQUEST['hotelid'],$_REQUEST['contractid'],$_REQUEST['roomid']);
+    } else if($_REQUEST['value']==1) {
+        $result = $this->Hotels_Model->closeOutSingleDelete($_REQUEST['ndate'],$_REQUEST['hotelid'],$_REQUEST['contractid'],$_REQUEST['roomid']);
+    }
+    if($result==true) {
+      $Return['status'] = '1';
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
   }
 }
