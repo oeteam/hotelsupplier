@@ -36,7 +36,7 @@
 .hotel-list .hotels li {
     /* margin-top: 10px; */
   display: inline;
-  width: 220px;
+  width: 210px;
   position: relative;
   float: left;
   margin-left: 10px;

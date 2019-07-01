@@ -252,6 +252,7 @@
                 </div>
             </div>
           </div>
+        <div class="row">
            
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Status</label><br>
@@ -259,17 +260,17 @@
                 <input name="roomstatus" type="radio" class="with-gap" id="nochange" value="0"/>
                 <label for="nochange" class="status">No Change</label>
                 <?php } ?>
-                <input name="roomstatus" type="radio" class="with-gap" id="open" <?php echo isset(($view[0]->contract_flg)&&($view[0]->contract_flg=='0')) ?  'checked' : 'checked' ?>   value="0" />
+                <input name="roomstatus" type="radio" class="with-gap" id="open" <?php echo isset($view[0]->contract_flg) && $view[0]->contract_flg=='0' ?  'checked' : 'checked' ?>   value="0" />
                 <label for="open" class="status">Open</label>
-                <input name="roomstatus" type="radio" class="with-gap" id="close" <?php echo isset(($view[0]->contract_flg)&&($view[0]->contract_flg=='1')) ?  'checked' : 'checked' ?> value="1" />
+                <input name="roomstatus" type="radio" class="with-gap" id="close" <?php echo isset($view[0]->contract_flg) && $view[0]->contract_flg=='1' ?  'checked' : 'checked' ?> value="1" />
                 <label for="close" class="status">Close</label>
             </div>
             <div class="form-group col-md-4">
                 <label for="markup_type">Markup Type</label>
                       <select id="markup_type" name="markup_type" class="form-control">
                           <option value="">Select</option>
-                          <option value="percentage" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType=='percentage')) ?  'selected' : '' ?>>Percentage</option>
-                          <option value="flat" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType=='flat')) ?  'selected' : '' ?>>Flat</option>
+                          <option value="percentage" <?php echo isset($view[0]->markupType) && $view[0]->markupType=='percentage' ?  'selected' : '' ?>>Percentage</option>
+                          <option value="flat" <?php echo isset($view[0]->markupType) && $view[0]->markupType=='flat' ?  'selected' : '' ?>>Flat</option>
                       </select>
             </div>
             <div class="form-group col-md-4">
@@ -280,6 +281,8 @@
                 <?php } ?>
                 <input  type="text" name="markup"  class="form-control" id="markup">
             </div>
+            </div>
+        <div class="row">
             <div class="form-group col-md-4">
                 <label for="bookingCode">Booking Code</label>
                 <input  type="text" name="bookingCode"  class="form-control" id="bookingCode"  value="<?php echo isset($view[0]->BookingCode) ?  $view[0]->BookingCode : '' ?>">
