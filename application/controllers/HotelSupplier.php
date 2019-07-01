@@ -27,7 +27,12 @@ class HotelSupplier extends MY_Controller {
         redirect("welcome/agent_logout");
     }
     $data['contry']= $this->Supplier_Model->SelectCountry();
-    $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    if(isset($_REQUEST['filter'])) {
+      $value = $_REQUEST['filter'];
+    } else {
+      $value = '4';
+    }
+    $data['hotels'] = $this->Supplier_Model->hotel_list_select($value)->result();
     $this->load->view('supplierHotel',$data);
   }
   public function rooms() {
@@ -116,17 +121,26 @@ class HotelSupplier extends MY_Controller {
     $draw = intval($this->input->get("draw"));
     $start = intval($this->input->get("start"));
     $length = intval($this->input->get("length"));
-    $hotel = $this->Supplier_Model->hotel_list_select();
+    if(isset($_REQUEST['filter'])) {
+      $value = $_REQUEST['filter'];
+    } else {
+      $value = '4';
+    }
+    $hotel = $this->Supplier_Model->hotel_list_select($value);
     foreach($hotel->result() as $key => $r) {
          $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
          $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
-         if ($r->delflg==1) {
-              $status = '<span class="text-success">Active</span>';
-         } else if($r->delflg==2) {
-              $status = '<span class="text-warning">Pending</span>';
-         } else {
-              $status = '<span class="text-danger">Rejected</span>';
-         }
+        if ($r->delflg==1) {
+            $switch = '<label class="switch">
+                        <input type="checkbox" id="hotelid'.$r->id.'"  onchange="updateStatus('."'$r->id'".');" checked >
+                        <span class="slider round"></span>
+                      </label>';
+        } else {
+            $switch = '<label class="switch">
+                        <input type="checkbox" id="hotelid'.$r->id.'"  onchange="updateStatus('."'$r->id'".');">
+                        <span class="slider round"></span>
+                      </label>';
+        }
               $data[] = array(
                    '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
                    $key+1,
@@ -134,7 +148,7 @@ class HotelSupplier extends MY_Controller {
                    $r->country,
                    $r->sale_number,
                    $r->sale_mail,
-                   $status,
+                   $switch,
                    $cross,
               );
     }
@@ -205,13 +219,17 @@ class HotelSupplier extends MY_Controller {
     foreach($hotel->result() as $key => $r) {
          $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
          $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
-         if ($r->delflg==1) {
-              $status = '<span class="text-success">Active</span>';
-         } else if($r->delflg==2) {
-              $status = '<span class="text-warning">Pending</span>';
-         } else {
-              $status = '<span class="text-danger">Rejected</span>';
-         }
+          if ($r->delflg==1) {
+            $switch = '<label class="switch">
+                        <input type="checkbox" id="hotelid'.$r->id.'"  onchange="updateStatus('."'$r->id'".');" checked >
+                        <span class="slider round"></span>
+                      </label>';
+          } else {
+              $switch = '<label class="switch">
+                          <input type="checkbox" id="hotelid'.$r->id.'"  onchange="updateStatus('."'$r->id'".');">
+                          <span class="slider round"></span>
+                        </label>';
+          }
               $data[] = array(
                    '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
                    $key+1,
@@ -219,7 +237,7 @@ class HotelSupplier extends MY_Controller {
                    $r->country,
                    $r->sale_number,
                    $r->sale_mail,
-                   $status,
+                   $switch,
                    $cross,
               );
     }
@@ -644,7 +662,12 @@ class HotelSupplier extends MY_Controller {
     $data["links"] = $this->ajax_pagination->create_links();
     $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
     $data['contry']= $this->Supplier_Model->SelectCountry();
-    $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    if(isset($_REQUEST['filter'])) {
+      $value = $_REQUEST['filter'];
+    } else {
+      $value = '4';
+    }
+    $data['hotels'] = $this->Supplier_Model->hotel_list_select($value)->result();
     $data['contractlist']= $this->Supplier_Model->contractlist($data['HotelList'][0]->id);
     $this->load->view('supplierContracts',$data);
   }
@@ -652,8 +675,13 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
     }
-    $data['hotelid'] = $hotelid;
-    $data['title'] = "Add Contract";  
+    $data['hotelid'] = $hotelid;  
+    if (isset($_REQUEST['contracts_edit_id'])) {
+        $data['view'] =$this->Supplier_Model->contract_detail_get($_REQUEST['contracts_edit_id']);
+        $data['title'] = "Edit Contract";
+    } else {
+        $data['title'] = "Add Contract";
+    }
     $this->load->view('contract_add_modal',$data);      
   }
   public function add_contract(){
@@ -684,7 +712,12 @@ class HotelSupplier extends MY_Controller {
     $data['rooms'] = $this->Supplier_Model->getRooms($hotelid);
     $data['contractid'] = $contractid;
     $data['hotelid'] = $hotelid;
-    $data['title'] = "Add Allotment";  
+    $data['title'] = "Add Allotment";
+    if(isset($_REQUEST['todate'])&&isset($_REQUEST['fromdate'])) {
+      $data['title'] = "Edit Allotment";
+      $data['view'] = array("todate" => $_REQUEST['todate'],
+                            "fromdate" =>$_REQUEST['fromdate']);
+    }  
     $this->load->view('allotment_add_modal',$data);      
   }
   public function add_allotment(){
@@ -710,7 +743,7 @@ class HotelSupplier extends MY_Controller {
     if($_REQUEST['value']=="prev") {
       $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
     } else if($_REQUEST['value']=="next") {
-      $chdate = $fromdate;
+      $chdate = $todate;
     } else if($_REQUEST['value']=="") {
       $chdate = $fromdate;
     }
@@ -725,6 +758,7 @@ class HotelSupplier extends MY_Controller {
       $ndate = date('Y-m-d',strtotime("+".$i." day"));
         // $allotment[]= $this->Supplier_Model->allotmentList($contractid,$ndate);
     }
+    $output['list'] .= '<th>Action</th>';
       // print_r(date('Y-m-d',strtotime($chdate . "+1 day")));exit;
     $output['list'] .= '</tr></thead><tbody>';
     foreach ($rooms as $key => $value) {
@@ -732,23 +766,26 @@ class HotelSupplier extends MY_Controller {
       for($i=0;$i<7;$i++) {
          $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
          $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
+         $room_booking = $this->Supplier_Model->room_booking($hotelid,$value->id,$ndate,$contractid);
         if (count($data)!=0 && $data[0]->closedDate=="") {
-           $close = '<p class="closeout" onClick="closeoutUpdate(1,'.$contractid.','.$value->id.','.$hotelid.',"'.$ndate.'")"><span class="text-success">ON</span></p>';
+           $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.','."'$ndate'".')"><span class="text-success">ON</span></span>';
+           $stopsale = '';
          } else {
-           $close = '<p class="closeout" onClick="closeoutUpdate(2,'.$contractid.','.$value->id.','.$hotelid.',"'.$ndate.'");"><span class="text-danger">OFF</span></p>';
-
+           $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.',\''.$ndate.'\');"><span class="text-danger">OFF</span></span>';
+           $stopsale = 'stopsale';
          }
         if (count($data)!=0) {
-          $output['list'] .= '<td>'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$data[0]->cut_off.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p></td>';
+          $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
         } else {
           $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
         } 
       }
+      $output['list'] .= '<td><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date">Edit</a></td>';
       $output['list'] .= '</tr>';
     }
       $output['list'] .= '</tbody>';
       $output['chdate'] = $chdate;
-      $output['todate'] = date('Y-m-d',strtotime($chdate . "+7 day"));
+      $output['todate'] = date('Y-m-d',strtotime($chdate . "+6 day"));
     echo json_encode($output);
     exit();
   }
@@ -800,16 +837,23 @@ class HotelSupplier extends MY_Controller {
     echo json_encode($data);
   }
   public function closeoutupdate() {
-    if($_REQUEST['value']==2) {
-        $result = $this->Hotels_Model->closeOutSingleUpdate($_REQUEST['ndate'],$_REQUEST['hotelid'],$_REQUEST['contractid'],$_REQUEST['roomid']);
-    } else if($_REQUEST['value']==1) {
-        $result = $this->Hotels_Model->closeOutSingleDelete($_REQUEST['ndate'],$_REQUEST['hotelid'],$_REQUEST['contractid'],$_REQUEST['roomid']);
-    }
-    if($result==true) {
-      $Return['status'] = '1';
-    } else {
-      $Return['status'] = '0';
-    }
+    $result = $this->Supplier_Model->closeOutSingleUpdate($_REQUEST['ndate'],$_REQUEST['hotelid'],$_REQUEST['contractid'],$_REQUEST['roomid'],$_REQUEST['closedout']);
+    $Return['status'] = '1';
+    
     echo json_encode($Return);
+  }
+  public function updatehotelStatus() {
+    $this->Supplier_Model->updatehotelStatus($_REQUEST['hotelid'],$_REQUEST['value']);
+    echo json_encode(true);
+  }
+  public function contractlistmodal($hotelid)
+  {
+     if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['hotelid'] = $hotelid;
+    $data['title'] = "Contracts";
+    $data['contractlist']= $this->Supplier_Model->allcontractlist($hotelid);
+    $this->load->view('contractlistmodal',$data); 
   }
 }

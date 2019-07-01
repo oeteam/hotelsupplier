@@ -132,7 +132,23 @@ th {
   font-size: smaller;
 }
 .closeout {
-  cursor: pointer;
+    cursor: pointer;
+    border: 1px solid #0074b9;
+    height: 18px;
+    width: 31px;
+    text-align: center;
+    line-height: 18px;
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: 0;
+    margin: 0;
+}
+.stopsale {
+  background: #ff8d0080;
+}
+.tabs {
+  padding: 0px;
 }
 </style>
 <div class="clearfix" style="margin-top: 20px;"></div>
@@ -227,6 +243,13 @@ th {
 </div>
   </div>
     <div class="clearfix"></div><br><br>
+    <div class="row">
+          <div class="col-md-12 mar_top_10">
+            <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
+              <li class="tab col s2"><a class="stopsale" onclick="contract_list_modal()">Manage Contracts</a></li>
+            </ul>
+          </div>
+        </div>
     <div class="col-md-12 contractlist" id="contractlist">
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
@@ -242,7 +265,7 @@ th {
     </div>
     <div class="clearfix"></div><br><br>
     <div class="col-md-12 form-group">
-      <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal();">Add Allotment</button> 
+      <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(1);">Add Allotment</button> 
     </div>  
   <div class="row" >
     <div class="col-md-12">
@@ -266,14 +289,12 @@ th {
                     </select>
                 </label> -->
                 <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnLastTimeSpan">Pre 7d</a>
-                <div style="width: 100px;display: block;float: left;">
-                  <div class="">
-                    <input type="text"  class="datePicker-hide datepicker input-group-addon" id="txtCurrentDate"  name="txtCurrentDate" placeholder="dd/mm/yyyy" value="<?php echo date('Y-m-d') ?>">
-                    <div class="input-group">
+                <div style="width: 120px;display: block;float: left;">
+                    <input type="text"  class="datePicker-hide datepicker input-group-addon" style="height: 0px" id="txtCurrentDate"  name="txtCurrentDate" placeholder="dd/mm/yyyy" value="<?php echo date('Y-m-d') ?>">
+                    <div class="input-group" style="transform: translateY(-14px);">
                         <input class="form-control datepicker date-pic" id="alternate3" name="" value="<?php echo isset($view[0]->to_date) ? date('d/m/Y',strtotime($view[0]->to_date)) : date('d/m/Y') ?>" >
                         <label for="alternate3" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                     </div>
-                  </div>
                 <!-- <input type="text" id="txtCurrentDate" class="form-control" value="<?php echo date('Y-m-d') ?>"> -->
                 </div>
                 <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnNextTimeSpan">Next 7d</a>
@@ -282,7 +303,7 @@ th {
         </div>
     </div>
     <div class="tab-inn">
-      <table class="table table-hover table-bordered" id="allotment_table">
+      <table class="table table-bordered" id="allotment_table">
       </table>
       <input type="hidden" id="fromdate" value="<?php echo date('Y-m-d') ?>">
       <input type="hidden" id="todate" value="<?php echo date('Y-m-d',strtotime('+7 day')) ?>">
@@ -316,6 +337,14 @@ th {
           keyboard: false
       });
     }
+    function editcontract(id) {
+    var hotelid = $("#hotel-list li a.active").attr('id');
+    $("#myModal").load(base_url+'HotelSupplier/addcontractmodal/'+hotelid+'?contracts_edit_id='+id);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+  }
      function divLoading(flag) {
     var spinWrapper = $('.spin-wrapper');
       if (flag === 'start') {
@@ -327,23 +356,29 @@ th {
       }
   }
 
-    function add_allotment_modal() {
+    function add_allotment_modal(value) {
       var contractid = $("#contractlist li a.active").attr('id');
       var hotelid = $("#hotel-list li a.active").attr('id');
-      $("#myModal").load(base_url+'HotelSupplier/add_allotment_modal/'+contractid+'/'+hotelid);
+      var todate       = $("#todate").val();
+      var fromdate     = $("#fromdate").val();
+      if(value==1) {
+        $("#myModal").load(base_url+'HotelSupplier/add_allotment_modal/'+contractid+'/'+hotelid);
+      } else if(value==2) {
+        $("#myModal").load(base_url+'HotelSupplier/add_allotment_modal/'+contractid+'/'+hotelid+'?todate='+todate+'&fromdate='+fromdate);
+      }
       $('#myModal').modal({
           backdrop: 'static',
           keyboard: false
       });
     }
-    // function editroom(id) {
-    //    var hotelid = $("#hotel-list li a.active").attr('id');
-    //     $("#myModal").load(base_url+'HotelSupplier/addroommodal/'+hotelid+'/?room_id='+id);
-    //       $('#myModal').modal({
-    //           backdrop: 'static',
-    //           keyboard: false
-    //       });
-    // }
+    function contract_list_modal() {
+       var hotelid = $("#hotel-list li a.active").attr('id');
+        $("#myModal").load(base_url+'HotelSupplier/contractlistmodal/'+hotelid);
+          $('#myModal').modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+    }
     // function deleteroomfun(id) {
     //   deletepopupfun(base_url+"hotelsupplier/delete_room",id);
     // }

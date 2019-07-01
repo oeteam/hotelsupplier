@@ -236,9 +236,9 @@
             <div class="col-sm-4">
               <label for="" class="control-label">From date</label>
                   <div class="">
-                      <input type="text" class="datePicker-hide datepicker input-group-addon" id="bulk-alt-fromDate"  name="bulk-alt-fromDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view[0]->from_date) ?  $view[0]->from_date : date('Y-m-d') ?>" >
+                      <input type="text" class="datePicker-hide datepicker input-group-addon" id="bulk-alt-fromDate"  name="bulk-alt-fromDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view['fromdate']) ?  $view['fromdate'] : date('Y-m-d') ?>" >
                       <div class="input-group">
-                        <input class="form-control datepicker date-pic" id="alternate1" name="" value="<?php echo isset($view[0]->from_date) ?  date('d/m/Y',strtotime($view[0]->from_date)) : date('d/m/Y') ?>" >
+                        <input class="form-control datepicker date-pic" id="alternate1" name="" value="<?php echo isset($view['fromdate']) ?  date('d/m/Y',strtotime($view['fromdate'])) : date('d/m/Y') ?>" >
                         <label for="alternate1" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                       </div>
                   </div>
@@ -246,9 +246,9 @@
             <div class="col-sm-4">
               <label for="" class="control-label">To date</label>
               <div class="">
-                  <input type="text"  class="datePicker-hide datepicker input-group-addon" id="bulk-alt-toDate"  name="bulk-alt-toDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view[0]->to_date) ? $view[0]->to_date : date('Y-m-d',strtotime('+1 month')) ?>">
+                  <input type="text"  class="datePicker-hide datepicker input-group-addon" id="bulk-alt-toDate"  name="bulk-alt-toDate" placeholder="dd/mm/yyyy" value="<?php echo isset($view['todate']) ? $view['todate'] : date('Y-m-d',strtotime('+1 month')) ?>">
                   <div class="input-group">
-                      <input class="form-control datepicker date-pic" id="alternate2" name="" value="<?php echo isset($view[0]->to_date) ? date('d/m/Y',strtotime($view[0]->to_date)) : date('d/m/Y',strtotime('+1 month')) ?>" >
+                      <input class="form-control datepicker date-pic" id="alternate2" name="" value="<?php echo isset($view['todate']) ? date('d/m/Y',strtotime($view['todate'])) : date('d/m/Y',strtotime('+1 month')) ?>" >
                       <label for="alternate2" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                   </div>
               </div>
@@ -257,7 +257,7 @@
           <div class="row">
             <div class="col-sm-12">
               <label>Weekdays</label><br>
-              <input type="checkbox" id="all" name="all" />
+              <input type="checkbox" id="all" checked="" name="all" />
               <label style="font-weight: 100 !important;" for="all">All </label>
               &nbsp 
               <input type="checkbox" class="filled-in week" id="sun" name="bulk-alt-days[]" value="Sun" />
@@ -382,6 +382,7 @@
    }
 
   $(document).ready(function() {
+   $(".week").prop('checked', true);
    $('input[name="all"]'). click(function(){
       if($(this). prop("checked") == true){
         $(".week").prop('checked', true);

@@ -29,6 +29,67 @@
 .tabs {
   padding: 0px;
 }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 
 </style>
   
@@ -112,8 +173,11 @@
         <div class="row">
           <div class="col-md-12 mar_top_10">
             <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
-              <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Hotel</a></li>
-              <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li>
+             <!--  <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Hotel</a></li> -->
+            <!--   <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li> -->
+              <li class="tab col s2"><a class="all active" href="#" onclick="filter('4")>All</a></li>
+              <li class="tab col s2"><a class="activeall" href="#" onclick="filter('1')">Active</a></li>
+              <li class="tab col s2"><a class="stopsale" href="#" onclick="filter('0')">StopSale</a></li>
             </ul>
           </div>
         </div>
@@ -217,24 +281,30 @@
           
   });
   function filter(val) {
-    if (val==0) {
-      $('.Accepted').addClass('active');
-      $('.Pending').removeClass('active');
+    if (val==4) {
+      $('.all').addClass('active');
+      $('.activeall').removeClass('active');
+      $('.stopsale').removeClass('active');
+    } else if(val==1) {
+      $('.activeall').addClass('active');
+      $('.all').removeClass('active');
+      $('.stopsale').removeClass('active');
     } else {
-      $('.Pending').addClass('active');
-      $('.Accepted').removeClass('active');
+      $('.stopsale').addClass('active');
+      $('.all').removeClass('active');
+      $('.activeall').removeClass('active');
     }
-    // var hotelid = $("#hotel-list li a.active").attr('id');
-    // var room_table = $('#room_table').dataTable({
-    //       "bDestroy": true,
-    //       "ajax": {
-    //           url : base_url+'HotelSupplier/hotel_room_list/'+hotelid+'?filter='+val,
-    //           type : 'GET'
-    //       },
-    //    "fnDrawCallback": function(settings){
-    //       $('[data-toggle="tooltip"]').tooltip();          
-    //     }
-    // });
+    var hotelid = $("#hotel-list li a.active").attr('id');
+    var hotel_table = $('#hotel_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/hotel_list/'+hotelid+'?filter='+val,
+              type : 'GET'
+          },
+       "fnDrawCallback": function(settings){
+          $('[data-toggle="tooltip"]').tooltip();          
+        }
+    });
   }
  </script>
  <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>

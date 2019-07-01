@@ -216,7 +216,7 @@
       <div class="modal-body">
         <form method="post" id="add_contract" name="add_contract" enctype="multipart/form-data"> 
         <input type="hidden" name="id" id="id" value="<?php echo $hotelid ?>" >
-        <input type="hidden" name="contract_id" id="contract_id" value="<?php echo isset($_REQUEST['id']) ? $view[0]->contract_id : '' ?>" >
+        <input type="hidden" name="contract_id" id="contract_id" value="<?php echo isset($_REQUEST['contracts_edit_id']) ? $view[0]->contract_id : '' ?>" >
         <?php 
             $contract_type = array('Main'=>'Main','Sub'=>'Sub');
             $board = array('RO'=>'RO','BB'=>'BB','HB'=>'HB','FB'=>'FB','AI'=>'AI');
@@ -252,23 +252,6 @@
                 </div>
             </div>
           </div>
-            <div class="row">
-            <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
-               <div class="form-group col-md-4">
-                <label for="tax">Applicable Week Days</label>
-                  <div class="multi-select-mod multi-select-trans">
-                      <select id="bulk-alt-days" name="bulk-alt-days[]"  multiple="" class="form-control">
-                          <option selected="" value="Sun">Sunday</option>
-                          <option selected="" value="Mon">Monday</option>
-                          <option selected="" value="Tue">Tuesday</option>
-                          <option selected="" value="Wed">Wednesday</option>
-                          <option selected="" value="Thu">Thursday</option>
-                          <option selected="" value="Fri">Friday</option>
-                          <option selected="" value="Sat">Saturday</option>
-                      </select>
-                  </div>
-            </div>
-            <?php } ?>
            
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Status</label><br>
@@ -285,23 +268,21 @@
                 <label for="markup_type">Markup Type</label>
                       <select id="markup_type" name="markup_type" class="form-control">
                           <option value="">Select</option>
-                          <option value="percentage">Percentage</option>
-                          <option value="flat">Flat</option>
+                          <option value="percentage" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType='percentage')) ?  'selected' : '' ?>>Percentage</option>
+                          <option value="flat" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType='flat')) ?  'selected' : '' ?>>Flat</option>
                       </select>
             </div>
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Markup</label><br>
-                <?php if(isset($_REQUEST['editid'])&&$_REQUEST['editid']!="") { ?>
+                <?php if(isset($_REQUEST['contracts_edit_id'])&&$_REQUEST['contracts_edit_id']!="") { ?>
                 <input name="contractmarkup" type="radio" class="with-gap" id="contractmarkup" value="nochange" onclick="contractmarkupfun()" />
                 <label for="contractmarkup" class="status">No Change</label>
-                <input name="contractmarkup" type="radio" class="with-gap" id="contractrate" value="contractrate" onclick="contractmarkupfun()" />
-                <label for="contractmarkup" class="status">Contract Rate</label>
                 <?php } ?>
                 <input  type="text" name="markup"  class="form-control" id="markup">
             </div>
             <div class="form-group col-md-4">
                 <label for="bookingCode">Booking Code</label>
-                <input  type="text" name="bookingCode"  class="form-control" id="bookingCode">
+                <input  type="text" name="bookingCode"  class="form-control" id="bookingCode"  value="<?php echo isset($view[0]->BookingCode) ?  $view[0]->BookingCode : '' ?>">
             </div> 
         </div>
         </form>

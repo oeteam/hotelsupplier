@@ -654,20 +654,53 @@ function commonDeleteroom() {
      }
    });
 function closeoutUpdate(value,contractid,roomid,hotelid,ndate) {
-  alert(ndate);
+    var closeval = $("."+value).find('span').text();
+    if (closeval=="OFF") {
+      $("."+value).html('<span class="text-success">ON</span>');
+      val = 'Open';
+      $("."+value).closest('td').removeClass('stopsale');
+    } else {
+      $("."+value).html('<span class="text-danger">OFF</span>');
+      val = 'Close';
+      $("."+value).closest('td').addClass('stopsale');
+    }
     $.ajax({
       dataType: 'json',
       type: "POST",
-      url: base_url+'hotelsupplier/closeoutupdate/value='+value+'&contractid='+contractid+'&roomid='+roomid+'&hotelid='+hotelid+'&ndate='+ndate,
+      url: base_url+'hotelsupplier/closeoutupdate?closedout='+val+'&contractid='+contractid+'&roomid='+roomid+'&hotelid='+hotelid+'&ndate='+ndate,
       cache: false,
       success: function (response) {
-          $(".pre-page").addClass("hide");
           if(response.status=='1') {
              $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
           } else {
              $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
           }
-          loadallotment(contractid);  
       }
     });
+}
+function updateStatus(hotelid) {
+  var status = $("#hotelid"+hotelid).val();
+  if($("#hotelid"+hotelid).is(':checked')) { 
+    var  flag = '1';
+  } else {
+    var flag = '0';
+  }
+  $.ajax({
+      dataType: 'json',
+      type: "Post",
+      url: base_url+'hotelsupplier/updatehotelStatus?hotelid='+hotelid+'&value='+flag,
+      success: function(data) {
+        $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
+        var hotel_table = $('#hotel_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/hotel_list',
+              type : 'GET'
+          },
+       "fnDrawCallback": function(settings){
+          $('[data-toggle="tooltip"]').tooltip();          
+        }
+    });
+      }
+  });
 }
