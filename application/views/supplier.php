@@ -28,7 +28,7 @@
 
       <div class="clearfix"></div>
       <div class="row" style=" margin-top: 20px;">
-        <div class="col-md-offset-2 col-md-8" style="height: 58px">
+        <div class="col-md-10 col-md-offset-1" style="height: 58px">
         <div class="content5">
           <div class="row">
             <div class="col-md-12">

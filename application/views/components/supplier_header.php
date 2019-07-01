@@ -274,7 +274,7 @@
     <div class="container2">        
         <div class="navbar-collapse collapse" style="background-color: #0074b9">
         	<div class="row">
-        	<div class="col-md-offset-2 col-md-8">
+        	<div class="col-md-offset-1 col-md-10">
                       <a href="#"><img src="<?php echo base_url(); ?>skin/images/dash/logo.png" width="109px;height: 40px;" alt="" style="background: aliceblue"/></a>                      
             <ul class="nav navbar-nav navbar-right">
                        <li class="dropdown">
@@ -320,7 +320,7 @@
                  </div>
               <!-- LEFT MENU -->
               <div class="row" style="background: black">
-    <div class="col-md-offset-2 col-md-8" style="height: 58px">
+    <div class="col-md-offset-1 col-md-10" style="height: 58px">
       <?php
         $link = $_SERVER['PHP_SELF'];
         $link_array = explode('/',$link);
