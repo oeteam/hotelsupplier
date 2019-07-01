@@ -468,12 +468,14 @@ th {
         changeMonth : true,
         onSelect: function(dateText) {
           $('#fromdate').val($( "#txtCurrentDate" ).val());
+          allotmentPager();
       }
     });
     $("#alternate3").click(function() {
         $( "#txtCurrentDate" ).trigger('focus');
     });
    })
+
    $("#btnLastTimeSpan").click(function() {
         $(".pre-page").addClass("hide");
         divLoading("start");
@@ -516,6 +518,27 @@ th {
         }
       });      
   });
+  function allotmentPager() {
+    $(".pre-page").addClass("hide");
+        divLoading("start");
+        var todate       = $("#txtCurrentDate").val();
+        var fromdate     = $("#fromdate").val();
+        var hotelid = $("#hotel-list li a.active").attr('id');
+        var contractid = $("#contractlist li a.active").attr('id');
+        $.ajax({
+        dataType: 'json',
+        type: 'post',
+        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        cache: false,
+        success: function (response) {
+          $("#allotment_table").html(response.list);
+          $('#txtCurrentDate').val(response.chdate);
+          $('#fromdate').val(response.chdate);
+          $('#todate').val(response.todate);
+          divLoading("stop");
+        }
+      });      
+  }
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 
