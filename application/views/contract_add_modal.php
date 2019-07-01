@@ -252,6 +252,7 @@
                 </div>
             </div>
           </div>
+          <div class="row">
            
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Status</label><br>
@@ -268,8 +269,8 @@
                 <label for="markup_type">Markup Type</label>
                       <select id="markup_type" name="markup_type" class="form-control">
                           <option value="">Select</option>
-                          <option value="percentage" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType='percentage')) ?  'selected' : '' ?>>Percentage</option>
-                          <option value="flat" <?php echo isset(($view[0]->markupType)&&($view[0]->markupType='flat')) ?  'selected' : '' ?>>Flat</option>
+                          <option value="percentage" <?php echo isset($view[0]->markupType) && $view[0]->markupType=='percentage' ?  'selected' : '' ?>>Percentage</option>
+                          <option value="flat" <?php echo isset($view[0]->markupType) &&$view[0]->markupType=='flat' ?  'selected' : '' ?>>Flat</option>
                       </select>
             </div>
             <div class="form-group col-md-4">
