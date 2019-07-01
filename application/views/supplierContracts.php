@@ -243,13 +243,9 @@ th {
 </div>
   </div>
     <div class="clearfix"></div><br><br>
-    <div class="row">
-          <div class="col-md-12 mar_top_10">
-            <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
-              <li class="tab col s2"><a class="stopsale" onclick="contract_list_modal()">Manage Contracts</a></li>
-            </ul>
-          </div>
-        </div>
+      <div class="col-md-12 form-group">
+       <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="contract_list_modal();">Manage Contracts</button> 
+      </div>  
     <div class="col-md-12 contractlist" id="contractlist">
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {

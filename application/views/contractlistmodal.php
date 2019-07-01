@@ -212,11 +212,11 @@
       opacity: 10;
     }
     .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 20px;
+    }
 
 /* Hide default HTML checkbox */
 .switch input {
@@ -227,15 +227,15 @@
 
 /* The slider */
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    cursor: pointer;
+    top: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
 
 .slider:before {
@@ -244,7 +244,7 @@
   height: 26px;
   width: 26px;
   left: 4px;
-  bottom: 4px;
+  bottom: -1px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -296,12 +296,12 @@ input:checked + .slider:before {
           <tbody>
             <?php foreach ($contractlist as $key => $value) { 
               if ($value->contract_flg==1) {
-                  $switch = '<label class="switch">
+                  $switch = '<label class="switch" style="left:25px">
                               <input type="checkbox" id="hotelid'.$value->id.'"  onchange="updateStatus('."'$value->id'".');" checked >
                               <span class="slider round"></span>
                             </label>';
               } else {
-                  $switch = '<label class="switch">
+                  $switch = '<label class="switch" style="left:25px>
                               <input type="checkbox" id="hotelid'.$value->id.'"  onchange="updateStatus('."'$value->id'".');">
                               <span class="slider round"></span>
                             </label>';
