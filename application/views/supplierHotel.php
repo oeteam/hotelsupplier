@@ -32,8 +32,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 40px;
+  height: 15px;
 }
 
 /* Hide default HTML checkbox */
@@ -59,11 +59,11 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
+  height: 20px;
+  width: 20px;
+  left: 0px;
+  bottom: -2px;
+  background-color: black;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -175,7 +175,7 @@ input:checked + .slider:before {
             <ul class="tabs" style="box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16);">
              <!--  <li class="tab col s2"><a class="Accepted active" href="#" onclick="filter('0')">Hotel</a></li> -->
             <!--   <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li> -->
-              <li class="tab col s2"><a class="all active" href="#" onclick="filter('4")>All</a></li>
+              <li class="tab col s2"><a class="all active" href="#" onclick="filter('4')">All</a></li>
               <li class="tab col s2"><a class="activeall" href="#" onclick="filter('1')">Active</a></li>
               <li class="tab col s2"><a class="stopsale" href="#" onclick="filter('0')">StopSale</a></li>
             </ul>
@@ -183,6 +183,7 @@ input:checked + .slider:before {
         </div>
     </div>
     <div class="tab-inn">
+      <br>
       <table class="table table-hover" id="hotel_table">
         <thead>
             <tr>
