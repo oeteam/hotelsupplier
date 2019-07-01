@@ -54,7 +54,7 @@ class HotelSupplier extends MY_Controller {
     $data["links"] = $this->ajax_pagination->create_links();
     $data['HotelList']= $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
     $data['contry']= $this->Supplier_Model->SelectCountry();
-    $data['hotels'] = $this->Supplier_Model->hotel_list_select()->result();
+    $data['hotels'] = $this->Supplier_Model->hotel_list_select(1)->result();
     $this->load->view('supplierRooms',$data);
   }
   public function addhotelmodal() {
