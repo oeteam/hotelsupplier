@@ -167,8 +167,8 @@ class Supplier_Model extends CI_Model {
 	public function hotel_list_select($filter) {
 		$this->db->select('*');
 		$this->db->from('hotel_tbl_hotels');
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		if($filter=='1') {
 			$this->db->where('delflg','1');
 		} else if($filter=='0') {
@@ -328,8 +328,8 @@ class Supplier_Model extends CI_Model {
 		if($request['rating']!="" && $request['rating']!='all') {
 			$this->db->where('rating',$request['rating']);
 		}
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$query=$this->db->get();
 		return $query;
@@ -409,8 +409,8 @@ class Supplier_Model extends CI_Model {
 		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
 			$this->db->where('rating',$_REQUEST['rating']);
 		}
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$query=$this->db->get()->result();
 		return count($query);
@@ -436,8 +436,8 @@ class Supplier_Model extends CI_Model {
 		if(isset($_REQUEST['rating'])&&$_REQUEST['rating']!="" && $_REQUEST['rating']!='all') {
 			$this->db->where('rating',$_REQUEST['rating']);
 		}
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$this->db->limit($limit, $start);
 		$query=$this->db->get()->result();
@@ -446,8 +446,8 @@ class Supplier_Model extends CI_Model {
   	public function hotel_list($limit,$start) {
 		$this->db->select('*');
 		$this->db->from('hotel_tbl_hotels');
-		// $this->db->where('supplier','1');
-		// $this->db->where('supplierid',$this->session->userdata('supplier_id'));
+		$this->db->where('supplier','1');
+		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		$this->db->order_by('id','desc');
 		$this->db->limit($limit, $start);
 		$query=$this->db->get();
