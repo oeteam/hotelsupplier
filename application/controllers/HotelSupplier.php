@@ -819,7 +819,7 @@ class HotelSupplier extends MY_Controller {
       }
       $data['list'].= '</ul>
                         <br>
-                        <div class="col-md-12 pull-right"><div class="hpadding20">
+                        <div class="row pull-right" style="margin-top: 10px;"><div class="hpadding20">
                       <ul class="pagination right ">
                       '.$result["links"].'
                       </ul>
