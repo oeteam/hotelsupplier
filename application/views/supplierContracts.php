@@ -33,9 +33,13 @@
   padding: 0;
   font-size: 12px;
 }
-.hotel-list li {
+.hotel-list .hotels li {
+    /* margin-top: 10px; */
   display: inline;
-  margin-top: 10px;
+  width: 220px;
+  position: relative;
+  float: left;
+  margin-left: 10px;
 }
 .hotel-list  li a {
   display: inline-block;
@@ -53,6 +57,7 @@
   color: #0583ae;
   font-weight: bolder;
   text-decoration: underline;
+  font-size: 14px;
 }
 /*.hotel-list li a:hover:not(.active) {
   background-color: #555;
@@ -69,6 +74,7 @@
   margin-top: 10px;
   cursor: pointer;
 }
+
 .contractlist li a {
   display: inline-block;
   height: 30px;
@@ -232,7 +238,7 @@ th {
                 ?>
               </ul>
               <br>
-               <div class="col-md-12 pull-right"><div class="hpadding20">
+               <div class="row pull-right" style="margin-top: 10px;"><div class="hpadding20">
                       <ul class="pagination right paddingbtm20">
                       <?php echo $links ?>
                       </ul>
