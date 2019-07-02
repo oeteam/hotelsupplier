@@ -319,7 +319,7 @@ th {
     </div>
   </div>
 </div>
-  <div class="row hide" id="cancellation_list">
+  <div class="row hide col-md-12" id="cancellation_list">
       <table class="table table-hover" id="cancellation_table">
         <thead>
             <tr>
