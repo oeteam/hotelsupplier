@@ -497,6 +497,7 @@ th {
           $('#txtCurrentDate').val(response.chdate);
           $('#fromdate').val(response.chdate);
           $('#todate').val(response.todate);
+          $("#alternate3").val(response.altchdate);
           divLoading("stop");
         }
       });      
@@ -519,11 +520,19 @@ th {
           $('#txtCurrentDate').val(response.chdate);
           $('#fromdate').val(response.chdate);
           $('#todate').val(response.todate);
+          $("#alternate3").val(response.altchdate);
           divLoading("stop");
         }
       });      
   });
   function allotmentPager() {
+    if ($("#selectCalendarType").val()=='month') {
+      $("#btnLastTimeSpan").text('Pre month');
+      $("#btnNextTimeSpan").text('Next month');
+    } else {
+      $("#btnLastTimeSpan").text('Pre 7d');
+      $("#btnNextTimeSpan").text('Next 7d');
+    }
     $(".pre-page").addClass("hide");
         divLoading("start");
         var todate       = $("#txtCurrentDate").val();
@@ -541,6 +550,7 @@ th {
           $('#txtCurrentDate').val(response.chdate);
           $('#fromdate').val(response.chdate);
           $('#todate').val(response.todate);
+          $("#alternate3").val(response.altchdate);
           divLoading("stop");
         }
       });      

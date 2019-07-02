@@ -1,6 +1,6 @@
 
     <!-- This page JS -->
-	<script src="<?php echo base_url(); ?>skin/assets/js/js-index.js"></script>	
+	<!-- <script src="<?php echo base_url(); ?>skin/assets/js/js-index.js"></script>	 -->
 		
 	<!-- Sparkline -->	
 	<script src="<?php echo base_url(); ?>skin/assets/js/jquery.sparkline.js"></script>
@@ -42,6 +42,6 @@
 <!--     <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script> -->
 
-    <script src="<?php echo base_url(); ?>skin/assets/js/js-dashboard.js"></script>
+    <!-- <script src="<?php echo base_url(); ?>skin/assets/js/js-dashboard.js"></script> -->
   </body>
 </html>

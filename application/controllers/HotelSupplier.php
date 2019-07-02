@@ -744,19 +744,26 @@ class HotelSupplier extends MY_Controller {
     }
     $contractid = $_REQUEST['contractid'];
     $hotelid = $_REQUEST['hotelid'];
-    $todate = $_REQUEST['todate'];
     $fromdate = $_REQUEST['fromdate'];
     $type = $_REQUEST['type'];
     $daycount = 7;
     if ($type=="month") {
       $daycount = 35;
-    }
-    if($_REQUEST['value']=="prev") {
-      $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
-    } else if($_REQUEST['value']=="next") {
-      $chdate = $todate;
-    } else if($_REQUEST['value']=="") {
-      $chdate = $fromdate;
+      if($_REQUEST['value']=="prev") {
+        $chdate = date('Y-m-d',strtotime($fromdate . "-1 month"));
+      } else if($_REQUEST['value']=="next") {
+        $chdate = date('Y-m-d',strtotime($fromdate . "+1 month"));
+      } else if($_REQUEST['value']=="") {
+        $chdate = $fromdate;
+      }
+    } else {
+      if($_REQUEST['value']=="prev") {
+        $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
+      } else if($_REQUEST['value']=="next") {
+        $chdate = date('Y-m-d',strtotime($fromdate . "+7 day"));
+      } else if($_REQUEST['value']=="") {
+        $chdate = $fromdate;
+      }
     }
     $rooms = $this->Supplier_Model->getRooms_contracts($hotelid);
     $output['list'] = '<thead><tr><th>Room</th>';
@@ -785,7 +792,7 @@ class HotelSupplier extends MY_Controller {
           }
 
           for($i=$i;$i<(7*$x);$i++) {
-            if (date('m',strtotime($fromdate)) != date('m',strtotime($chdate . "+".$i." day"))) {
+            if (date('m',strtotime($chdate)) != date('m',strtotime($chdate . "+".$i." day"))) {
                 $output['list'] .= '<td style="background-color:#cecaca"></td>';
             } else {
               $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
@@ -838,6 +845,7 @@ class HotelSupplier extends MY_Controller {
     }
       $output['list'] .= '</tbody>';
       $output['chdate'] = $chdate;
+      $output['altchdate'] = date('d/m/Y',strtotime($chdate));
       $output['todate'] = date('Y-m-d',strtotime($chdate . "+6 day"));
     echo json_encode($output);
     exit();
