@@ -740,6 +740,11 @@ class HotelSupplier extends MY_Controller {
     $hotelid = $_REQUEST['hotelid'];
     $todate = $_REQUEST['todate'];
     $fromdate = $_REQUEST['fromdate'];
+    $type = $_REQUEST['type'];
+    $daycount = 7;
+    if ($type=="month") {
+      $daycount = 35;
+    }
     if($_REQUEST['value']=="prev") {
       $chdate = date('Y-m-d',strtotime($fromdate . "-7 day"));
     } else if($_REQUEST['value']=="next") {
@@ -749,11 +754,13 @@ class HotelSupplier extends MY_Controller {
     }
     $rooms = $this->Supplier_Model->getRooms_contracts($hotelid);
     $output['list'] = '<thead><tr><th>Room</th>';
-    for($i=0;$i<7;$i++) {
-      if ($i==0 && date('Y-m-d',strtotime($chdate . "+".$i." day"))==date('Y-m-d')) {
-        $output['list'] .= '<th>Today</th>';
-      } else {
-        $output['list'] .= '<th>'.date('D',strtotime($chdate . "+".$i." day")).'</th>';
+    for($i=0;$i<$daycount;$i++) {
+      if ($i<7) {
+        if ($type!="month" && $i==0 && date('Y-m-d',strtotime($chdate . "+".$i." day"))==date('Y-m-d')) {
+          $output['list'] .= '<th>Today</th>';
+        } else {
+          $output['list'] .= '<th>'.date('D',strtotime($chdate . "+".$i." day")).'</th>';
+        }
       }
       $ndate = date('Y-m-d',strtotime("+".$i." day"));
         // $allotment[]= $this->Supplier_Model->allotmentList($contractid,$ndate);
@@ -762,26 +769,66 @@ class HotelSupplier extends MY_Controller {
       // print_r(date('Y-m-d',strtotime($chdate . "+1 day")));exit;
     $output['list'] .= '</tr></thead><tbody>';
     foreach ($rooms as $key => $value) {
-      $output['list'] .= '<tr><td class="roomname">'.$value->roomName.'</td>';
-      for($i=0;$i<7;$i++) {
-         $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
-         $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
-         $room_booking = $this->Supplier_Model->room_booking($hotelid,$value->id,$ndate,$contractid);
-        if (count($data)!=0 && $data[0]->closedDate=="") {
-           $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.','."'$ndate'".')"><span class="text-success">ON</span></span>';
-           $stopsale = '';
-         } else {
-           $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.',\''.$ndate.'\');"><span class="text-danger">OFF</span></span>';
-           $stopsale = 'stopsale';
-         }
-        if (count($data)!=0) {
-          $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
-        } else {
-          $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
-        } 
+      if ($type=="month") {
+        $i = 0;
+        for ($x=1; $x <= ($daycount/7); $x++) { 
+          if ($x==1) {
+            $output['list'] .= '<tr><td class="roomname" rowspan="5">'.$value->roomName.'</td>';
+          } else {
+            $output['list'] .= '<tr>';
+          }
+
+          for($i=$i;$i<(7*$x);$i++) {
+            if (date('m',strtotime($fromdate)) != date('m',strtotime($chdate . "+".$i." day"))) {
+                $output['list'] .= '<td style="background-color:#cecaca"></td>';
+            } else {
+              $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
+              $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
+              $room_booking = $this->Supplier_Model->room_booking($hotelid,$value->id,$ndate,$contractid);
+              if (count($data)!=0 && $data[0]->closedDate=="") {
+                 $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.','."'$ndate'".')"><span class="text-success">ON</span></span>';
+                 $stopsale = '';
+               } else {
+                 $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.',\''.$ndate.'\');"><span class="text-danger">OFF</span></span>';
+                 $stopsale = 'stopsale';
+               }
+              if (count($data)!=0) {
+                $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
+              } else {
+                $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
+              } 
+            }
+          }
+          $i = 7*$x;
+          if ($x==1) {
+            $output['list'] .= '<td rowspan="5"><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date">Edit</a></td></tr>';
+          } else {
+            $output['list'] .= '</tr>';
+          }
+        }
+      } else {
+        $output['list'] .= '<tr><td class="roomname">'.$value->roomName.'</td>';
+        for($i=0;$i<$daycount;$i++) {
+          
+           $ndate =  date('Y-m-d',strtotime($chdate . "+".$i." day"));
+           $data = $this->Supplier_Model->allotmentList($value->id,$contractid,$ndate);
+           $room_booking = $this->Supplier_Model->room_booking($hotelid,$value->id,$ndate,$contractid);
+          if (count($data)!=0 && $data[0]->closedDate=="") {
+             $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.','."'$ndate'".')"><span class="text-success">ON</span></span>';
+             $stopsale = '';
+           } else {
+             $close = '<span class="closeout closeout'.$value->id.$ndate.'" onClick="closeoutUpdate(\'closeout'.$value->id.$ndate.'\',\''.$contractid.'\','.$value->id.','.$hotelid.',\''.$ndate.'\');"><span class="text-danger">OFF</span></span>';
+             $stopsale = 'stopsale';
+           }
+          if (count($data)!=0) {
+            $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
+          } else {
+            $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
+          } 
+        }
+        $output['list'] .= '<td><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date">Edit</a></td>';
+        $output['list'] .= '</tr>';
       }
-      $output['list'] .= '<td><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date">Edit</a></td>';
-      $output['list'] .= '</tr>';
     }
       $output['list'] .= '</tbody>';
       $output['chdate'] = $chdate;

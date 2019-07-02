@@ -284,16 +284,16 @@ th {
              <h3>Allotment List
              <small class="pull-right">
              <div class="ctrl-page left-gap">
-                <!-- <label class="ctrl-label">
-                    <select class="in-select" id="selectCalendarType">
+                <label class="ctrl-label pull-left">
+                    <select class="form-control" id="selectCalendarType" onchange="allotmentPager()">
                         <option value="week" selected="selected">by week</option>
                         <option value="month">by month</option>
                     </select>
-                </label> -->
+                </label>
                 <a href="javascript:;" class="btn btn-primary btn-small pull-left" id="btnLastTimeSpan">Pre 7d</a>
                 <div style="width: 120px;display: block;float: left;">
-                    <input type="text"  class="datePicker-hide datepicker input-group-addon" style="height: 0px" id="txtCurrentDate"  name="txtCurrentDate" placeholder="dd/mm/yyyy" value="<?php echo date('Y-m-d') ?>">
-                    <div class="input-group" style="transform: translateY(-14px);">
+                    <input type="text"  class="datePicker-hide datepicker input-group-addon" style="position: absolute;opacity: 0;" id="txtCurrentDate"  name="txtCurrentDate" placeholder="dd/mm/yyyy" value="<?php echo date('Y-m-d') ?>">
+                    <div class="input-group" style="">
                         <input class="form-control datepicker date-pic" id="alternate3" name="" value="<?php echo isset($view[0]->to_date) ? date('d/m/Y',strtotime($view[0]->to_date)) : date('d/m/Y') ?>" >
                         <label for="alternate3" class="input-group-addon"><i class="fa fa-calendar"></i></label>
                     </div>
@@ -305,7 +305,7 @@ th {
         </div>
     </div>
     <div class="tab-inn">
-      <table class="table table-bordered" id="allotment_table">
+      <table class="table table-bordered table-responsive" id="allotment_table">
       </table>
       <input type="hidden" id="fromdate" value="<?php echo date('Y-m-d') ?>">
       <input type="hidden" id="todate" value="<?php echo date('Y-m-d',strtotime('+7 day')) ?>">
@@ -447,11 +447,12 @@ th {
      var fromdate     = $("#fromdate").val();
      $(".cm-contract").removeClass("active");
      $("#"+id).addClass("active");
+      var types = $("#selectCalendarType").val();
      var hotelid = $("#hotel-list li a.active").attr('id');
      $.ajax({
       dataType: 'json',
       type: 'post',
-      url:  base_url+'HotelSupplier/allotment_list?value=&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+id,
+      url:  base_url+'HotelSupplier/allotment_list?value=&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+id+'&type='+types,
       cache: false,
       success: function (response) {
         $("#allotment_table").html(response.list);
@@ -465,7 +466,7 @@ th {
         altField: "#alternate3",
         dateFormat: "yy-mm-dd",
         altFormat: "dd/mm/yy",
-        minDate: new Date(<?php date('d/m/Y') ?>),
+        // minDate: new Date(<?php date('d/m/Y') ?>),
         changeYear : true,
         changeMonth : true,
         onSelect: function(dateText) {
@@ -485,10 +486,11 @@ th {
         var fromdate     = $("#fromdate").val();
         var hotelid = $("#hotel-list li a.active").attr('id');
         var contractid = $("#contractlist li a.active").attr('id');
+        var types = $("#selectCalendarType").val();
         $.ajax({
         dataType: 'json',
         type: 'post',
-        url:  base_url+'HotelSupplier/allotment_list?value=prev&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        url:  base_url+'HotelSupplier/allotment_list?value=prev&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid+'&type='+types,
         cache: false,
         success: function (response) {
           $("#allotment_table").html(response.list);
@@ -506,10 +508,11 @@ th {
         var fromdate     = $("#fromdate").val();
         var hotelid = $("#hotel-list li a.active").attr('id');
         var contractid = $("#contractlist li a.active").attr('id');
+        var types = $("#selectCalendarType").val();
         $.ajax({
         dataType: 'json',
         type: 'post',
-        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid+'&type='+types,
         cache: false,
         success: function (response) {
           $("#allotment_table").html(response.list);
@@ -527,10 +530,11 @@ th {
         var fromdate     = $("#fromdate").val();
         var hotelid = $("#hotel-list li a.active").attr('id');
         var contractid = $("#contractlist li a.active").attr('id');
+        var types = $("#selectCalendarType").val();
         $.ajax({
         dataType: 'json',
         type: 'post',
-        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid,
+        url:  base_url+'HotelSupplier/allotment_list?value=next&todate='+todate+'&fromdate='+fromdate+'&hotelid='+hotelid+'&contractid='+contractid+'&type='+types,
         cache: false,
         success: function (response) {
           $("#allotment_table").html(response.list);

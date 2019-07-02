@@ -18,7 +18,7 @@
     <script src="<?php echo base_url(); ?>skin/assets/js/jquery.easing.js"></script>
 	
     <!-- Nicescroll  -->	
-	<script src="<?php echo base_url(); ?>skin/assets/js/jquery.nicescroll.min.js"></script>
+	<!-- <script src="<?php echo base_url(); ?>skin/assets/js/jquery.nicescroll.min.js"></script> -->
 	
     <!-- CarouFredSel -->
     <script src="<?php echo base_url(); ?>skin/assets/js/jquery.carouFredSel-6.2.1-packed.js"></script>
