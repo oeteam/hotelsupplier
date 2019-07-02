@@ -332,6 +332,7 @@
                   <label for="Open" style="font-weight: 100 !important;">Open</label>
               </div>
             </div>
+           <?php if(!isset($view)) { ?>
             <div class="form-group col-md-6">
               <label>Cancellation Policy</label><br>
                 <select id="policy" name="policy" class="form-control" onchange="cancellationfun();">
@@ -344,22 +345,17 @@
           <div class="row">
             <div class="form-group col-md-6 cancel_before hide">
               <label>Cancellation Before</label><br>
-               <div class="">
-                  <input type="text"  class="datePicker-hide datepicker input-group-addon" id="cancel_before"  name="cancel_before" placeholder="dd/mm/yyyy" value="<?php echo isset($view['todate']) ? $view['todate'] : date('Y-m-d') ?>">
-                  <div class="input-group">
-                      <input class="form-control datepicker date-pic" id="alternate3" name="" value="<?php echo isset($view['todate']) ? date('d/m/Y',strtotime($view['todate'])) : date('d/m/Y') ?>" >
-                      <label for="alternate3" class="input-group-addon"><i class="fa fa-calendar"></i></label>
-                  </div>
-              </div>
+                  <input type="number"  class="form-control" id="cancel_before"  name="cancel_before">
             </div>
             <div class="form-group col-md-6 deduction hide">
               <label>Overdue Deduction</label><br>
                 <select id="deduction" name="deduction" class="form-control">
                     <option value=""></option>
-                    <option value="fullstay">Charge Full Stay</option>
-                    <option value="firstnight">Charge First Night</option>
+                    <option value="FULL STAY">Charge Full Stay</option>
+                    <option value="FIRST NIGHT">Charge First Night</option>
                 </select>
             </div>
+          <?php } ?>
           </div>
         </form>
       </div>
@@ -450,17 +446,6 @@
     });
     $("#alternate2").click(function() {
         $( "#bulk-alt-toDate" ).trigger('focus');
-    });
-    $("#cancel_before").datepicker({
-        altField: "#alternate3",
-        dateFormat: "yy-mm-dd",
-        altFormat: "dd/mm/yy",
-        minDate: new Date(<?php date('d/m/Y') ?>),
-        changeYear : true,
-        changeMonth : true,
-    });
-    $("#alternate3").click(function() {
-        $( "#cancel_before" ).trigger('focus');
     });
     $('#room').multiselect({
           allSelectedText: 'All',
