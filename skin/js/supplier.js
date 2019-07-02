@@ -563,7 +563,7 @@ function commonDeleteroom() {
     var contractmarkup = $("#contractmarkup").val();
     var markup = $("#markup").val();
     var markup_type = $("#markup_type").val();
-    var bookingcode = $("#bookingcode").val();
+    var bookingcode = $("#bookingCode").val();
     if(contractmarkup=="")
     {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Amount field is required","!");</script>');
@@ -577,7 +577,7 @@ function commonDeleteroom() {
     else if(bookingcode=="")
     {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Booking Code field is required","!");</script>');
-      $("#bookingcode").focus();
+      $("#bookingCode").focus();
     } else if(markup_type=="") {
       $(".msg").append('<script type="text/javascript"> AddToast("danger","Markup Type field is required","!");</script>');
       $("#markup_type").focus();
@@ -701,6 +701,49 @@ function updateStatus(hotelid) {
           $('[data-toggle="tooltip"]').tooltip();          
         }
     });
+      }
+  });
+}
+$('#contract_update').click(function () {
+    var contractmarkup = $("#contractmarkup").val();
+    var markup = $("#markup").val();
+    var markup_type = $("#markup_type").val();
+    var bookingcode = $("#bookingCode").val();
+    if(($("#contractmarkup"). prop("checked") == false) && markup=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Markup field is required","!");</script>');
+      $("#markup").focus();
+    } else if(bookingcode=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Booking Code field is required","!");</script>');
+      $("#bookingCode").focus();
+    } else if(markup_type=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Markup Type field is required","!");</script>');
+      $("#markup_type").focus();
+    }
+    else {
+       $(".msg").append('<script type="text/javascript"> AddToast("success","Contract added successfully","!");</script>');
+       $("#add_contract").attr('action',base_url+'hotelsupplier/add_contract');
+       $("#add_contract").submit();
+     }
+   });
+function ContractStatus(contractid) {
+  var status = $("#contractid"+contractid).val();
+  if($("#contractid"+contractid).is(':checked')) { 
+    var  flag = '1';
+  } else {
+    var flag = '0';
+  }
+  $.ajax({
+      dataType: 'json',
+      type: "Post",
+      url: base_url+'hotelsupplier/updatecontractStatus?contractid='+contractid+'&value='+flag,
+      success: function(data) {
+        $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
+        var hotelid = $("#hotel-list li a.active").attr('id');
+        $("#myModal").load(base_url+'HotelSupplier/contractlistmodal/'+hotelid);
+          $('#myModal').modal({
+              backdrop: 'static',
+              keyboard: false
+          });
       }
   });
 }

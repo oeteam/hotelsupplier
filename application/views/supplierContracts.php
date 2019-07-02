@@ -256,9 +256,9 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id ?></a></li>
+              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id; ?></a><?php if($value->contract_flg=='0') { echo "<sup style='color:red;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; } ?></li>
             <?php } else { ?>
-              <li><a class="cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?></a></li>
+              <li><a class="cm-contract" id="<?php echo $value->contract_id;?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?></a><?php if($value->contract_flg=='0') { echo "<sup style='color:red;;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; }  ?></li>
             <?php } 
           }
         }

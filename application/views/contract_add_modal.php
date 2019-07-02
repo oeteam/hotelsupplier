@@ -205,6 +205,12 @@
    .status {
       font-size: 12px;
     }
+    .pad-0 {
+      padding: 0px;
+    }
+    .close {
+      opacity: 10;
+    }
 
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
@@ -216,7 +222,7 @@
       <div class="modal-body">
         <form method="post" id="add_contract" name="add_contract" enctype="multipart/form-data"> 
         <input type="hidden" name="id" id="id" value="<?php echo $hotelid ?>" >
-        <input type="hidden" name="contract_id" id="contract_id" value="<?php echo isset($_REQUEST['contracts_edit_id']) ? $view[0]->contract_id : '' ?>" >
+        <input type="hidden" name="contracts_edit_id" id="contracts_edit_id" value="<?php echo isset($_REQUEST['contracts_edit_id']) ? $view[0]->id : '' ?>" >
         <?php 
             $contract_type = array('Main'=>'Main','Sub'=>'Sub');
             $board = array('RO'=>'RO','BB'=>'BB','HB'=>'HB','FB'=>'FB','AI'=>'AI');
@@ -257,7 +263,7 @@
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Status</label><br>
                 <?php if(isset($_REQUEST['contracts_edit_id'])&&($_REQUEST['contracts_edit_id']!="")) { ?>
-                <input name="roomstatus" type="radio" class="with-gap" id="nochange" value="0"/>
+                <input name="roomstatus" type="radio" class="with-gap" id="nochange" value=""/>
                 <label for="nochange" class="status">No Change</label>
                 <?php } ?>
                 <input name="roomstatus" type="radio" class="with-gap" id="open" <?php echo isset($view[0]->contract_flg) && $view[0]->contract_flg=='0' ?  'checked' : 'checked' ?>   value="0" />
@@ -276,10 +282,14 @@
             <div class="form-group col-md-4">
                 <label for="max_age">Contract Markup</label><br>
                 <?php if(isset($_REQUEST['contracts_edit_id'])&&$_REQUEST['contracts_edit_id']!="") { ?>
-                <input name="contractmarkup" type="radio" class="with-gap" id="contractmarkup" value="nochange" onclick="contractmarkupfun()" />
-                <label for="contractmarkup" class="status">No Change</label>
+                <div class="col-md-6 pad-0">
+                  <input type="checkbox" id="contractmarkup" name="contractmarkup" value="no_change" />
+                  <label for="contractmarkup" style="font-weight: 100 !important;">NoChange</label>
+                </div>
                 <?php } ?>
-                <input  type="text" name="markup"  class="form-control" id="markup">
+                <div class="col-md-6 pad-0">
+                  <input  type="text" name="markup"  class="form-control" id="markup" value="<?php echo isset($view[0]->markup) ?  $view[0]->markup : '' ?>">
+                </div>
             </div>
             </div>
         <div class="row">
@@ -291,8 +301,13 @@
         </form>
       </div>
        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" name="contract_submit" id="contract_submit">Submit</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+        <?php if(isset($_REQUEST['contracts_edit_id']) && $_REQUEST['contracts_edit_id']!="") { ?>
+          <button type="button" class="btn-sm btn-success" name="contract_update" id="contract_update">Update</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
            <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+        <?php } else { ?>
+            <button type="button" class="btn-sm btn-success" name="contract_submit" id="contract_submit">Submit</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+           <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+        <?php } ?>
     
       </div>
     </div>
@@ -372,6 +387,13 @@
           selectAllValue: 0
     });
   });
+  $("#contractmarkup").change(function() {
+        if($(this). prop("checked") == true){
+          $("#markup").prop('disabled', true);
+        } else {
+         $('#markup').prop("disabled", false);
+       }
+    })
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 

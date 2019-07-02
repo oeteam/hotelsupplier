@@ -685,9 +685,15 @@ class HotelSupplier extends MY_Controller {
     $this->load->view('contract_add_modal',$data);      
   }
   public function add_contract(){
-    $view = $this->Supplier_Model->add_contract($_REQUEST);
-    $description = 'New contract added [Hotel Code: HE0'.$_REQUEST['id'].', Contract ID: CON0'.$view.']';
-    AgentlogActivity($description);
+    if (isset($_REQUEST['contracts_edit_id']) && $_REQUEST['contracts_edit_id']!="") {
+      $update = $this->Supplier_Model->update_contract($_REQUEST,$_REQUEST['contracts_edit_id']);
+      $description = 'Contract details updated [id:'.$_REQUEST['contracts_edit_id'].', Contract ID: CON0'.$_REQUEST['contracts_edit_id'].']';
+      AgentlogActivity($description);
+    }  else {
+      $view = $this->Supplier_Model->add_contract($_REQUEST);
+      $description = 'New contract added [Hotel Code: HE0'.$_REQUEST['id'].', Contract ID: CON0'.$view.']';
+      AgentlogActivity($description);
+    } 
     redirect("hotelsupplier/contracts");
   }
   public function hotel_contract_list($hotelid) {
@@ -874,10 +880,13 @@ class HotelSupplier extends MY_Controller {
       $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
+        if($value->contract_flg=='0') { 
+          $stopsale = "<sup style='color:red;;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; 
+        }
         if($key==0) {
-          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a>'.$stopsale.'</li>';
         } else {
-          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a></li>';
+          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a>'.$stopsale.'</li>';
         }
       }
       $data['list2'].= '<br>';
@@ -889,8 +898,8 @@ class HotelSupplier extends MY_Controller {
     
     echo json_encode($Return);
   }
-  public function updatehotelStatus() {
-    $this->Supplier_Model->updatehotelStatus($_REQUEST['hotelid'],$_REQUEST['value']);
+  public function updatecontractStatus() {
+    $this->Supplier_Model->updatecontractStatus($_REQUEST['contractid'],$_REQUEST['value']);
     echo json_encode(true);
   }
   public function contractlistmodal($hotelid)
@@ -902,5 +911,9 @@ class HotelSupplier extends MY_Controller {
     $data['title'] = "Contracts";
     $data['contractlist']= $this->Supplier_Model->allcontractlist($hotelid);
     $this->load->view('contractlistmodal',$data); 
+  }
+  public function updatehotelcontractStatus() {
+    $this->Supplier_Model->updatehotelStatus($_REQUEST['hotelid'],$_REQUEST['value']);
+    echo json_encode(true);
   }
 }
