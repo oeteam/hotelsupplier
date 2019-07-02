@@ -942,4 +942,35 @@ class HotelSupplier extends MY_Controller {
     $this->Supplier_Model->updatehotelStatus($_REQUEST['hotelid'],$_REQUEST['value']);
     echo json_encode(true);
   }
+  public function cancellationlist($contractid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    $list = $this->Supplier_Model->cancellationlist($contractid);
+    foreach($list->result() as $key => $r) {
+         // $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
+         // $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+              $data[] = array(
+                   $r->fromDate,
+                   $r->toDate,
+                   $r->daysFrom,
+                   $r->cancellationPercentage,
+                   $r->application,
+                   '',
+              );
+    }
+    $output = array(
+         "draw"             => $draw,
+          "recordsTotal"    => $list->num_rows(),
+          "recordsFiltered" => $list->num_rows(),
+          "data"            => $data
+    );
+    echo json_encode($output);
+
+  }
 }

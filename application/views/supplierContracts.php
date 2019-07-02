@@ -273,8 +273,10 @@ th {
     <div class="clearfix"></div><br><br>
     <div class="col-md-12 form-group">
       <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(1);">Add Allotment</button> 
+      <button class="btn btn-success" id="cancellationlist">Cancellation List</button> 
+      <button class="btn btn-success hide" id="allotmentlist">Allotment List</button> 
     </div>  
-  <div class="row" >
+  <div class="row" id="allotment_list">
     <div class="col-md-12">
       <p class="text-center spin-wrapper"><strong>We are getting the results.Please wait few moments..</strong></p>
     </div>
@@ -286,7 +288,7 @@ th {
     <div class="col-md-12 pre-page hide">
       <div class="box-inn-sp">
         <div class="inn-title">
-             <h3>Allotment List
+             <h3>Allotment List</h3>
              <small class="pull-right">
              <div class="ctrl-page left-gap">
                 <label class="ctrl-label pull-left">
@@ -315,6 +317,23 @@ th {
       <input type="hidden" id="fromdate" value="<?php echo date('Y-m-d') ?>">
       <input type="hidden" id="todate" value="<?php echo date('Y-m-d',strtotime('+7 day')) ?>">
     </div>
+  </div>
+</div>
+  <div class="row hide" id="cancellation_list">
+      <table class="table table-hover" id="cancellation_table">
+        <thead>
+            <tr>
+                <th>Fromdate</th>
+                <th>Todate</th>
+                <th>Cancellation Before</th>
+                <th>Cancellation Percentage</th>
+                <th>Application</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
   </div>
 </div> 
 </div>
@@ -462,6 +481,16 @@ th {
       success: function (response) {
         $("#allotment_table").html(response.list);
         divLoading("stop");
+        var cancellation_table = $('#cancellation_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/cancellationlist/'+id,
+              type : 'GET'
+          },
+       "fnDrawCallback": function(settings){
+          $('[data-toggle="tooltip"]').tooltip();          
+        }
+       });
       }
     });     
    }
@@ -560,6 +589,30 @@ th {
         }
       });      
   }
+  $("#cancellationlist").click(function() {
+        $("#cancellationlist").addClass("hide");
+        $("#allotmentlist").removeClass("hide");
+        $("#allotment_list").addClass("hide");
+        $("#cancellation_list").removeClass("hide");
+        var contractid = $("#contractlist li a.active").attr('id');
+        var cancellation_table = $('#cancellation_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/cancellationlist/'+contractid,
+              type : 'GET'
+          },
+       "fnDrawCallback": function(settings){
+          $('[data-toggle="tooltip"]').tooltip();          
+        }
+    });
+       
+  });
+  $("#allotmentlist").click(function() {
+        $("#cancellationlist").removeClass("hide");
+        $("#allotmentlist").addClass("hide");
+        $("#allotment_list").removeClass("hide");
+        $("#cancellation_list").addClass("hide");
+  });
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

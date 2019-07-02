@@ -669,6 +669,20 @@ class Supplier_Model extends CI_Model {
 			    }
 			}
 		}
+		if(isset($request['policy'])&&$request['policy']!="") {
+			$rooms = implode(",",$request['room']);
+			$data = array('fromDate' => $request['bulk-alt-fromDate'],
+						'toDate' => $request['bulk-alt-toDate'],
+						'roomType' => $rooms,
+						'cancellationPercentage' => 100,
+						'hotel_id' => $request['hotelid'],
+						'contract_id' => $request['contractid'],
+						'application' => $request['deduction'],
+						'daysFrom' => $request['cancel_before'],
+						'CreatedDate' => date('Y-m-d'),
+						'CreatedBy' => $this->session->userdata('supplier_id'));
+			$this->db->insert('hotel_tbl_cancellationfee',$data);
+		}
 		return true;
     }
     public function add_closedout($request){
@@ -948,4 +962,12 @@ class Supplier_Model extends CI_Model {
 		$this->db->update('hotel_tbl_contract',$data);
 		return true;
 	}
+	public function cancellationlist($contractid) {
+		$this->db->select('*');
+		$this->db->from('hotel_tbl_cancellationfee');
+		$this->db->where('contract_id',$contractid);
+		$this->db->order_by('id','desc');
+		$query=$this->db->get();
+		return $query;
+    }
 }
