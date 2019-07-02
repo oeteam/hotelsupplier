@@ -814,7 +814,7 @@ class HotelSupplier extends MY_Controller {
           }
           $i = 7*$x;
           if ($x==1) {
-            $output['list'] .= '<td rowspan="5"><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date">Edit</a></td></tr>';
+            $output['list'] .= '<td rowspan="5"><br><a data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(2);" class="date" style="cursor:pointer">Edit</a></td></tr>';
           } else {
             $output['list'] .= '</tr>';
           }
@@ -846,7 +846,12 @@ class HotelSupplier extends MY_Controller {
       $output['list'] .= '</tbody>';
       $output['chdate'] = $chdate;
       $output['altchdate'] = date('d/m/Y',strtotime($chdate));
-      $output['todate'] = date('Y-m-d',strtotime($chdate . "+6 day"));
+      if ($type="month") {
+        $to = 30;
+      } else {
+        $to = 6;
+      }
+      $output['todate'] = date('Y-m-d',strtotime($chdate . "+".$to." day"));
     echo json_encode($output);
     exit();
   }
