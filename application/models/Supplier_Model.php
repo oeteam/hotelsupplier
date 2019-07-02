@@ -555,7 +555,7 @@ class Supplier_Model extends CI_Model {
 			        	'markupType' => $request['markup_type'],
 			        	'hotel_id' 			=> $id,
 			        	'BookingCode' 		=> $request['bookingCode'],
-			        	'contract_typ' => 'Main',
+			        	'contract_type' => 'Main',
 			        	'Created_Date' => date("Y-m-d H:i:s"),
         				'Created_By' =>  $this->session->userdata('supplier_id'),
 					);
@@ -587,7 +587,7 @@ class Supplier_Model extends CI_Model {
 		return count($query);
     }
     public function contractList($hotel) {
-		$this->db->select('id,contract_id');
+		$this->db->select('id,contract_id,contract_flg');
 		$this->db->from('hotel_tbl_contract');
 		$this->db->where('hotel_id',$hotel);
 		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
@@ -918,4 +918,34 @@ class Supplier_Model extends CI_Model {
 		$query=$this->db->get()->result();
 		return $query;
   	}
+  	public function update_contract($request,$contractid){
+  		$array= array(	
+			        	'board' 	=> $request['board'],
+			        	'max_child_age' 	=> '12',
+			        	'from_date' 		=> $request['date_picker'],
+			        	'to_date' 			=> $request['date_picker1'],
+			        	'markupType' => $request['markup_type'],
+			        	'BookingCode' 		=> $request['bookingCode'],
+			        	'contract_type' => 'Main',
+			        	'Created_Date' => date("Y-m-d H:i:s"),
+        				'Created_By' =>  $this->session->userdata('supplier_id'),
+					);
+  		if(isset($request['roomstatus']) && $request['roomstatus']!="") {
+  			$array['contract_flg'] = $request['roomstatus'];
+  		}
+  		if (isset($request['markup']) && $request['markup']!="") {
+			$array['markup'] = $request['markup'];
+		}
+    	$this->db->where('id',$contractid);
+		$this->db->update('hotel_tbl_contract',$array);
+		return true;
+    }
+     public function updatecontractStatus($contractid,$value) {
+		$data= array( 
+			 'contract_flg' 	  => $value,
+			);
+		$this->db->where('id',$contractid);
+		$this->db->update('hotel_tbl_contract',$data);
+		return true;
+	}
 }

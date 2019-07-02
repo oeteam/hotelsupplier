@@ -230,7 +230,7 @@
     position: absolute;
     cursor: pointer;
     top: 0px;
-    left: 0;
+    left: -3px;
     right: 0;
     bottom: 0;
     background-color: #ccc;
@@ -239,15 +239,15 @@
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: -1px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    content: "";
+    height: 19px;
+    width: 23px;
+    left: 4px;
+    bottom: 0px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
 
 input:checked + .slider {
@@ -297,12 +297,12 @@ input:checked + .slider:before {
             <?php foreach ($contractlist as $key => $value) { 
               if ($value->contract_flg==1) {
                   $switch = '<label class="switch" style="left:25px">
-                              <input type="checkbox" id="hotelid'.$value->id.'"  onchange="updateStatus('."'$value->id'".');" checked >
+                              <input type="checkbox" id="contractid'.$value->id.'"  onchange="ContractStatus('."'$value->id'".');" checked >
                               <span class="slider round"></span>
                             </label>';
               } else {
-                  $switch = '<label class="switch" style="left:25px>
-                              <input type="checkbox" id="hotelid'.$value->id.'"  onchange="updateStatus('."'$value->id'".');">
+                  $switch = '<label class="switch" style="left:25px">
+                              <input type="checkbox" id="contractid'.$value->id.'"  onchange="ContractStatus('."'$value->id'".');">
                               <span class="slider round"></span>
                             </label>';
               } ?>
