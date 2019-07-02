@@ -416,7 +416,7 @@ class Supplier_Model extends CI_Model {
 		return count($query);
     }
     public function hotel_search_list_rooms($limit,$start) {
-		$this->db->select('id,hotel_name');
+		$this->db->select('id,hotel_name,delflg');
 		$this->db->from('hotel_tbl_hotels');
 		if(isset($_REQUEST['hotel'])&&$_REQUEST['hotel']!="") {
 			$this->db->where('id',$_REQUEST['hotel']);

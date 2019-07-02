@@ -558,10 +558,14 @@ class HotelSupplier extends MY_Controller {
     $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
       $data['list'] ='';
       foreach ($HotelList as $key => $value) {
+        $stopsalehotel = '';
+        if($value->delflg==0) { 
+          $stopsalehotel = " <span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; 
+        }
         if($key==0) {
-          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.$stopsalehotel.'</a></li>';
         } else {
-          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.$stopsalehotel.'</a></li>';
         }
       }
       // $data['list'].= '</ul>';
@@ -703,10 +707,14 @@ class HotelSupplier extends MY_Controller {
     $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list'] ='';
       foreach ($contractlist as $key => $value) {
+        $stopsale = '';
+        if($value->contract_flg=='0') { 
+          $stopsale = " <span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>";
+        }
         if($key==0) {
-          $data['list'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.$stopsale.'</a></li>';
         } else {
-          $data['list'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a></li>';
+          $data['list'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.$stopsale.'</a></li>';
         }
       }
     echo json_encode($data);
@@ -876,11 +884,15 @@ class HotelSupplier extends MY_Controller {
     $HotelList = $this->Supplier_Model->hotel_search_list_rooms($config['per_page'],$page);
       $data['list'] ='<ul class="hotels">';
       foreach ($HotelList as $key => $value) {
+        $stopsalehotel = '';
+        if($value->delflg==0) { 
+          $stopsalehotel = " <span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; 
+        }
         if($key==0) {
           $hotelid = $value->id;
-          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a class="active" id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.$stopsalehotel.'</a></li>';
         } else {
-          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.'</a></li>';
+          $data['list'].= '<li><a id="'.$value->id.'" onclick="loadcontracts('.$value->id.')">'.$value->hotel_name.$stopsalehotel.'</a></li>';
         }
       }
       $data['list'].= '</ul>
@@ -893,13 +905,14 @@ class HotelSupplier extends MY_Controller {
       $contractlist = $this->Supplier_Model->contractList($hotelid);
       $data['list2'] ='';
       foreach ($contractlist as $key => $value) {
+        $stopsale = '';
         if($value->contract_flg=='0') { 
-          $stopsale = "<sup style='color:red;;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; 
+          $stopsale = " <span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; 
         }
         if($key==0) {
-          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.'</a>'.$stopsale.'</li>';
+          $data['list2'].= '<li><a class="active cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'" >'.$value->contract_id.$stopsale.'</a></li>';
         } else {
-          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.'</a>'.$stopsale.'</li>';
+          $data['list2'].= '<li><a class="cm-contract" onclick="loadallotment(\''.$value->contract_id.'\')" id="'.$value->contract_id.'">'.$value->contract_id.$stopsale.'</a></li>';
         }
       }
       $data['list2'].= '<br>';
@@ -925,7 +938,7 @@ class HotelSupplier extends MY_Controller {
     $data['contractlist']= $this->Supplier_Model->allcontractlist($hotelid);
     $this->load->view('contractlistmodal',$data); 
   }
-  public function updatehotelcontractStatus() {
+  public function updatehotelStatus() {
     $this->Supplier_Model->updatehotelStatus($_REQUEST['hotelid'],$_REQUEST['value']);
     echo json_encode(true);
   }

@@ -34,7 +34,7 @@
   display: inline;
   margin-top: 10px;
 }
-.hotel-list li a {
+.hotel-list  li a {
   display: inline-block;
   height: 30px;
   overflow: hidden;
@@ -45,11 +45,12 @@
   text-overflow: ellipsis;
   width: auto;
   padding: 15px;
+  line-height: 15px;
 }
 .hotel-list li a.active {
   color: #0583ae;
   font-weight: bolder;
-  text-decoration: underline;
+  font-size: 14px;
 }
 .hotel-list li a:hover:not(.active) {
   color: #0583ae;
@@ -133,9 +134,9 @@
                   <?php if(isset($HotelList) && $HotelList!="") {
                      foreach ($HotelList as $key => $value) {
                       if($key==0) { ?>
-                        <li><a class="active" id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
+                        <li><a class="active" id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?> <?php if($value->delflg==0) { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
                       <?php } else { ?>
-                        <li><a id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
+                        <li><a id="<?php echo $value->id ?>" onclick="loadrooms(<?php echo $value->id ?>)"><?php echo $value->hotel_name?> <?php if($value->delflg==0) { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
                       <?php } 
                     }
                   }

@@ -52,11 +52,12 @@
   text-overflow: ellipsis;
   width: auto;
   padding: 15px;
+  line-height: 15px;
 }
 .hotel-list .hotels li a.active {
   color: #0583ae;
   font-weight: bolder;
-  text-decoration: underline;
+  /*text-decoration: underline;*/
   font-size: 14px;
 }
 /*.hotel-list li a:hover:not(.active) {
@@ -86,10 +87,12 @@
   text-overflow: ellipsis;
   width: auto;
   padding: 15px;
+  line-height: 15px;
 }
 .contractlist li a.active {
   color: #0074b9;
-  text-decoration:underline; 
+  /* text-decoration: underline; */
+  font-weight: bold;
 }
 /*.contractlist li a:hover:not(.active) {
   //background-color: #555;
@@ -229,20 +232,22 @@ th {
                 <?php if(isset($HotelList) && $HotelList!="") {
                    foreach ($HotelList as $key => $value) {
                     if($key==0) { ?>
-                      <li><a class="active" id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?></a></li>
+                      <li><a class="active" id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name ?> <?php if($value->delflg==0) { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
                     <?php } else { ?>
-                      <li><a id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name?></a></li>
+                      <li><a id="<?php echo $value->id ?>" onclick="loadcontracts(<?php echo $value->id ?>)"><?php echo $value->hotel_name?> <?php if($value->delflg==0) { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
                     <?php } 
                   }
                 }
                 ?>
               </ul>
               <br>
-               <div class="row pull-right" style="margin-top: 10px;"><div class="hpadding20">
-                      <ul class="pagination right paddingbtm20">
-                      <?php echo $links ?>
-                      </ul>
-                      </div></div>
+               <div class="row pull-right" style="margin-top: 10px;">
+                <div class="hpadding20">
+                  <ul class="pagination right paddingbtm20">
+                  <?php echo $links ?>
+                  </ul>
+                </div>
+              </div>
           </div>
       </div>
   </div>
@@ -256,9 +261,9 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id; ?></a><?php if($value->contract_flg=='0') { echo "<sup style='color:red;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; } ?></li>
+              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id; ?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
             <?php } else { ?>
-              <li><a class="cm-contract" id="<?php echo $value->contract_id;?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?></a><?php if($value->contract_flg=='0') { echo "<sup style='color:red;;top: 0.8em;left: -16px;'>".'< stopsale >'."</sup>"; }  ?></li>
+              <li><a class="cm-contract" id="<?php echo $value->contract_id;?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; }  ?></a></li>
             <?php } 
           }
         }

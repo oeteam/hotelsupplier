@@ -343,7 +343,18 @@ input:checked + .slider:before {
     </div>
 </div>
 <script type="text/javascript">
-  
+  $(".close").click(function() {
+    var hotelid = $("#hotel-list .hotels li a.active").attr('id');
+    $.ajax({
+      dataType: 'json',
+      type: 'post',
+      url:  base_url+'HotelSupplier/hotel_contract_list/'+hotelid,
+      cache: false,
+      success: function (response) {
+        $("#contractlist").html(response.list);
+      }
+    });   
+  })
 </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 
