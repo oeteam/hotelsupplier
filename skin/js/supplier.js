@@ -747,3 +747,90 @@ function ContractStatus(contractid) {
       }
   });
 }
+function commonDeletepolicy() {
+    $.ajax({
+      dataType: 'json',
+      type: "POST",
+      url: $("#delete_form").attr("action"),
+      data: $("#delete_form").serialize(),
+      cache: false,
+      success: function (response) {
+          close_delete_modal();
+          if(response.status=='1') {
+             $(".msg").append('<script type="text/javascript"> AddToast("success","Deleted Successfully","!");</script>');
+          } else {
+             $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
+          }
+          var contractid = $("#contractlist li a.active").attr('id');
+          var cancellation_table = $('#cancellation_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/cancellationlist/'+contractid,
+              type : 'GET'
+          },
+          "fnDrawCallback": function(settings){
+            $('[data-toggle="tooltip"]').tooltip();          
+          }
+        });
+      }
+    });
+}
+$('#policy_update').click(function () {
+    var room = $("#room").val();
+    var from_date = $("#bulk-alt-fromDate").val();
+    var to_date = $("#bulk-alt-toDate").val();
+    var cancelbefore = $("#cancel_before").val();
+    var application = $("#application").val();
+    var percentage = $("#percentage").val();
+    if(room=="") 
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room field is required","!");</script>');
+      $("#room").focus();
+    }
+    else if(from_date=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","From date field is required","!");</script>');
+      $("#bulk-alt-fromDate").focus();
+    }
+    else if(to_date=="")
+    {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","To date field is required","!");</script>');
+      $("#bulk-alt-toDate").focus();
+    } else if(cancelbefore=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Days from field is required","!");</script>');
+      $("#cancel_before").focus();
+    } else if(application=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Application field is required","!");</script>');
+      $("#application").focus();
+    } else if(percentage=="") {
+      $(".msg").append('<script type="text/javascript"> AddToast("danger","Percentage field is required","!");</script>');
+      $("#percentage").focus();
+    }   else {
+      $.ajax({
+      dataType: 'json',
+      type: "POST",
+      url: base_url+'hotelsupplier/update_policy',
+      data:$("#edit_policy").serialize(),
+      cache: false,
+      success: function (response) {
+          close_delete_modal();
+          if(response.status=='1') {
+            $(".msg").append('<script type="text/javascript"> AddToast("success","Cancellation Policy updated successfully","!");</script>');
+          } else {
+            $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
+          } 
+          var contractid = $("#contractlist li a.active").attr('id');
+          var cancellation_table = $('#cancellation_table').dataTable({
+            "bDestroy": true,
+            "ajax": {
+                url : base_url+'HotelSupplier/cancellationlist/'+contractid,
+                type : 'GET'
+            },
+         "fnDrawCallback": function(settings){
+            $('[data-toggle="tooltip"]').tooltip();          
+          }
+    });
+        }
+      });
+     }
+   });

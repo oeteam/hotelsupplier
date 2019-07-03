@@ -320,6 +320,7 @@ th {
   </div>
 </div>
   <div class="row hide col-md-12" id="cancellation_list">
+     <h3>Cancellation List</h3>
       <table class="table table-hover" id="cancellation_table">
         <thead>
             <tr>
@@ -348,7 +349,7 @@ th {
             <h4>Do you want to send request to delete this !</h4>
             <form action="<?php echo base_url(); ?>welcome/" class="delete_id" id="delete_form">
                 <input type="hidden" id="delete_id" name="delete_id" value="<?php echo isset($_REQUEST['id']) ? $_REQUEST['id'] : '' ?>">
-                <button type="button" onclick="commonDeleteroom();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
+                <button type="button" onclick="commonDeletepolicy();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
             </form>
           </div>
         </div>
@@ -613,6 +614,17 @@ th {
         $("#allotment_list").removeClass("hide");
         $("#cancellation_list").addClass("hide");
   });
+  function deletepolicyfun(id) {
+      deletepopupfun(base_url+"hotelsupplier/delete_policy",id);
+  }
+  function editpolicy(id) {
+    var hotelid = $("#hotel-list li a.active").attr('id');
+    $("#myModal").load(base_url+'HotelSupplier/editpolicymodal?policyid='+id+'&hotelid='+hotelid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+  }
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

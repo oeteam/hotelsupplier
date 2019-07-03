@@ -953,15 +953,15 @@ class HotelSupplier extends MY_Controller {
     $length = intval($this->input->get("length"));
     $list = $this->Supplier_Model->cancellationlist($contractid);
     foreach($list->result() as $key => $r) {
-         // $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
-         // $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+         $delete = '<a  href="#" onclick="deletepolicyfun('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+         $edit='<a title="click to Edit" href="#" onclick="editpolicy('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
               $data[] = array(
                    $r->fromDate,
                    $r->toDate,
                    $r->daysFrom,
                    $r->cancellationPercentage,
                    $r->application,
-                   '',
+                   $edit."<br>".$delete,
               );
     }
     $output = array(
@@ -971,6 +971,39 @@ class HotelSupplier extends MY_Controller {
           "data"            => $data
     );
     echo json_encode($output);
-
+  }
+  public function delete_policy() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_policy($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $description = 'Cancellation policy deleted [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
+  public function editpolicymodal() {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data['title'] = "Edit Cancellation Policy";
+    $data['room_types'] = $this->Supplier_Model->getRooms($_REQUEST['hotelid']);
+    $data['view'] =$this->Supplier_Model->policy_detail_get($_REQUEST['policyid']);
+    $this->load->view('editpolicymodal',$data);
+  }
+  public function update_policy(){
+    $view = $this->Supplier_Model->update_policy($_REQUEST);
+    if ($view==true) {
+      $Return['status'] = '1';
+       $description = 'Cancellation Policy Updated [id: '.$_REQUEST['policyid'].']';
+       AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
   }
 }

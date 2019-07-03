@@ -596,7 +596,7 @@ class Supplier_Model extends CI_Model {
 		return $query;
   	}
   	public function getRooms($hotelid) {
-  		$this->db->select('a.id,CONCAT(a.room_name," ",b.Room_Type) as roomName');
+  		$this->db->select('a.id,a.room_name,a.Room_Type,CONCAT(a.room_name," ",b.Room_Type) as roomName');
 		$this->db->from('hotel_tbl_hotel_room_type a');
         $this->db->join('hotel_tbl_room_type b','b.id = a.room_type', 'left');
 		$this->db->where('a.hotel_id',$hotelid);
@@ -969,5 +969,31 @@ class Supplier_Model extends CI_Model {
 		$this->db->order_by('id','desc');
 		$query=$this->db->get();
 		return $query;
+    }
+    public function delete_policy($id) {
+		$this->db->where('id',$id);
+		$this->db->delete('hotel_tbl_cancellationfee');
+		return true;
+	}
+	public function policy_detail_get($id) {
+        $this->db->select('*');
+        $this->db->from('hotel_tbl_cancellationfee');
+        $this->db->where('id',$id);
+        $query=$this->db->get();
+        return $query->result();
+    } 
+    public function update_policy($request) {
+    	$rooms = implode(",",$request['room']);
+    	$array = array('fromDate' => $request['fromDate'],
+						'toDate' => $request['toDate'],
+						'roomType' => $rooms,
+						'cancellationPercentage' => $request['percentage'],
+						'application' => $request['application'],
+						'daysFrom' => $request['cancel_before'],
+						'UpdatedDate' => date('Y-m-d'),
+						'UpdatedBy' => $this->session->userdata('supplier_id'));
+		$this->db->where('id', $request['policyid']);
+		$this->db->update('hotel_tbl_cancellationfee', $array);
+		return true;
     }
 }
