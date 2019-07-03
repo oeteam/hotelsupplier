@@ -276,6 +276,7 @@
                   <option value="">Select</option>
                   <option value="FULL STAY" <?php echo isset($view[0]->application) && $view[0]->application=="FULL STAY" ? "Selected" : "" ?>>FULL STAY</option>
                   <option <?php echo isset($view[0]->application) && $view[0]->application=="FIRST NIGHT" ? "Selected" : "" ?> value="FIRST NIGHT">FIRST NIGHT</option>
+                  <option <?php echo isset($view[0]->application) && $view[0]->application=="FREE OF CHARGE" ? "Selected" : "" ?> value="FREE OF CHARGE">FREE OF CHARGE</option>
                 </select>
             </div>
             <div class="form-group col-md-4">
@@ -287,6 +288,8 @@
       </div>
        <div class="modal-footer">
           <button type="button" class="btn-sm btn-success" name="policy_update" id="policy_update">Update</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
+
+
            <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
     
       </div>

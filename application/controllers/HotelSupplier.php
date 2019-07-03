@@ -955,7 +955,13 @@ class HotelSupplier extends MY_Controller {
     foreach($list->result() as $key => $r) {
          $delete = '<a  href="#" onclick="deletepolicyfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
          $edit='<a title="click to Edit" href="#" onclick="editpolicy('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
+              $explode_data[$key]= explode(",", $r->roomType);
+              foreach ($explode_data[$key] as $key1 => $value1) {
+                $room_type_data[$key][$key1] = get_room_name_type($value1);
+              }
+              $implode_data[$key] = implode(", ", $room_type_data[$key]);
               $data[] = array(
+                   $implode_data[$key],
                    $r->fromDate,
                    $r->toDate,
                    $r->daysFrom,

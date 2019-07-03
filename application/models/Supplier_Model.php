@@ -671,13 +671,18 @@ class Supplier_Model extends CI_Model {
 		}
 		if(isset($request['policy'])&&$request['policy']!="") {
 			$rooms = implode(",",$request['room']);
+			if($request['policy']=="non-refundable") {
+					$application = "FULL STAY";
+			} else {
+				$application = $request['deduction'];
+			}
 			$data = array('fromDate' => $request['bulk-alt-fromDate'],
 						'toDate' => $request['bulk-alt-toDate'],
 						'roomType' => $rooms,
 						'cancellationPercentage' => 100,
 						'hotel_id' => $request['hotelid'],
 						'contract_id' => $request['contractid'],
-						'application' => $request['deduction'],
+						'application' => $application,
 						'daysFrom' => $request['cancel_before'],
 						'CreatedDate' => date('Y-m-d'),
 						'CreatedBy' => $this->session->userdata('supplier_id'));

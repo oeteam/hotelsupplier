@@ -351,8 +351,9 @@
               <label>Overdue Deduction</label><br>
                 <select id="deduction" name="deduction" class="form-control">
                     <option value=""></option>
-                    <option value="FULL STAY">Charge Full Stay</option>
-                    <option value="FIRST NIGHT">Charge First Night</option>
+                    <option value="FULL STAY">FULL STAY</option>
+                    <option value="FIRST NIGHT">FIRST NIGHT</option>
+                    <option value="FREE OF CHARGE">FREE OF CHARGE</option>
                 </select>
             </div>
           <?php } ?>

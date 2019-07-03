@@ -634,6 +634,7 @@ function commonDeleteroom() {
     //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
     //   $("#cutoff").focus();
     } else {
+      $('#allotment-submit').attr('disabled', 'disabled');
       $.ajax({
       dataType: 'json',
       type: "POST",

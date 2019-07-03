@@ -324,6 +324,7 @@ th {
       <table class="table table-hover" id="cancellation_table">
         <thead>
             <tr>
+                <th>Rooms</th>
                 <th>Fromdate</th>
                 <th>Todate</th>
                 <th>Cancellation Before</th>
@@ -349,7 +350,7 @@ th {
             <h4>Do you want to send request to delete this !</h4>
             <form action="<?php echo base_url(); ?>welcome/" class="delete_id" id="delete_form">
                 <input type="hidden" id="delete_id" name="delete_id" value="<?php echo isset($_REQUEST['id']) ? $_REQUEST['id'] : '' ?>">
-                <button type="button" onclick="commonDeletepolicy();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
+                <button type="button" onclick="commonDeletepolicy();" class="waves-effect waves-light btn-sm btn-success pull-right" style="margin-left:5px">Delete</button>  <button type="button" class="btn-sm btn-danger pull-right" data-dismiss="modal">Close</button><br><br>
             </form>
           </div>
         </div>
