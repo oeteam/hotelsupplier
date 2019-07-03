@@ -953,7 +953,7 @@ class HotelSupplier extends MY_Controller {
     $length = intval($this->input->get("length"));
     $list = $this->Supplier_Model->cancellationlist($contractid);
     foreach($list->result() as $key => $r) {
-         $delete = '<a  href="#" onclick="deletepolicyfun('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+         $delete = '<a  href="#" onclick="deletepolicyfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
          $edit='<a title="click to Edit" href="#" onclick="editpolicy('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
               $data[] = array(
                    $r->fromDate,
