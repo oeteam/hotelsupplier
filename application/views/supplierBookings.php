@@ -92,9 +92,80 @@ input:checked + .slider:before {
 }
 
 </style>
-  
 <div class="clearfix" style="margin-top: 20px;"></div>
 <div class="col-md-10 col-md-offset-1">
+<div class="row">
+  <div class="col-md-12" style="height: 58px">
+     <span class="msg"></span>
+     <div class="content5">
+          <div class="row">
+            <div class="col-md-12">
+               <div class="col-md-2 form-group">
+                  <label>Hotelname</label>
+                  <select class="form-control">
+                    <option>Hotelname</option>
+                  </select>
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>Country</label>
+                  <input type="text" name="co" class="form-control" id="co">
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>State</label>
+                  <input type="text" class="form-control">
+                </div>
+                
+                <div class="col-md-2 form-group">
+                  <label>Cityname</label>
+                  <input type="text" name="city" class="form-control" id="citys">
+                </div>
+                <div class="col-md-2 form-group">
+                  <label title="Property Name">Prov.</label>
+                  <input type="text" name="prov" class="form-control" id="prov">
+                </div>
+                
+                <div class="col-md-2 form-group">
+                  <label>Rating</label>
+                  <select class="form-control">
+                    <option>All</option>
+                  </select>
+                </div>
+
+                <div class="col-md-2 form-group">
+                  <label>Booking No.</label>
+                  <input type="text" name="label" class="form-control" id="label">
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>Reference No.</label>
+                  <input type="text" name="ctrip" class="form-control" id="ctrip">
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>Date</label>
+                  <select class="form-control">
+                    <option>All</option>
+                  </select>
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>Check In</label>
+                  <input type="text" name="ctrip" class="form-control" id="ctrip">
+                </div>
+                <div class="col-md-2 form-group">
+                  <label>Check out</label>
+                  <input type="text" name="ctrip" class="form-control" id="ctrip">
+                </div>
+                
+             </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12">
+            <div class="col-md-12">
+              <button class="pull-right btn btn-success" id="search">Search</button>
+            </div> 
+            </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+
   <div class="row" style="">
     <div class="col-md-12">
       <div class="box-inn-sp">

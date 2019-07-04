@@ -1014,4 +1014,44 @@ class Supplier_Model extends CI_Model {
         $this->db->order_by('hotel_tbl_booking.id','desc') ;
         return $query=$this->db->get();
     } 
+    public function hotel_booking_detail($book_id) {
+        $this->db->select('*,hotel_tbl_booking.created_date as booking_date,hotel_tbl_booking.board as boardName,hotel_tbl_booking.id as bkid,hotel_tbl_agents.First_Name as AFName,hotel_tbl_agents.Last_Name as ALName');
+        $this->db->from('hotel_tbl_booking');
+        $this->db->join('hotel_tbl_hotels','hotel_tbl_booking.hotel_id = hotel_tbl_hotels.id', 'left');
+        $this->db->join('hotel_tbl_hotel_room_type','hotel_tbl_booking.room_id = hotel_tbl_hotel_room_type.id', 'left');
+        $this->db->join('hotel_tbl_room_type','hotel_tbl_hotel_room_type.room_type = hotel_tbl_room_type.id', 'left');
+        $this->db->join('hotel_tbl_agents','hotel_tbl_booking.agent_id = hotel_tbl_agents.id', 'left');
+        $this->db->where('hotel_tbl_booking.id',$book_id);
+        $query=$this->db->get();
+        return $query->result();
+    } 
+    public function board_booking_detail($book_id) {
+      $this->db->select('*');
+      $this->db->from('hotel_tbl_bookingboard');
+      $this->db->where('bookingID',$book_id);
+      $query = $this->db->get();
+      return $query->result();
+    }
+    public function general_booking_detail($book_id) {
+      $this->db->select('*');
+      $this->db->from('hotel_tbl_bookgeneralsupplement');
+      $this->db->where('bookingID',$book_id);
+      $query = $this->db->get();
+      return $query->result();
+    }
+    public function getExtrabedDetails($book_id){
+      $this->db->select('*');
+      $this->db->from('bookingextrabed');
+      $this->db->where('bookID',$book_id);
+      $query = $this->db->get();
+      return $query->result();
+  	}
+  	public function get_cancellation_terms($request) {
+      $this->db->select('*');
+      $this->db->from('hotel_tbl_bookcancellationpolicy');
+      $this->db->where('hotel_tbl_bookcancellationpolicy.bookingId',$request);
+      $this->db->order_by('hotel_tbl_bookcancellationpolicy.daysInAdvance','asc');
+      $query=$this->db->get();
+      return $query->result();
+    }
 }

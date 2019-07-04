@@ -20,7 +20,7 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
      redirect("welcome/agent_logout");
     }
-    $this->load->view('supplier');
+    $this->load->view('supplierBookings');
   }
   public function hotels() {
     if ($this->session->userdata('supplier_name')=="") {
@@ -1031,8 +1031,8 @@ class HotelSupplier extends MY_Controller {
         }
         $booking_list = $this->Supplier_Model->hotel_booking_list($filter);
           foreach($booking_list->result() as $key => $r) {
-                  $view='<a title="view"  href="'.base_url().'backend/booking/hotel_booking_details?id='.$r->id.'"><i class="fa fa-eye" aria-hidden="true"  style="margin-right: 5px;"></i></a>';
-                  $edit='<a title="accept" href="#" onclick="add_reference_entry_fun('.$r->book_id.','.$r->agent.','.$r->hotel_id.','."'$r->check_in'".');" data-toggle="modal" data-target="#reference_add_modal"><i class="fa fa-check" aria-hidden="true" style="margin-right: 5px;"></i></a>';                   
+                  $view='<a title="view"  href="'.base_url().'HotelSupplier/hotel_booking_details?id='.$r->id.'"><i class="fa fa-eye" aria-hidden="true"  style="margin-right: 5px;"></i></a>';
+                  $edit='<a title="accept" href="#" onclick="add_reference_entry_fun('.$r->book_id.','.$r->agent_id.','.$r->hotel_id.','."'$r->check_in'".');" data-toggle="modal" data-target="#reference_add_modal"><i class="fa fa-check" aria-hidden="true" style="margin-right: 5px;"></i></a>';                   
             //$Totselling = $this->Finance_Model->TotsellingGet($r->id);
             if ($r->booking_flag==2) {
               $status= "<span class='text-primary'>pending</span>";
@@ -1080,5 +1080,13 @@ class HotelSupplier extends MY_Controller {
           );
           echo json_encode($output);
           exit();
+  }
+  public function hotel_booking_details() {
+      $data['view'] = $this->Supplier_Model->hotel_booking_detail($_REQUEST['id']);
+      $data['board'] = $this->Supplier_Model->board_booking_detail($_REQUEST['id']);
+      $data['general'] = $this->Supplier_Model->general_booking_detail($_REQUEST['id']);
+      $data['ExBed']  =  $this->Supplier_Model->getExtrabedDetails($_REQUEST['id']);
+      $data['cancelation'] =  $this->Supplier_Model->get_cancellation_terms($_REQUEST['id']);
+      $this->load->view('hotel_booking_view',$data);
   }
 }

@@ -447,8 +447,8 @@ function agent_portal_all_notify() {
 // }
 function agent_currency() {
   $ci =& get_instance();
-  $id = $ci->session->userdata('agent_id');
-  $currency=$ci->session->userdata('currency');
+  $id = $ci->session->userdata('supplier_id');
+  $currency=$ci->session->userdata('supplier_currency');
   return $currency;
 }
 function currency_type($usr_c,$c_type) {
