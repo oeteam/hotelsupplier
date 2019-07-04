@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="<?php echo base_url() ?>assets/images/<?php echo $favicon[0]->Fav_Icon ?>">
     <title>Hotel Supplier</title>
@@ -23,22 +23,22 @@
     <link href="<?php echo base_url(); ?>skin/assets/css/custom.css" rel="stylesheet" media="screen">
     <link href="<?php echo base_url(); ?>skin/assets/css/dashboard.css" rel="stylesheet" media="screen">
     <!-- Carousel -->
-	  <link href="<?php echo base_url(); ?>skin/examples/carousel/carousel.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>skin/examples/carousel/carousel.css" rel="stylesheet">
     <!-- Font-Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>skin/assets/css/font-awesome.css" media="screen" /> -->
-  	<!-- PIECHART -->
-  	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>skin/assets/css/jquery.easy-pie-chart.css">
+    <!-- PIECHART -->
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>skin/assets/css/jquery.easy-pie-chart.css">
     <!-- MORRIS CHARTS -->
     <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"> -->
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
    
     
-    <!-- Picker UI-->	
-	  <link rel="stylesheet" href="<?php echo base_url(); ?>skin/assets/css/jquery-ui.css" />		
+    <!-- Picker UI--> 
+    <link rel="stylesheet" href="<?php echo base_url(); ?>skin/assets/css/jquery-ui.css" />   
     <link rel="stylesheet" href="<?php echo base_url(); ?>skin/assets/css/jquery.dataTables.min.css" />  
-    <!-- jQuery -->	
+    <!-- jQuery --> 
 
     <script src="<?php echo base_url(); ?>skin/assets/js/jquery.v2.0.3.js"></script>
     <script src="<?php echo base_url(); ?>skin/assets/js/jquery.dataTables.min.js"></script>
@@ -273,8 +273,8 @@
                   ?>
     <div class="container2">        
         <div class="navbar-collapse collapse" style="background-color: #0074b9">
-        	<div class="row">
-        	<div class="col-md-offset-1 col-md-10">
+          <div class="row">
+          <div class="col-md-offset-1 col-md-10">
                       <a href="#"><img src="<?php echo base_url(); ?>skin/images/dash/logo.png" width="109px;height: 40px;" alt="" style="background: aliceblue"/></a>                      
             <ul class="nav navbar-nav navbar-right">
                        <li class="dropdown">
@@ -327,8 +327,8 @@
         $linkend = end($link_array);
       ?>
       <ul class="nav nav-tabs myTab2pos">
-          <li class="<?php echo $linkend=="hotelsupplier" ? 'active' : '' ?>">
-              <a href="<?php echo base_url('hotelsupplier')?>">
+          <li class="<?php echo $linkend=="HotelSupplier" ? 'active' : '' ?>">
+              <a href="<?php echo base_url('HotelSupplier')?>">
                   Booking
 
               </a>

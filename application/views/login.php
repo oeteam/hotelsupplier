@@ -56,7 +56,7 @@ $favicon = favicon();
 	<div class="banner">
 		<div class="container">
 			<div class="banner-top">
-				<form action="<?php echo base_url('hotelsupplier') ?>" id="front_login" method="post">
+				<form action="<?php echo base_url('HotelSupplier') ?>" id="front_login" method="post">
 				<h1>LogIn</h1>
 				<div class="banner-bottom">
 					<div class="bnr-one">

@@ -52,6 +52,11 @@
   font-weight: bolder;
   font-size: 14px;
 }
+.hotel-list li a:hover {
+  color: #0583ae;
+  cursor: pointer;
+}
+
 .hotel-list li a:hover:not(.active) {
   color: #0583ae;
   cursor: pointer;
