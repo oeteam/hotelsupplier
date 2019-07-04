@@ -1001,4 +1001,17 @@ class Supplier_Model extends CI_Model {
 		$this->db->update('hotel_tbl_cancellationfee', $array);
 		return true;
     }
+    public function hotel_booking_list($filter) {
+        $this->db->select('hotel_tbl_booking.* ,hotel_tbl_booking.id as book_id,hotel_tbl_hotels.supplierid as supplier, hotel_tbl_hotels.hotel_name, ,hotel_tbl_room_type.Room_Type,hotel_tbl_hotel_room_type.room_name');
+        $this->db->from('hotel_tbl_booking');
+        $this->db->join('hotel_tbl_hotels','hotel_tbl_booking.hotel_id = hotel_tbl_hotels.id', 'left');
+        $this->db->join('hotel_tbl_hotel_room_type','hotel_tbl_booking.room_id = hotel_tbl_hotel_room_type.id', 'left');
+        $this->db->join('hotel_tbl_room_type','hotel_tbl_hotel_room_type.room_type = hotel_tbl_room_type.id', 'left');
+        if($filter!=0) {
+        	$this->db->where('hotel_tbl_booking.booking_flag',$filter);
+        }
+        $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
+        $this->db->order_by('hotel_tbl_booking.id','desc') ;
+        return $query=$this->db->get();
+    } 
 }

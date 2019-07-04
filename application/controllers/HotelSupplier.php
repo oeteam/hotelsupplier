@@ -1012,4 +1012,73 @@ class HotelSupplier extends MY_Controller {
     }
     echo json_encode($Return);
   }
+  public function bookings() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $this->load->view('supplierBookings');
+  }
+  public function hotel_booking_list() {
+      $data = array();
+        // Datatables Variables
+        $draw = intval($this->input->get("draw"));
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+        if (isset($_REQUEST['filter'])) {
+          $filter = $_REQUEST['filter'];
+        } else {
+          $filter = "0";
+        }
+        $booking_list = $this->Supplier_Model->hotel_booking_list($filter);
+          foreach($booking_list->result() as $key => $r) {
+                  $view='<a title="view"  href="'.base_url().'backend/booking/hotel_booking_details?id='.$r->id.'"><i class="fa fa-eye" aria-hidden="true"  style="margin-right: 5px;"></i></a>';
+                  $edit='<a title="accept" href="#" onclick="add_reference_entry_fun('.$r->book_id.','.$r->agent.','.$r->hotel_id.','."'$r->check_in'".');" data-toggle="modal" data-target="#reference_add_modal"><i class="fa fa-check" aria-hidden="true" style="margin-right: 5px;"></i></a>';                   
+            //$Totselling = $this->Finance_Model->TotsellingGet($r->id);
+            if ($r->booking_flag==2) {
+              $status= "<span class='text-primary'>pending</span>";
+              $button = $view.$edit;
+            } else if ($r->booking_flag==1) {
+              $status= "<span class='text-success'>Accepted</span>";
+              $button = $view;
+            } else if ($r->booking_flag==0) {
+              $status= "<span class='text-danger'>Rejected</span>";
+              $button = $view;
+            } else if ($r->booking_flag==3) {
+              $status= "<span class='text-danger'>Cancelled</span>";
+              $button = $view;
+            } else if ($r->booking_flag==4) {
+              $status= "<span class='text-warning'>Hotel Approved</span>";
+              $button = $view.$edit;
+            } else if ($r->booking_flag==5) {
+              $status= "<span class='text-danger'>Cancellation Pending</span>";
+              $button = $view;
+            } else if($r->booking_flag==8) {
+              $status= "<span class='text-danger'>On Request</span>";
+              $button =   $view.$edit;
+            }
+              $data[] = array(
+                '',
+                $r->booking_id,
+                "<span class='hide'>".strtotime($r->Created_Date)."</span>".date('d/m/Y',strtotime($r->Created_Date)),
+                $r->hotel_name,
+                $r->room_name." ".$r->Room_Type,
+                date('d/m/Y',strtotime($r->check_in)),
+                date('d/m/Y',strtotime($r->check_out)),
+                $r->no_of_days,
+                $r->book_room_count,
+                '0',
+                $status,
+                $r->confirmationNumber,
+                $button,
+              );
+          }
+          $output = array(
+           "draw" => $draw,
+           "recordsTotal" => $booking_list->num_rows(),
+           "recordsFiltered" => $booking_list->num_rows(),
+           "data" => $data
+          );
+          echo json_encode($output);
+          exit();
+  }
 }
