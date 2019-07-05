@@ -231,7 +231,7 @@ input:checked + .slider:before {
         "bDestroy": true,
         "order": [[ 2, 'desc' ]],
         "ajax": {
-            url : base_url+'hotelsupplier/hotel_booking_list',
+            url : base_url+'HotelSupplier/hotel_booking_list',
             type : 'GET'
         },
     "fnRowCallback" : function(nRow, aData, iDisplayIndex){
@@ -258,7 +258,7 @@ input:checked + .slider:before {
         "bDestroy": true,
         "order": [[ 2, 'desc' ]],
         "ajax": {
-            url : base_url+'hotelsupplier/hotel_booking_list?filter='+val,
+            url : base_url+'HotelSupplier/hotel_booking_list?filter='+val,
             type : 'GET'
         },
     "fnRowCallback" : function(nRow, aData, iDisplayIndex){

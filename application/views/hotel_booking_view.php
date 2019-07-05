@@ -313,33 +313,17 @@ input:checked + .slider:before {
                 </div>
                 <div class="card-header text-uppercase" style="padding: 10px; border-bottom: 1px solid #ccc; ">
               <?php 
-              // print_r($ExBed);
-                  $total_markup = $view[0]->agent_markup+$view[0]->admin_markup+$view[0]->search_markup;
-                  $book_room_count = $view[0]->book_room_count;
-                  $individual_amount = explode(",", $view[0]->individual_amount);
-                  $individual_discount = explode(",", $view[0]->individual_discount);
-                  $checkin_date=date_create($view[0]->check_in);
-                  $checkout_date=date_create($view[0]->check_out);
-                  $no_of_days=date_diff($checkin_date,$check_out);
-                  $tot_days = $no_of_days->format("%a");
-
-                  $Fdays = 0;
-                      $discountType = "";
-                      if ($view[0]->discountType=="stay&pay") {
-                        $Cdays = $tot_days/$view[0]->discountStay;
-                        $parts = explode('.', $Cdays);
-                        $Cdays = $parts[0];
-                        $Sdays = $view[0]->discountStay*$Cdays;
-                        $Pdays = $view[0]->discountPay*$Cdays;
-                        $Tdays = $tot_days-$Sdays;
-                        $Fdays = $Pdays+$Tdays;
-                        $discountType = 'Stay/Pay';
-                      }
-                      if ($view[0]->discountType=="" && $view[0]->discountCode!="") {
-                        $discountType = 'Discount';
-                      }
+          // print_r($board);
+              $total_markup    = $view[0]->agent_markup+$view[0]->admin_markup+$view[0]->search_markup;
+              $book_room_count = $view[0]->book_room_count;
+              $individual_amount = explode(",", $view[0]->individual_amount);
+              $individual_discount = explode(",", $view[0]->individual_discount);
+              $checkin_date=date_create($view[0]->check_in);
+              $checkout_date=date_create($view[0]->check_in);
+              $no_of_days=date_diff($checkin_date,$check_out);
+              $tot_days = $no_of_days->format("%a");
               for ($i=1; $i <= $book_room_count; $i++) { ?>
-              <div class="row payment-table-wrap">
+              <div class="row payment-table-wrap"><div class="row payment-table-wrap">
                 <div class="col-md-12">
                   <h4 class="room-name">Room <?php echo $i; ?></h4>
                   <table class="table-bordered" >
@@ -355,180 +339,185 @@ input:checked + .slider:before {
                       <?php 
                       $oneNight = array();
                       for ($j=0; $j < $tot_days ; $j++) { 
-                $ExAmount[$j] = 0;
-                $TExAmount[$j] = 0;
-                $GAamount[$j] = 0;
-                $GCamount[$j] = 0;
-                $BAamount[$j] = 0;
-                $BCamount[$j] = 0;
-                $TBAamount[$j] = 0;
-                $TBCamount[$j] = 0;
-                        ?>
-                      <tr>
-                        <td><?php echo date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days')); ?></td>
-                        <td><?php echo $view[0]->room_name." ".$view[0]->Room_Type ?></td>
-                        <td style="text-align: center"><?php echo $view[0]->boardName; ?></td>
-                        <td style="text-align: right">
-                          <p class="new-price">
+                        $ExAmount[$j] = 0;
+                        $GAamount[$j] = 0;
+                        $GCamount[$j] = 0;
+                        $BAamount[$j] = 0;
+                        $BCamount[$j] = 0;
+                        $TBAamount[$j] = 0;
+                        $TBCamount[$j] = 0;
+                            ?>
+                            <tr>
+                              <td><?php echo date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days')); ?></td>
+                              <td><?php echo $view[0]->room_name." ".$view[0]->Room_Type ?></td>
+                              <td style="text-align: center"><?php echo $view[0]->boardName; ?></td>
+                              <td style="text-align: right">
+                                <p class="new-price">
 
+                                  <?php 
+                                  if (!isset($individual_discount[$j])!=0) {
+                                    $individual_discount[$j] = 0;
+                                  }
+                                $roomAmount[$j] = $individual_amount[$j];
+
+                                $DisroomAmount[$j] = $roomAmount[$j]-($roomAmount[$j]*$individual_discount[$j])/100;
+
+                                  if ($individual_discount[$j]!=0) { ?>
+                                  <small class="old-price text-danger"><?php 
+                                  echo currency_type($currency_type,$roomAmount[$j]) ?> <?php echo $currency_type ?></small>
+                                  <br>
+                                  <?php }
+                                  if ($j==0) {
+                                    $oneNight[] = $DisroomAmount[0];
+                                  }
+                                  echo currency_type(agent_currency(),$DisroomAmount[$j]); ?> <?php echo agent_currency() ?>
+                                 </p>
+                              </td>
+                            </tr>
+                            <!-- Extrabed list start -->
+                            <?php if (count($ExBed)!=0) {
+                              foreach ($ExBed as $Exkey => $Exvalue) {
+                                if ($Exvalue->date==date('Y-m-d', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+                                  $exroomExplode = explode(",", $Exvalue->rooms);
+                                  $examountExplode = explode(",", $Exvalue->Exrwamount);
+                                  $exTypeExplode = explode(",", $Exvalue->Type);
+                                  foreach ($exroomExplode as $Exrkey => $EXRvalue) {
+                                    if ($EXRvalue==$i) {
+                             ?>
+                                 <tr>
+                                  <td></td>
+                                  <td><?php echo $exTypeExplode[$Exrkey] ?></td>
+                                  <td class="text-center">-</td>
+                                  <td class="text-right"><?php 
+                                  $ExAmount[$j]+= $examountExplode[$Exrkey];
+                                  if ($j==0) {
+                                    $oneNight[] = $ExAmount[0];
+                                  }
+                                  echo currency_type(agent_currency(),$examountExplode[$Exrkey]); ?> <?php echo agent_currency();
+                                  ?> </td>
+                                 </tr>
+
+                            <?php } } } } } ?>
+                            <!-- Extrabed list end -->
+                            <!-- Adult and room General supplement list start -->
+                            <?php if (count($general)!=0) {
+                              foreach ($general as $gskey => $gsvalue) {
+                                if ($gsvalue->gstayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+                                  $gsadultExplode = explode(",", $gsvalue->Rwadult);
+                                  $gsadultAmountExplode = explode(",", $gsvalue->Rwadultamount);
+                                  foreach ($gsadultExplode as $gsakey => $gsavalue) {
+                                    if ($gsavalue==$i) {
+                             ?>
+                                 <tr>
+                                  <td></td>
+                                  <td><?php echo $gsvalue->application=="Per Room" ? $gsvalue->generalType : 'Adults '.$gsvalue->generalType ; ?></td>
+                                  <td class="text-center">-</td>
+                                  <td class="text-right"><?php 
+                                    $GAamount[$j]=$gsadultAmountExplode[$gsakey];
+                                    if ($j==0) {
+                                      $oneNight[] = $GAamount[0];
+                                    }
+                                    echo currency_type(agent_currency(),$GAamount[$j]); ?> <?php echo agent_currency();
+                                  ?>
+                                   </td>
+                                 </tr>
+                            <?php } } ?> 
+                            <!-- Adult and room General supplement list end -->
+                            <!-- Adult General supplement list start -->
+
+                            <?php
+                              $gschildExplode = explode(",", $gsvalue->Rwchild);
+                          $gschildAmountExplode = explode(",", $gsvalue->RwchildAmount);
+                             foreach ($gschildExplode as $gsckey => $gscvalue) {
+                                    if ($gscvalue==$i) { ?>
+                            <tr>
+                                  <td></td>
+                                  <td><?php echo 'Child '.$gsvalue->generalType ; ?></td>
+                                  <td class="text-center">-</td>
+                                  <td class="text-right"><?php 
+                                    $GCamount[$j]=$gschildAmountExplode[$gsckey];
+                                    if ($j==0) {
+                                      $oneNight[] = $GCamount[0];
+                                    }
+                                    echo currency_type(agent_currency(),$GCamount[$j]); ?> <?php echo agent_currency();
+                                   ?> </td>
+                                 </tr>
+                            <?php } } ?> 
+
+                            <?php } } } ?>
+                            <!-- Adult General supplement list end -->
+                            <!-- Adults Board supplement list start -->
+                            <?php foreach ($board as $bkey => $bvalue) { 
+                              if ($bvalue->stayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+                                $ABRwadultexplode = explode(",", $bvalue->Rwadult);
+                                $ABRwadultamountexplode = explode(",", $bvalue->RwadultAmount);
+                                foreach ($ABRwadultexplode as $ABRwkey => $ABRwvalue) {
+                                  if ($ABRwvalue==$i) {
+                              ?>
+                              <tr>
+                                <td></td>
+                                <td>Adult <?php echo $bvalue->board; ?></td>
+                                <td class="text-center">-</td>
+                                <td class="text-right"><?php 
+                                  $BAamount[$j] = $ABRwadultamountexplode[$ABRwkey];
+                                  $TBAamount[$j] += $BAamount[$j];
+                                  if ($j==0) {
+                                    $oneNight[] = $BAamount[0];
+                                  }
+                                  echo currency_type(agent_currency(),$BAamount[$j]); ?> <?php echo agent_currency();
+                                 ?></td>
+                              </tr>
+                              
+                            <?php } } ?>
+                            <!-- Adults Board supplement list end -->
+                            <!-- Child Board supplement list start -->
                             <?php 
+                                $CBRwchildexplode = explode(",", $bvalue->Rwchild);
+                                $CBRwchildamountexplode = explode(",", $bvalue->RwchildAmount);
+                                foreach ($CBRwchildexplode as $CBRwkey => $CBRwvalue) {
+                                  if ($CBRwvalue==$i) {
+                              ?>
+                              <tr>
+                                <td></td>
+                                <td>Child <?php echo $bvalue->board; ?></td>
+                                <td class="text-center">-</td>
+                                <td class="text-right"><?php 
+                                  $BCamount[$j] = $CBRwchildamountexplode[$CBRwkey];;
+                                  $TBCamount[$j] += $BCamount[$j];
+                                  if ($j==0) {
+                                    $oneNight[] = $BCamount[0];
+                                  }
+                                  echo currency_type(agent_currency(),$TBCamount[$j]); ?> <?php echo agent_currency();
+                                 ?></td>
+                              </tr>
+                              
+                            <?php } }  ?>
+                            <?php } } ?>
+                            <!-- Child Board supplement list end -->
+                            <?php } ?>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <?php 
 
+                              $total[$i] = array_sum($DisroomAmount)+array_sum($ExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount); 
 
-                          $roomAmount[$j] = (($individual_amount[$j]*$total_markup)/100)+$individual_amount[$j];
+                              
+                              $totalNotMar[$i] = array_sum($roomAmount)+array_sum($ExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount); 
 
-                          $DisroomAmount[$j] = $roomAmount[$j]-($roomAmount[$j]*$individual_discount[$j])/100;
-                            $WiDisroomAmount[$j] = $roomAmount[$j];
-                            if ($individual_discount[$j]!=0) { ?>
-                            <small class="old-price text-danger"><?php 
-                            echo currency_type(agent_currency(),$roomAmount[$j]) ?> <?php echo agent_currency() ?></small>
-                            <br>
-                            <?php }
-                            if ($j==0) {
-                              $oneNight[] = $DisroomAmount[0];
-                            }
-                            echo currency_type(agent_currency(),$DisroomAmount[$j]); ?> <?php echo agent_currency() ?></p>
-                        </td>
-                      </tr>
-                      <!-- Extrabed list start -->
-                      <?php if (count($ExBed)!=0) {
-                        foreach ($ExBed as $Exkey => $Exvalue) {
-                          if ($Exvalue->date==date('Y-m-d', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
-                            $exroomExplode = explode(",", $Exvalue->rooms);
-                            $examountExplode = explode(",", $Exvalue->Exrwamount);
-                            $exTypeExplode = explode(",", $Exvalue->Type);
-                            foreach ($exroomExplode as $Exrkey => $EXRvalue) {
-                              if ($EXRvalue==$i) {
-                       ?>
-                           <tr>
-                            <td></td>
-                            <td><?php echo $exTypeExplode[$Exrkey] ?></td>
-                            <td class="text-center">-</td>
-                            <td class="text-right"><?php 
-                            $ExAmount[$j] = (($examountExplode[$Exrkey]*$total_markup)/100)+$examountExplode[$Exrkey];
-
-                            $TExAmount[$j] +=(($examountExplode[$Exrkey]*$total_markup)/100)+$examountExplode[$Exrkey];
-                            if ($j==0) {
-                              $oneNight[] = $ExAmount[0];
-                            }
-                            echo currency_type(agent_currency(),$ExAmount[$j]); ?> <?php echo agent_currency() ?></td>
-                           </tr>
-
-                      <?php } } } } } ?>
-                      <!-- Extrabed list end -->
-                      <!-- Adult and room General supplement list start -->
-                      <?php if (count($general)!=0) {
-                        foreach ($general as $gskey => $gsvalue) {
-                          if ($gsvalue->gstayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
-                            $gsadultExplode = explode(",", $gsvalue->Rwadult);
-                            $gsadultAmountExplode = explode(",", $gsvalue->Rwadultamount);
-                            foreach ($gsadultExplode as $gsakey => $gsavalue) {
-                              if ($gsavalue==$i) {
-                       ?>
-                           <tr>
-                            <td></td>
-                            <td><?php echo $gsvalue->application=="Per Room" ? $gsvalue->generalType : 'Adults '.$gsvalue->generalType ; ?></td>
-                            <td class="text-center">-</td>
-                            <td class="text-right"><?php 
-                              $GAamount[$j] = (($gsadultAmountExplode[$gsakey]*$total_markup)/100)+$gsadultAmountExplode[$gsakey];
-                              if ($j==0) {
-                                $oneNight[] = $GAamount[0];
-                              }
-                            echo currency_type(agent_currency(),$GAamount[$j]); ?> <?php echo agent_currency() ?></td>
-                           </tr>
-                      <?php } } ?> 
-                      <!-- Adult and room General supplement list end -->
-                      <!-- Adult General supplement list start -->
-
-                      <?php
-                        $gschildExplode = explode(",", $gsvalue->Rwchild);
-                    $gschildAmountExplode = explode(",", $gsvalue->RwchildAmount);
-                       foreach ($gschildExplode as $gsckey => $gscvalue) {
-                              if ($gscvalue==$i) { ?>
-                      <tr>
-                            <td></td>
-                            <td><?php echo 'Child '.$gsvalue->generalType ; ?></td>
-                            <td class="text-center">-</td>
-                            <td class="text-right"><?php 
-                              $GCamount[$j] = (($gschildAmountExplode[$gsckey]*$total_markup)/100)+$gschildAmountExplode[$gsckey];
-                              if ($j==0) {
-                                $oneNight[] = $GCamount[0];
-                              }
-                            echo currency_type(agent_currency(),$GCamount[$j]); ?> <?php echo agent_currency() ?></td>
-                           </tr>
-                      <?php } } ?> 
-
-                      <?php } } } ?>
-                      <!-- Adult General supplement list end -->
-                      <!-- Adults Board supplement list start -->
-                      <?php foreach ($board as $bkey => $bvalue) { 
-                        if ($bvalue->stayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
-                          $ABRwadultexplode = explode(",", $bvalue->Rwadult);
-                          $ABRwadultamountexplode = explode(",", $bvalue->RwadultAmount);
-                          foreach ($ABRwadultexplode as $ABRwkey => $ABRwvalue) {
-                            if ($ABRwvalue==$i) {
-                        ?>
-                        <tr>
-                          <td></td>
-                          <td>Adult <?php echo $bvalue->board; ?></td>
-                          <td class="text-center">-</td>
-                          <td class="text-right"><?php 
-                            $BAamount[$j] = (($ABRwadultamountexplode[$ABRwkey]*$total_markup)/100)+$ABRwadultamountexplode[$ABRwkey];;
-                            $TBAamount[$j] += $BAamount[$j];
-                            if ($j==0) {
-                              $oneNight[] = $BAamount[0];
-                            }
-                          echo currency_type(agent_currency(),$BAamount[$j]); ?> <?php echo agent_currency() ?></td>
-                        </tr>
-                        
-                      <?php } } ?>
-                      <!-- Adults Board supplement list end -->
-                      <!-- Child Board supplement list start -->
-                      <?php 
-                          $CBRwchildexplode = explode(",", $bvalue->Rwchild);
-                          $CBRwchildamountexplode = explode(",", $bvalue->RwchildAmount);
-                          foreach ($CBRwchildexplode as $CBRwkey => $CBRwvalue) {
-                            if ($CBRwvalue==$i) {
-                        ?>
-                        <tr>
-                          <td></td>
-                          <td>Child <?php echo $bvalue->board; ?></td>
-                          <td class="text-center">-</td>
-                          <td class="text-right"><?php 
-                            $BCamount[$j] = (($CBRwchildamountexplode[$CBRwkey]*$total_markup)/100)+$CBRwchildamountexplode[$CBRwkey];
-
-                            $TBCamount[$j] += $BCamount[$j];
-                            if ($j==0) {
-                              $oneNight[] = $BCamount[0];
-                            }
-                          echo currency_type(agent_currency(),$BCamount[$j]); ?> <?php echo agent_currency() ?></td>
-                        </tr>
-                        
-                      <?php } }  ?>
-                      <?php } } ?>
-                      <!-- Child Board supplement list end -->
-                      <?php } ?>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <?php 
-                        $witotal[$i] = array_sum($WiDisroomAmount)+array_sum($TExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount);
-
-                        $total[$i] = array_sum($DisroomAmount)+array_sum($TExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount); 
-                        if ($Fdays!=0) {
-                          $temp = array_splice($DisroomAmount,1,$Fdays);
-                        } else {
-                          $temp = $DisroomAmount;
-                        }
-                        $totRmAmt[$i] = array_sum($temp)+array_sum($TExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount); 
-                        ?>
-
-                        <td colspan="3" style="text-align: right"><strong class="text-blue">Total</strong></td>
-                        <td style="text-align: right; font-weight: 700; color: #0074b9"><?php echo currency_type(agent_currency(),$total[$i])  ?> <?php echo agent_currency() ?></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                <div>
-              </div>
+                              
+                              ?>
+                              <?php  ?>
+                              <td colspan="3" style="text-align: right"><strong class="text-blue">Total</strong></td>
+                              <td style="text-align: right; font-weight: 700; color: #0074b9"><?php 
+                              echo currency_type(agent_currency(),$total[$i]); ?> <?php echo agent_currency();
+                             ?> </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                    </div>
                     <?php } ?>
             </div>
         
@@ -545,8 +534,11 @@ input:checked + .slider:before {
                 </div>
                
                 <?php 
-               $array_sumTotal = (array_sum($totRmAmt)*$view[0]->tax)/100+array_sum($totRmAmt);
-               $wioarray_sumTotal = ceil((array_sum($witotal)*$view[0]->tax)/100+array_sum($witotal));
+                $array_sumTotal   = (array_sum($total)*$view[0]->tax)/100 + array_sum($total);
+                $wioarray_sumTotal  = (array_sum($totalNotMar)*$view[0]->tax)/100 + array_sum($totalNotMar);
+                $array_sumTotalNM = (array_sum($totalNotMar));
+               // $array_sumTotal = (array_sum($totRmAmt)*$view[0]->tax)/100+array_sum($totRmAmt);
+               // $wioarray_sumTotal = ceil((array_sum($witotal)*$view[0]->tax)/100+array_sum($witotal));
 
                 
           if ($view[0]->discount!=0) { ?>
@@ -701,7 +693,7 @@ input:checked + .slider:before {
         "bDestroy": true,
         "order": [[ 2, 'desc' ]],
         "ajax": {
-            url : base_url+'hotelsupplier/hotel_booking_list',
+            url : base_url+'HotelSupplier/hotel_booking_list',
             type : 'GET'
         },
     "fnRowCallback" : function(nRow, aData, iDisplayIndex){
@@ -728,7 +720,7 @@ input:checked + .slider:before {
         "bDestroy": true,
         "order": [[ 2, 'desc' ]],
         "ajax": {
-            url : base_url+'hotelsupplier/hotel_booking_list?filter='+val,
+            url : base_url+'HotelSupplier/hotel_booking_list?filter='+val,
             type : 'GET'
         },
     "fnRowCallback" : function(nRow, aData, iDisplayIndex){

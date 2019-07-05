@@ -110,7 +110,7 @@ class HotelSupplier extends MY_Controller {
               AgentlogActivity($description);
          }          
     } 
-      redirect("hotelsupplier/hotels"); 
+      redirect("HotelSupplier/hotels"); 
   }
   public function hotel_list() {
     if ($this->session->userdata('supplier_name')=="") {
@@ -585,7 +585,7 @@ class HotelSupplier extends MY_Controller {
       $description = 'New room added [id:'.$hotel_room_id.', Hotel Code: HE0'.$_REQUEST['hotel_id'].']';
       AgentlogActivity($description);
       }
-      redirect('hotelsupplier/rooms');
+      redirect('HotelSupplier/rooms');
   }
    public function hotel_room_list($hotelid) {
     if ($this->session->userdata('supplier_name')=="") {
@@ -1082,6 +1082,9 @@ class HotelSupplier extends MY_Controller {
           exit();
   }
   public function hotel_booking_details() {
+      if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+      }
       $data['view'] = $this->Supplier_Model->hotel_booking_detail($_REQUEST['id']);
       $data['board'] = $this->Supplier_Model->board_booking_detail($_REQUEST['id']);
       $data['general'] = $this->Supplier_Model->general_booking_detail($_REQUEST['id']);

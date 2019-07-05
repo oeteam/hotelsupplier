@@ -889,7 +889,7 @@
             function review_get_data(id) {
                $.ajax({
                   type: 'post',
-                  url: base_url+'hotelsupplier/review_view?hotel_id='+id,
+                  url: base_url+'HotelSupplier/review_view?hotel_id='+id,
                   dataType: 'json',
                   cache: false,
                   data: $('#review_form').serialize(),
@@ -905,7 +905,7 @@
             function average_ratings(id) {
                $.ajax({
                   type: 'post',
-                  url: base_url+'hotelsupplier/average_ratings?hotel_id='+id,
+                  url: base_url+'HotelSupplier/average_ratings?hotel_id='+id,
                   dataType: 'json',
                   cache: false,
                   data: $('#review_form').serialize(),
@@ -933,7 +933,7 @@
               $.ajax({
               dataType: 'json',
               type: 'post',
-              url: base_url+'hotelsupplier/review_insert',
+              url: base_url+'HotelSupplier/review_insert',
               data: $('#review_form').serialize(),
               cache: false,
               success: function (response) {

@@ -227,7 +227,7 @@
           });
     }
     function deleteroomfun(id) {
-      deletepopupfun(base_url+"hotelsupplier/delete_room",id);
+      deletepopupfun(base_url+"HotelSupplier/delete_room",id);
     }
 
 

@@ -175,7 +175,7 @@ $favicon = favicon();
       $.ajax({
         dataType: 'json',
         type: 'post',
-        url: '<?php echo base_url("welcome/login") ?>',
+        url: '<?php echo base_url("Welcome/login") ?>',
         data: $('#front_login').serialize(),
         cache: false,
         success: function (response) {

@@ -487,8 +487,8 @@ function room_add_fun() {
       if ($("#room_id").val()!="") {
         $('.yourmodalid').trigger('click');
       } else {
-        $(".msg").append('<script type="text/javascript"> AddToast("success","Inserted Successfully","!");</script>');
-        $("#allotement_form").attr('action',base_url+'hotelsupplier/add_room');
+        $(".msg").append('<script type="text/javascript">AddToast("success","Inserted Successfully","!");</script>');
+        $("#allotement_form").attr('action',base_url+'HotelSupplier/add_room');
         $("#allotement_form").submit();
       }  
     }
@@ -528,7 +528,7 @@ function room_update_fun(){
     if ($("#room_id").val()!="") {
       $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
     }
-    $("#allotement_form").attr('action',base_url+'hotelsupplier/add_room');
+    $("#allotement_form").attr('action',base_url+'HotelSupplier/add_room');
     $("#allotement_form").submit();
 }
 function commonDeleteroom() {
@@ -584,7 +584,7 @@ function commonDeleteroom() {
     }
     else {
        $(".msg").append('<script type="text/javascript"> AddToast("success","Contract added successfully","!");</script>');
-       $("#add_contract").attr('action',base_url+'hotelsupplier/add_contract');
+       $("#add_contract").attr('action',base_url+'HotelSupplier/add_contract');
        $("#add_contract").submit();
      }
    });
@@ -638,7 +638,7 @@ function commonDeleteroom() {
       $.ajax({
       dataType: 'json',
       type: "POST",
-      url: base_url+'hotelsupplier/add_allotment',
+      url: base_url+'HotelSupplier/add_allotment',
       data:$("#add_allotment").serialize(),
       cache: false,
       success: function (response) {
@@ -668,7 +668,7 @@ function closeoutUpdate(value,contractid,roomid,hotelid,ndate) {
     $.ajax({
       dataType: 'json',
       type: "POST",
-      url: base_url+'hotelsupplier/closeoutupdate?closedout='+val+'&contractid='+contractid+'&roomid='+roomid+'&hotelid='+hotelid+'&ndate='+ndate,
+      url: base_url+'HotelSupplier/closeoutupdate?closedout='+val+'&contractid='+contractid+'&roomid='+roomid+'&hotelid='+hotelid+'&ndate='+ndate,
       cache: false,
       success: function (response) {
           if(response.status=='1') {
@@ -689,7 +689,7 @@ function updateStatus(hotelid) {
   $.ajax({
       dataType: 'json',
       type: "Post",
-      url: base_url+'hotelsupplier/updatehotelStatus?hotelid='+hotelid+'&value='+flag,
+      url: base_url+'HotelSupplier/updatehotelStatus?hotelid='+hotelid+'&value='+flag,
       success: function(data) {
         $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
         var hotel_table = $('#hotel_table').dataTable({
@@ -722,7 +722,7 @@ $('#contract_update').click(function () {
     }
     else {
        $(".msg").append('<script type="text/javascript"> AddToast("success","Contract added successfully","!");</script>');
-       $("#add_contract").attr('action',base_url+'hotelsupplier/add_contract');
+       $("#add_contract").attr('action',base_url+'HotelSupplier/add_contract');
        $("#add_contract").submit();
      }
    });
@@ -810,7 +810,7 @@ $('#policy_update').click(function () {
       $.ajax({
       dataType: 'json',
       type: "POST",
-      url: base_url+'hotelsupplier/update_policy',
+      url: base_url+'HotelSupplier/update_policy',
       data:$("#edit_policy").serialize(),
       cache: false,
       success: function (response) {
