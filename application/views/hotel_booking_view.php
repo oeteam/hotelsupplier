@@ -358,9 +358,9 @@ input:checked + .slider:before {
                                   if (!isset($individual_discount[$j])!=0) {
                                     $individual_discount[$j] = 0;
                                   }
-                                $roomAmount[$j] = $individual_amount[$j];
+                                  $roomAmount[$j] = $individual_amount[$j];
 
-                                $DisroomAmount[$j] = $roomAmount[$j]-($roomAmount[$j]*$individual_discount[$j])/100;
+                                  $DisroomAmount[$j] = $roomAmount[$j];
 
                                   if ($individual_discount[$j]!=0) { ?>
                                   <small class="old-price text-danger"><?php 

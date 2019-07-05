@@ -1054,4 +1054,337 @@ class Supplier_Model extends CI_Model {
       $query=$this->db->get();
       return $query->result();
     }
+    public function TotalBookingAmountDetailsGet($book_id) {
+      $return['Cost'] = 0;
+      $return['Selling'] = 0;
+      $return['AgentProfit'] = 0;
+      $return['AdminProfit'] = 0;
+      $view = $this->Supplier_Model->booking_details($book_id);
+      $board = $this->Supplier_Model->board_booking_detail($book_id);
+      $general = $this->Supplier_Model->general_booking_detail($book_id);
+      $cancelation =  $this->Supplier_Model->get_cancellation_terms($book_id);
+      $ExBed =  $this->Supplier_Model->getExtrabedDetails($book_id);
+
+      $total_markup = $view[0]->agent_markup+$view[0]->admin_markup+$view[0]->search_markup;
+      $book_room_count = $view[0]->book_room_count;
+      $individual_amount = explode(",", $view[0]->individual_amount);
+      if ($view[0]->individual_discount!="") {
+        $individual_discount = explode(",", $view[0]->individual_discount);
+      }
+
+      $tot_days = $view[0]->no_of_days;
+
+      $roomExp = explode(",", $view[0]->room_id);
+      $ExtrabedDiscount = explode(",", $view[0]->ExtrabedDiscount);
+      $GeneralDiscount = explode(",", $view[0]->GeneralDiscount);
+      $BoardDiscount = explode(",", $view[0]->BoardDiscount);
+      $RequestType = explode(",", $view[0]->RequestType);
+
+      for ($i=1; $i <= $book_room_count; $i++) {
+        if (!isset($ExtrabedDiscount[$i-1])) {
+          $ExtrabedDiscount[$i-1] = 0;
+        }
+        if (!isset($GeneralDiscount[$i-1])) {
+          $GeneralDiscount[$i-1] = 0;
+        }
+        if (!isset($BoardDiscount[$i-1])) {
+          $BoardDiscount[$i-1] = 0;
+        }
+        if (!isset($roomExp[$i-1])) {
+          $room_id = $roomExp[0];
+        } else {
+          $room_id = $roomExp[$i-1];
+        }
+
+        $Fdays = 0;
+        $discountType = "";
+        $DisTypExplode = explode(",", $view[0]->discountType);
+        $DisStayExplode = explode(",", $view[0]->discountStay);
+        $DisPayExplode = explode(",", $view[0]->discountPay);
+        $discountCode = explode(",", $view[0]->discountCode);
+        if (!isset($DisTypExplode[$i])) {
+          $DisTypExplode[$i] = $DisTypExplode[0];
+        }
+        if (!isset($DisStayExplode[$i])) {
+          $DisStayExplode[$i] = $DisStayExplode[0];
+        }
+        if (!isset($DisTypExplode[$i])) {
+          $DisPayExplode[$i] = $DisPayExplode[0];
+        }
+        if (!isset($discountCode[$i])) {
+          $discountCode[$i] = $discountCode[0];
+        }
+        if (isset($DisTypExplode[$i-1]) && $DisTypExplode[$i-1]=="stay&pay") {
+          $Cdays = $tot_days/$DisStayExplode[$i-1];
+          $parts = explode('.', $Cdays);
+          $Cdays = $parts[0];
+          $Sdays = $DisStayExplode[$i-1]*$Cdays;
+          $Pdays = $DisPayExplode[$i-1]*$Cdays;
+          $Tdays = $tot_days-$Sdays;
+          $Fdays = $Pdays+$Tdays;
+          $discountType = $DisTypExplode[$i-1];
+        }
+
+        $varIndividual = 'Room'.$i.'individual_amount';
+        if($view[0]->$varIndividual!="") {
+          $individual_amount = explode(",", $view[0]->$varIndividual);
+        }
+
+        $varIndividualDis = 'Room'.$i.'Discount';
+        if($view[0]->$varIndividual!="") {
+          $individual_discount = explode(",", $view[0]->$varIndividualDis);
+        }
+        $oneNight = array();
+        for ($j=0; $j < $tot_days ; $j++) { 
+          if (!isset($individual_discount[$j])) {
+            $individual_discount[$j] = 0;
+          }
+          $CPRMRate[$j]=0;
+          $DisroomAmount[$j] = 0;
+          $CPEAmoAD[$j] = 0;
+          $ExAmount[$j] = 0;
+          $TExAmount[$j] = 0;
+          $CPGAmoAD[$j] = 0;
+          $CPAmoAD[$j] = 0; 
+          $GCamount[$j] = 0;
+          $CPBAAmoAD[$j] = 0;
+          $BAamount[$j] = 0;
+          $TBAamount[$j] = 0;
+          $CPBCAmoAd[$j]  = 0;
+          $BCamount[$j] = 0;
+          $TBCamount[$j]  = 0;
+          $CPGAmoAD[$j] = 0;
+          $GAamount[$j] = 0;
+          $TPBAamount[$j] = 0;
+          /* Room rates start */
+          $rmAmount = 0;
+          if ($view[0]->revenueMarkup!="" && $view[0]->revenueMarkup!=0) {
+            if ($view[0]->revenueMarkupType=='Percentage') {
+              $rmAmount = ($individual_amount[$j]*$view[0]->revenueMarkup)/100;
+            } else {
+              $rmAmount = $view[0]->revenueMarkup;
+            }
+          }
+          // Cost Room price 
+            $CPRMRate[$j] = $individual_amount[$j]-($individual_amount[$j]*$individual_discount[$j])/100;
+          // Selling Room price start
+            $roomAmount[$j] = (($individual_amount[$j]*$total_markup)/100)+$individual_amount[$j]+$rmAmount;
+            $DisroomAmount[$j] = $roomAmount[$j]-($roomAmount[$j]*$individual_discount[$j])/100;
+          /* Room rates end */
+          /* Extrabed rate start */
+            if (count($ExBed)!=0) {
+              foreach ($ExBed as $Exkey => $Exvalue) {
+                if ($Exvalue->date==date('Y-m-d', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+                  $exroomExplode = explode(",", $Exvalue->rooms);
+                  $examountExplode = explode(",", $Exvalue->Exrwamount);
+                  $exTypeExplode = explode(",", $Exvalue->Type);
+                  foreach ($exroomExplode as $Exrkey => $EXRvalue) {
+                    if ($EXRvalue==$i) {
+                      $ExMAmount = 0;
+                      if ($view[0]->revenueMarkup!="") {
+                        if ($exTypeExplode[$Exrkey]=="Adult Extrabed" || $exTypeExplode[$Exrkey]=="Child Extrabed") {
+                          if ($view[0]->revenueExtrabedMarkupType=='Percentage') {
+                            $ExMAmount = ($examountExplode[$Exrkey]*$view[0]->revenueExtrabedMarkup)/100;
+                          } else {
+                            $ExMAmount = $view[0]->revenueExtrabedMarkup;
+                          }
+                        } else {
+                          if ($view[0]->revenueBoardMarkupType=='Percentage') {
+                            $ExMAmount = ($examountExplode[$Exrkey]*$view[0]->revenueBoardMarkup)/100;
+                          } else {
+                            $ExMAmount = $view[0]->revenueBoardMarkup;
+                          }
+                        }
+                      }
+                      $ExDis = 0;
+                      if ($ExtrabedDiscount[$i-1]==1) {
+                        $ExDis = $individual_discount[$j];
+                      }
+                      // Extrabed Cost Price
+                      $CPEAmoAD[$j] = $examountExplode[$Exrkey]-(($examountExplode[$Exrkey]*$ExDis)/100);
+                      // Extrabed Selling Price
+                      $ExAmount[$j] = (($examountExplode[$Exrkey]*$total_markup)/100)+$examountExplode[$Exrkey]+$ExMAmount-(((($examountExplode[$Exrkey]*$total_markup)/100)+$examountExplode[$Exrkey]+$ExMAmount)*$ExDis/100);
+                      $TExAmount[$j] +=$ExAmount[$j];
+                    } 
+                  } 
+                } 
+              }
+            }
+          /* Extrabed rate end */
+ 
+          /* General supplement start */
+            if (count($general)!=0) {
+              
+              foreach ($general as $gskey => $gsvalue) {
+                if ($gsvalue->gstayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+                  $gsadultExplode = explode(",", $gsvalue->Rwadult);
+                  $gsadultAmountExplode = explode(",", $gsvalue->Rwadultamount);
+                  // Adult general supplements start
+                  foreach ($gsadultExplode as $gsakey => $gsavalue) {
+                    if ($gsavalue==$i) {
+                      $GSMAmount = 0;
+                      if ($view[0]->revenueMarkup!="") {
+                        if ($view[0]->revenueGeneralMarkupType=='Percentage') {
+                          $GSMAmount = ($gsadultAmountExplode[$gsakey]*$view[0]->revenueGeneralMarkup)/100;
+                        } else {
+                          $GSMAmount = $view[0]->revenueGeneralMarkup;
+                        }
+                      }
+                      $GSDis = 0;
+                      if ($GeneralDiscount[$i-1]==1) {
+                        $GSDis = $individual_discount[$j];
+                      }
+                      // Adult general cost rate
+                      $CPGAmoAD[$j] = $gsadultAmountExplode[$gsakey]-($gsadultAmountExplode[$gsakey]*$GSDis)/100;
+                      // Adult general selling rate
+                      $GAamount[$j] = ((($gsadultAmountExplode[$gsakey]*$total_markup)/100)+$gsadultAmountExplode[$gsakey]+$GSMAmount)-((($gsadultAmountExplode[$gsakey]*$total_markup)/100)+$gsadultAmountExplode[$gsakey]+$GSMAmount)*$GSDis/100;
+                    }
+                  }
+                  // Adult general supplements end
+                  // Child general supplements start
+                  $gschildExplode = explode(",", $gsvalue->Rwchild);
+                  $gschildAmountExplode = explode(",", $gsvalue->RwchildAmount);
+                  foreach ($gschildExplode as $gsckey => $gscvalue) {
+                    if ($gscvalue==$i) {
+                      $GSMAmount = 0;
+                      if ($view[0]->revenueMarkup!="") {
+                        if ($view[0]->revenueGeneralMarkupType=='Percentage') {
+                          $GSMAmount = ($gschildAmountExplode[$gsckey]*$view[0]->revenueGeneralMarkup)/100;
+                        } else {
+                          $GSMAmount = $view[0]->revenueGeneralMarkup;
+                        }
+                      }
+                      $GSDis = 0;
+                      if ($GeneralDiscount[$i-1]==1) {
+                        $GSDis = $individual_discount[$j];
+                      }
+                      // Child general cost rate
+                      $CPAmoAD[$j] = $gschildAmountExplode[$gsckey]-$gschildAmountExplode[$gsckey]*$GSDis/100;
+                      // Child general selling rate
+                      $GCamount[$j] = ((($gschildAmountExplode[$gsckey]*$total_markup)/100)+$gschildAmountExplode[$gsckey]+$GSMAmount)-((($gschildAmountExplode[$gsckey]*$total_markup)/100)+$gschildAmountExplode[$gsckey]+$GSMAmount)*$GSDis/100;
+                    }
+                  }
+                  // Child general supplements end
+
+
+                }
+              }
+            }
+          /* General supplement end */
+
+          /* Board supplement start */
+          foreach ($board as $bkey => $bvalue) { 
+            if (($room_id==$bvalue->room_id || $bvalue->room_id=="") && $bvalue->stayDate==date('d/m/Y', strtotime($view[0]->check_in. ' + '.$j.'  days'))) {
+
+              // Adult Board start
+              $ABReqwadultexplode = explode(",", $bvalue->Breqadults);
+              $ABRwadultexplode = explode(",", $bvalue->Rwadult);
+              $ABRwadultamountexplode = explode(",", $bvalue->RwadultAmount);
+              foreach ($ABRwadultexplode as $ABRwkey => $ABRwvalue) {
+                if ($ABRwvalue==$i) {
+                  $BSMAmount = 0;
+                  if ($view[0]->revenueMarkup!="") {
+                    if ($view[0]->revenueBoardMarkupType=='Percentage') {
+                      $BSMAmount = ($ABRwadultamountexplode[$ABRwkey]*$view[0]->revenueBoardMarkup)/100;
+                    } else {
+                      $BSMAmount = $view[0]->revenueBoardMarkup*$ABReqwadultexplode[$ABRwkey];
+                    }
+                  }
+                  $BSDis = 0;
+                  if ($BoardDiscount[$i-1]==1) {
+                    $BSDis = $individual_discount[$j];
+                  }
+                  // Adult board cost rate
+                  $CPBAAmoAD[$j] = $ABRwadultamountexplode[$ABRwkey]-($ABRwadultamountexplode[$ABRwkey]*$BSDis/100);
+                  $TPBAamount[$j] += $CPBAAmoAD[$j];
+                  
+                  // Adult board selling rate
+                  $BAamount[$j] = ((($ABRwadultamountexplode[$ABRwkey]*$total_markup)/100)+$ABRwadultamountexplode[$ABRwkey]+$BSMAmount)-((($ABRwadultamountexplode[$ABRwkey]*$total_markup)/100)+$ABRwadultamountexplode[$ABRwkey]+$BSMAmount)*$BSDis/100;
+                  $TBAamount[$j] += $BAamount[$j];
+                }
+              }
+              // Adult Board end
+
+              // Child Board start
+              $CBReqwchildexplode = explode(",", $bvalue->BreqchildCount);
+              $CBRwchildexplode = explode(",", $bvalue->Rwchild);
+              $CBRwchildamountexplode = explode(",", $bvalue->RwchildAmount);
+              foreach ($CBRwchildexplode as $CBRwkey => $CBRwvalue) {
+                if ($CBRwvalue==$i) {
+                  $BSMAmount = 0;
+                  if ($view[0]->revenueMarkup!="") {
+                    if ($view[0]->revenueBoardMarkupType=='Percentage') {
+                      $BSMAmount = ($CBRwchildamountexplode[$CBRwkey]*$view[0]->revenueBoardMarkup)/100;
+                    } else {
+                      $BSMAmount = $view[0]->revenueBoardMarkup*$CBReqwchildexplode[$CBRwkey];
+                    }
+                  }
+                  $BSDis = 0;
+                  if ($BoardDiscount[$i-1]==1) {
+                    $BSDis = $individual_discount[$j];
+                  }
+                  // Child Board cost price
+                  $CPBCAmoAd[$j] = $CBRwchildamountexplode[$CBRwkey]-($CBRwchildamountexplode[$CBRwkey]*$BSDis/100);
+                  // Child Board selling price
+                  $BCamount[$j] = ((($CBRwchildamountexplode[$CBRwkey]*$total_markup)/100)+$CBRwchildamountexplode[$CBRwkey]+$BSMAmount)-((($CBRwchildamountexplode[$CBRwkey]*$total_markup)/100)+$CBRwchildamountexplode[$CBRwkey]+$BSMAmount)*$BSDis/100;
+                  $TBCamount[$j] += $BCamount[$j];
+                }
+              }
+              // Child Board end
+
+            }
+          }
+          /* Board supplement end */
+        }
+
+        // Roomwise total rates start
+        if (isset($DisTypExplode[$i-1]) && $DisTypExplode[$i-1]=="stay&pay" && $Fdays!=0) {
+        array_splice($CPRMRate, 1,$Fdays);
+        array_splice($DisroomAmount, 1,$Fdays);
+        if ($ExtrabedDiscount[$i-1]==1) {
+          array_splice($CPEAmoAD,1,$Fdays);
+          array_splice($TExAmount,1,$Fdays);
+        }
+        if ($GeneralDiscount[$i-1]==1) {
+          array_splice($CPGAmoAD,1,$Fdays);
+          array_splice($CPAmoAD,1,$Fdays);
+
+          array_splice($GAamount,1,$Fdays);
+          array_splice($GCamount,1,$Fdays);
+        }
+        if ($BoardDiscount[$i-1]==1) {
+          array_splice($TPBAamount,1,$Fdays);
+          array_splice($CPBCAmoAd,1,$Fdays);
+
+          array_splice($TBAamount,1,$Fdays);
+          array_splice($TBCamount,1,$Fdays);
+        }
+      } 
+      $costPrice[$i] = array_sum($CPRMRate)+array_sum($CPEAmoAD)+array_sum($CPGAmoAD)+array_sum($CPAmoAD)+array_sum($TPBAamount)+array_sum($CPBCAmoAd);
+
+
+      $totRmAmt[$i] = array_sum($DisroomAmount)+array_sum($TExAmount)+array_sum($GAamount)+array_sum($GCamount)+array_sum($TBAamount)+array_sum($TBCamount); 
+        
+      // Roomwise total rates end
+      }
+      $costPrice = array_sum($costPrice);
+      $sellingPrice = (array_sum($totRmAmt)*$view[0]->tax)/100+array_sum($totRmAmt);
+      $Agentprofit= ($costPrice*($view[0]->agent_markup))/100;
+      $Adminprofit= ($costPrice*($view[0]->admin_markup))/100;
+      if ($Adminprofit==0) {
+        $Adminprofit= $sellingPrice-($Agentprofit+$costPrice);
+      }
+      $return['Cost'] = $costPrice;
+      $return['Selling'] = $sellingPrice;
+      $return['AgentProfit'] = $Agentprofit;
+      $return['AdminProfit'] = $Adminprofit;
+      return $return;
+    }
+    public function booking_details($book_id) {
+      $this->db->select('*');
+      $this->db->from('hotel_tbl_booking');
+      $this->db->where('id',$book_id);
+      $query=$this->db->get();
+      return $query->result();
+    }
 }

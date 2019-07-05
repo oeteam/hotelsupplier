@@ -1056,6 +1056,7 @@ class HotelSupplier extends MY_Controller {
               $status= "<span class='text-danger'>On Request</span>";
               $button =   $view.$edit;
             }
+            $total = $this->Supplier_Model->TotalBookingAmountDetailsGet($r->id);
               $data[] = array(
                 '',
                 $r->booking_id,
@@ -1066,7 +1067,7 @@ class HotelSupplier extends MY_Controller {
                 date('d/m/Y',strtotime($r->check_out)),
                 $r->no_of_days,
                 $r->book_room_count,
-                '0',
+                $total['Cost'],
                 $status,
                 $r->confirmationNumber,
                 $button,
