@@ -133,7 +133,7 @@
                 series: [
                     {
                         type: 'pie',
-                        fillStyles: ['#418CF0', '#FCB441', '#E0400A'],
+                        fillStyles: ['#418CF0', '#E0400A'],
                         labels: {
                             stringFormat: '%.1f%%',
                             valueType: 'percentage',
@@ -142,7 +142,7 @@
                         },
                         explodedRadius: 10,
                         explodedSlices: [5],
-                        data: [['All', <?php echo $all ?>], ['Accepted', <?php echo $accepted ?>], ['Cancelled', <?php echo $cancelled ?>]]
+                        data: [['Accepted', <?php echo $accepted ?>], ['Cancelled', <?php echo $cancelled ?>]]
                     }
                 ]
             });
@@ -184,7 +184,7 @@
                 series: [
                     {
                         type: 'pie',
-                        fillStyles: ['#418CF0', '#FCB441', '#E0400A'],
+                        fillStyles: ['#418CF0', '#E0400A'],
                         labels: {
                             stringFormat: '%.1f%%',
                             valueType: 'percentage',
@@ -193,7 +193,8 @@
                         },
                         explodedRadius: 10,
                         explodedSlices: [5],
-                        data: [['All', response.all], ['Accepted', response.accepted], ['Cancelled', response.cancelled]]
+                        // data: [['All', response.all], ['Accepted', response.accepted], ['Cancelled', response.cancelled]]
+                        data: [['Accepted', response.accepted], ['Cancelled', response.cancelled]]
                     }
                 ]
             });

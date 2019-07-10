@@ -1104,7 +1104,6 @@ class HotelSupplier extends MY_Controller {
     }
     $from = date('Y-m-d');
     $to = date('Y-m-d', strtotime(date('Y-m-d'). "+1 days"));
-    $data['all'] = $this->Supplier_Model->allBook($from,$to);
     $data['accepted'] = $this->Supplier_Model->acceptbook($from,$to);
     $data['cancelled'] = $this->Supplier_Model->cancelbook($from,$to);
     $this->load->view('statistics',$data);
@@ -1123,7 +1122,6 @@ class HotelSupplier extends MY_Controller {
     } else {
       $to = date('Y-m-d', strtotime(date('Y-m-d'). "+1 days"));
     }
-    $data['all'] = $this->Supplier_Model->allBook($from,$to);
     $data['accepted'] = $this->Supplier_Model->acceptbook($from,$to);
     $data['cancelled'] = $this->Supplier_Model->cancelbook($from,$to);
     echo json_encode($data);

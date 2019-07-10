@@ -1408,7 +1408,7 @@ class Supplier_Model extends CI_Model {
         $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
 	    $this->db->where('hotel_tbl_booking.Created_Date>=',$from);
 	    $this->db->where('hotel_tbl_booking.Created_Date<=',$to);
-        $this->db->where('hotel_tbl_booking.booking_flag','1');
+        $this->db->where('hotel_tbl_booking.booking_flag !=','3');
         $query = $this->db->get();
         return count($query->result());
     }
