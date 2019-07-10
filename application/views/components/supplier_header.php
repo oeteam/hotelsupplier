@@ -348,6 +348,11 @@
                 Contracts
               </a>
           </li>
+          <li class="<?php echo $linkend=="statistics" ? 'active' : '' ?>">
+              <a href="<?php echo base_url('HotelSupplier/statistics')?>">              
+                Statistics
+              </a>
+          </li>
       </ul>
     </div>
   </div>

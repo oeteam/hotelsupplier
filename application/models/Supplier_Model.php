@@ -1022,6 +1022,7 @@ class Supplier_Model extends CI_Model {
         $this->db->join('hotel_tbl_room_type','hotel_tbl_hotel_room_type.room_type = hotel_tbl_room_type.id', 'left');
         $this->db->join('hotel_tbl_agents','hotel_tbl_booking.agent_id = hotel_tbl_agents.id', 'left');
         $this->db->where('hotel_tbl_booking.id',$book_id);
+         $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
         $query=$this->db->get();
         return $query->result();
     } 
@@ -1368,6 +1369,9 @@ class Supplier_Model extends CI_Model {
       // Roomwise total rates end
       }
       $costPrice = array_sum($costPrice);
+      if($view[0]->tax=="") {
+      	$view[0]->tax = 0;
+      }
       $sellingPrice = (array_sum($totRmAmt)*$view[0]->tax)/100+array_sum($totRmAmt);
       $Agentprofit= ($costPrice*($view[0]->agent_markup))/100;
       $Adminprofit= ($costPrice*($view[0]->admin_markup))/100;
@@ -1386,5 +1390,37 @@ class Supplier_Model extends CI_Model {
       $this->db->where('id',$book_id);
       $query=$this->db->get();
       return $query->result();
+    }
+    public function allbook($from,$to) {
+        $this->db->select('hotel_tbl_booking.* ,hotel_tbl_hotels.supplierid');
+        $this->db->from('hotel_tbl_booking');
+        $this->db->join('hotel_tbl_hotels','hotel_tbl_booking.hotel_id = hotel_tbl_hotels.id', 'left');
+        $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
+	    $this->db->where('hotel_tbl_booking.Created_Date>=',$from);
+	    $this->db->where('hotel_tbl_booking.Created_Date<=',$to);
+	    $query = $this->db->get();
+	    return count($query->result());
+    }
+    public function acceptbook($from,$to) {
+        $this->db->select('hotel_tbl_booking.* ,hotel_tbl_hotels.supplierid');
+        $this->db->from('hotel_tbl_booking');
+        $this->db->join('hotel_tbl_hotels','hotel_tbl_booking.hotel_id = hotel_tbl_hotels.id', 'left');
+        $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
+	    $this->db->where('hotel_tbl_booking.Created_Date>=',$from);
+	    $this->db->where('hotel_tbl_booking.Created_Date<=',$to);
+        $this->db->where('hotel_tbl_booking.booking_flag','1');
+        $query = $this->db->get();
+        return count($query->result());
+    }
+    public function cancelbook($from,$to) {
+       $this->db->select('hotel_tbl_booking.* ,hotel_tbl_hotels.supplierid');
+        $this->db->from('hotel_tbl_booking');
+        $this->db->join('hotel_tbl_hotels','hotel_tbl_booking.hotel_id = hotel_tbl_hotels.id', 'left');
+        $this->db->where('hotel_tbl_hotels.supplierid',$this->session->userdata('supplier_id'));
+	    $this->db->where('hotel_tbl_booking.Created_Date>=',$from);
+	    $this->db->where('hotel_tbl_booking.Created_Date<=',$to);
+        $this->db->where('hotel_tbl_booking.booking_flag','3');
+        $query = $this->db->get();
+        return count($query->result());
     }
 }

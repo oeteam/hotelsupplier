@@ -1087,10 +1087,45 @@ class HotelSupplier extends MY_Controller {
         redirect("welcome/agent_logout");
       }
       $data['view'] = $this->Supplier_Model->hotel_booking_detail($_REQUEST['id']);
-      $data['board'] = $this->Supplier_Model->board_booking_detail($_REQUEST['id']);
-      $data['general'] = $this->Supplier_Model->general_booking_detail($_REQUEST['id']);
-      $data['ExBed']  =  $this->Supplier_Model->getExtrabedDetails($_REQUEST['id']);
-      $data['cancelation'] =  $this->Supplier_Model->get_cancellation_terms($_REQUEST['id']);
-      $this->load->view('hotel_booking_view',$data);
+      if(count($data['view'])=="") {
+        $data['heading'] = "Page not found";
+        $this->load->view('errors/html/error_404',$data);
+      } else {
+        $data['board'] = $this->Supplier_Model->board_booking_detail($_REQUEST['id']);
+        $data['general'] = $this->Supplier_Model->general_booking_detail($_REQUEST['id']);
+        $data['ExBed']  =  $this->Supplier_Model->getExtrabedDetails($_REQUEST['id']);
+        $data['cancelation'] =  $this->Supplier_Model->get_cancellation_terms($_REQUEST['id']);
+        $this->load->view('hotel_booking_view',$data);
+      } 
+  }
+  public function statistics() {
+    if ($this->session->userdata('supplier_name')=="") {
+     redirect("welcome/agent_logout");
+    }
+    $from = date('Y-m-d');
+    $to = date('Y-m-d', strtotime(date('Y-m-d'). "+1 days"));
+    $data['all'] = $this->Supplier_Model->allBook($from,$to);
+    $data['accepted'] = $this->Supplier_Model->acceptbook($from,$to);
+    $data['cancelled'] = $this->Supplier_Model->cancelbook($from,$to);
+    $this->load->view('statistics',$data);
+  }
+  public function BookingPatternReport() {
+    if ($this->session->userdata('supplier_name')=="") {
+     redirect("welcome/agent_logout");
+    }
+    if(isset($_REQUEST['fromdate']) && $_REQUEST['fromdate']!="") {
+      $from = $_REQUEST['fromdate'];
+    } else {
+      $from = date('Y-m-d');
+    }
+    if(isset($_REQUEST['todate']) && $_REQUEST['todate']!="") {
+      $to = $_REQUEST['todate'];
+    } else {
+      $to = date('Y-m-d', strtotime(date('Y-m-d'). "+1 days"));
+    }
+    $data['all'] = $this->Supplier_Model->allBook($from,$to);
+    $data['accepted'] = $this->Supplier_Model->acceptbook($from,$to);
+    $data['cancelled'] = $this->Supplier_Model->cancelbook($from,$to);
+    echo json_encode($data);
   }
 }
