@@ -465,7 +465,11 @@ th {
         $("#contractlist").html(response.list);
       }
     });    
-    $("#contractlist").find('a').first('.active').trigger("click");
+    if ($("#contractlist").find('a').length!=0) {
+      $("#contractlist").find('a').first('.active').trigger("click");
+    } else {
+      divLoading("stop");
+    }
   }
   function loadallotment(id) {
      divLoading("start");
