@@ -41,63 +41,21 @@ class User_Model extends CI_Model {
     // }
     public function authorizeagent($user_name, $password,$agent_code) {
         /*Main Agent authorization start*/
-        $this->db->select('id,Email,First_Name,Last_Name,Sex');
+        $this->db->select('id,Email,First_Name,Last_Name,Sex,extranetStatus');
         $this->db->where('Username',$user_name);
         $this->db->where('password',$password);
         $this->db->where('Agent_Code',$agent_code);
         $this->db->where('delflg',"1");
         $this->db->from('hotel_tbl_agents');
         $this->db->limit('1');
-        $query = $this->db->get();
+        $query = $this->db->get()->result();
         /*Main Agent authorization end*/
-        /*Accounts Agent authorization start*/
-
-
-        $this->db->select('id,Email,First_Name,Last_Name,Sex');
-        $this->db->where('First_Name_Accounts',$user_name);
-        $this->db->where('Password_Accounts',$password);
-        $this->db->where('Agent_Code',$agent_code);
-        $this->db->where('delflg',"1");
-        $this->db->from('hotel_tbl_agents');
-        $this->db->limit('1');
-        $query1 = $this->db->get();
-
-        /*Accounts Agent authorization end*/
-        /*Reservation Agent authorization start*/
-
-        $this->db->select('id,Email,First_Name,Last_Name,Sex');
-        $this->db->where('First_Name_Reservation',$user_name);
-        $this->db->where('Password_Reservation',$password);
-        $this->db->where('Agent_Code',$agent_code);
-        $this->db->where('delflg',"1");
-        $this->db->from('hotel_tbl_agents');
-        $this->db->limit('1');
-        $query2 = $this->db->get();
-
-        /*Reservation Agent authorization end*/
-        /*Management Agent authorization start*/
-
-        $this->db->select('id,Email,First_Name,Last_Name,Sex');
-        $this->db->where('First_Name_Management',$user_name);
-        $this->db->where('Password_Management',$password);
-        $this->db->where('Agent_Code',$agent_code);
-        $this->db->where('delflg',"1");
-        $this->db->from('hotel_tbl_agents');
-        $this->db->limit('1');
-        $query3 = $this->db->get();
-
-        /*Management Agent authorization end*/
-
-        if (count($query->result())!=0) {
-            return $query->result();
-        } else if (count($query1->result())!=0) {
-            return $query1->result();
-        } if (count($query2->result())!=0) {
-            return $query2->result();
-        } else if (count($query3->result())!=0) {
-            return $query3->result();
-        } else {
+        if(count($query)!=0 && $query[0]->extranetStatus==0) {
+            return "denied";
+        } else if (count($query)==0) {
             return "failed";
+        } else {
+            return $query;
         }
     }
     public function update_login_record_agent($data,$id) {

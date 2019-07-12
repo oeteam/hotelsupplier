@@ -34,6 +34,9 @@ class Welcome extends CI_Controller {
           if ($result=="failed") {
               $Return['error'] = 'Login failed';
               $Return['color'] = 'red';
+          } else if($result=="denied") {
+              $Return['error'] = 'Permission denied';
+              $Return['color'] = 'red';
           } else  {
               $active_data = array(
                 'active_status' => '1'
