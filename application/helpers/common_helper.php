@@ -1,6 +1,6 @@
  <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+ 
 function email_validation($mail) {
   $ci =& get_instance();
     $query = $ci->db->query("Select Email from hotel_tbl_agents where Email= '".$mail."'");

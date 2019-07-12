@@ -86,7 +86,7 @@ $favicon = favicon();
 						</div>
 						<div class="clearfix"></div>
 					</div>
-					<div class="alert alert-danger error_msg hide"  style="width: 74%;margin-top: 5px;margin-left: 97px;" role="alert">
+					<div class="error_msg hide"  style="width: 74%;margin-top: 5px;margin-left: 89px;font-weight: bold;color: #ed2525;" role="alert">
   							
 					</div>
 					<div class="bnr-btn">

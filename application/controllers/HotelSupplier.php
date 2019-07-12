@@ -13,6 +13,7 @@ class HotelSupplier extends MY_Controller {
           $this->load->helper('url');
           $this->load->helper('html');
           $this->load->model('Supplier_Model');
+          $this->load->helper('permission');
           $this->load->helper('upload');
           $this->load->helper('common');
      }
