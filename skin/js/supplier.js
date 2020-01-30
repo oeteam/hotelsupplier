@@ -539,23 +539,24 @@ function commonDeleteroom() {
       data: $("#delete_form").serialize(),
       cache: false,
       success: function (response) {
-          close_delete_modal();
-          if(response.status=='1') {
-             $(".msg").append('<script type="text/javascript"> AddToast("success","Delete Request Send Successfully","!");</script>');
-          } else {
-             $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
-          }
-           var hotelid = $("#hotel-list li a.active").attr('id');
-            var room_table = $('#room_table').dataTable({
-          "bDestroy": true,
-          "ajax": {
-              url : base_url+'HotelSupplier/hotel_room_list/'+hotelid,
-              type : 'GET'
-          },
-       "fnDrawCallback": function(settings){
-          $('[data-toggle="tooltip"]').tooltip();          
+        close_delete_modal();
+        if(response.status=='1') {
+           $(".msg").append('<script type="text/javascript"> AddToast("success","Delete Request Send Successfully","!");</script>');
+        } else {
+           $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
         }
-    });
+        
+        var hotelid = $("#hotel-list li a.active").attr('id');
+        var room_table = $('#room_table').dataTable({
+            "bDestroy": true,
+            "ajax": {
+                url : base_url+'HotelSupplier/hotel_room_list/'+hotelid,
+                type : 'GET'
+            },
+         "fnDrawCallback": function(settings){
+            $('[data-toggle="tooltip"]').tooltip();          
+          }
+        });
       }
     });
 }
@@ -588,72 +589,7 @@ function commonDeleteroom() {
        $("#add_contract").submit();
      }
    });
-  $('#allotment-submit').click(function () {
-    var contractid = $("#contractid").val();
-    var room = $("#room").val();
-    var allotment = $("#allotment").val();
-    var price = $("#price").val();
-    var cutoff = $("#cutoff").val();
-    var from_date = $("#bulk-alt-fromDate").val();
-    var to_date = $("#bulk-alt-toDate").val();
-    var dayss = [];
-    $("input:checkbox[name=bulk-alt-days]:checked").each(function(){
-     dayss.push($(this).val());
-    });
-    if(room=="") 
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","Room field is required","!");</script>');
-      $("#room").focus();
-    }
-    else if(from_date=="")
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","From date field is required","!");</script>');
-      $("#bulk-alt-fromDate").focus();
-    }
-    else if(to_date=="")
-    {
-      $(".msg").append('<script type="text/javascript"> AddToast("danger","To date field is required","!");</script>');
-      $("#bulk-alt-toDate").focus();
-    // }
-    // else if(dayss=="")
-    // {
-    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Days field is required","!");</script>');
-    // }
-    // else if(allotment=="")
-    // {
-    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Allotment field is required","!");</script>');
-    //   $("#allotment").focus();
-    // } 
-    // else if(price=="") 
-    // {
-    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Price field is required","!");</script>');
-    //   $("#price").focus();
-    // }
-    // else if(cutoff=="")
-    // {
-    //   $(".msg").append('<script type="text/javascript"> AddToast("danger","Cutoff field is required","!");</script>');
-    //   $("#cutoff").focus();
-    } else {
-      $('#allotment-submit').attr('disabled', 'disabled');
-      $.ajax({
-      dataType: 'json',
-      type: "POST",
-      url: base_url+'HotelSupplier/add_allotment',
-      data:$("#add_allotment").serialize(),
-      cache: false,
-      success: function (response) {
-          close_delete_modal();
-          $(".pre-page").addClass("hide");
-          if(response.status=='1') {
-            $(".msg").append('<script type="text/javascript"> AddToast("success","Allotment added successfully","!");</script>');
-          } else {
-            $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
-          }
-          loadallotment(contractid);  
-        }
-      });
-     }
-   });
+
 function closeoutUpdate(value,contractid,roomid,hotelid,ndate) {
     var closeval = $("."+value).find('span').text();
     if (closeval=="OFF") {
@@ -736,7 +672,7 @@ function ContractStatus(contractid) {
   $.ajax({
       dataType: 'json',
       type: "Post",
-      url: base_url+'hotelsupplier/updatecontractStatus?contractid='+contractid+'&value='+flag,
+      url: base_url+'HotelSupplier/updatecontractStatus?contractid='+contractid+'&value='+flag,
       success: function(data) {
         $(".msg").append('<script type="text/javascript"> AddToast("success","Updated Successfully","!");</script>');
         var hotelid = $("#hotel-list li a.active").attr('id');
@@ -762,17 +698,67 @@ function commonDeletepolicy() {
           } else {
              $(".msg").append('<script type="text/javascript"> AddToast("danger","Error Occured","!");</script>');
           }
-          var contractid = $("#contractlist li a.active").attr('id');
-          var cancellation_table = $('#cancellation_table').dataTable({
-          "bDestroy": true,
-          "ajax": {
-              url : base_url+'HotelSupplier/cancellationlist/'+contractid,
-              type : 'GET'
-          },
-          "fnDrawCallback": function(settings){
-            $('[data-toggle="tooltip"]').tooltip();          
+          if (response.table=="board") {
+            var contractid = $("#contractlist li a.active").attr('id');
+            var boardsupplement_table = $('#boardsupplement_table').dataTable({
+              "bDestroy": true,
+              "ajax": {
+                  url : base_url+'HotelSupplier/boardsupplementlist/'+contractid,
+                  type : 'GET'
+              },
+               "fnDrawCallback": function(settings){
+                  $('[data-toggle="tooltip"]').tooltip();          
+                }
+            });
+         } else if (response.table=="general") {
+            var contractid = $("#contractlist li a.active").attr('id');
+            var generalsupplement_table = $('#generalsupplement_table').dataTable({
+              "bDestroy": true,
+              "ajax": {
+                  url : base_url+'HotelSupplier/generalsupplementlist/'+contractid,
+                  type : 'GET'
+              },
+               "fnDrawCallback": function(settings){
+                  $('[data-toggle="tooltip"]').tooltip();          
+                }
+            });
+          } else if (response.table=="extrabed") {
+            var contractid = $("#contractlist li a.active").attr('id');
+            var extrabed_table = $('#extrabed_table').dataTable({
+              "bDestroy": true,
+              "ajax": {
+                  url : base_url+'HotelSupplier/extrabedlist/'+contractid,
+                  type : 'GET'
+              },
+               "fnDrawCallback": function(settings){
+                  $('[data-toggle="tooltip"]').tooltip();          
+                }
+            });
+          } else if(response.table=="minimumstay") {
+            var contractid = $("#contractlist li a.active").attr('id');
+            var minimumstay_table = $('#minimumstay_table').dataTable({
+              "bDestroy": true,
+              "ajax": {
+                  url : base_url+'HotelSupplier/minimumstaylist/'+contractid,
+                  type : 'GET'
+              },
+               "fnDrawCallback": function(settings){
+                  $('[data-toggle="tooltip"]').tooltip();          
+                }
+            }); 
+          } else {
+            var contractid = $("#contractlist li a.active").attr('id');
+            var cancellation_table = $('#cancellation_table').dataTable({
+              "bDestroy": true,
+              "ajax": {
+                  url : base_url+'HotelSupplier/cancellationlist/'+contractid,
+                  type : 'GET'
+              },
+              "fnDrawCallback": function(settings){
+                $('[data-toggle="tooltip"]').tooltip();          
+              }
+            });
           }
-        });
       }
     });
 }

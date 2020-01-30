@@ -215,7 +215,7 @@
                 <li class="menu5"><a><i class="fa fa-phone" aria-hidden="true"></i> <span>Contact Info</span></a>
                 </li>
             </ul>
-            <form action="<?php echo base_url('hotelsupplier/add_new_hotel') ?>" method="post" id="new_hotel_form" name="new_hotel_form" enctype="multipart/form-data"> 
+            <form action="<?php echo base_url('HotelSupplier/add_new_hotel') ?>" method="post" id="new_hotel_form" name="new_hotel_form" enctype="multipart/form-data"> 
               <input type="hidden" name="room_aminities" id="room_aminities" value="<?php echo isset($view[0]->room_aminities) ? $view[0]->room_aminities : '' ?>">
             <input type="hidden" name="keywords" id="keywords" value="<?php echo isset($view[0]->keywords) ? $view[0]->keywords : '' ?>">
             <input type="hidden" name="hotels_edit_id" id="hotels_edit_id" value="<?php echo isset($view[0]->id) ? $view[0]->id : '' ?>">
@@ -689,14 +689,14 @@
                                     <label for="t5-n5">Email</label><span>*</span>
                                     <input id="t5-n5" type="email" name="sales_mail" class="form-control sales_mail"  value="<?php echo isset($view[0]->sale_mail) ? $view[0]->sale_mail : '';?>">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 hide">
                                     <div class="form-group has-feedback">
                                         <label for="t5-n5">Password</label><span>*</span>
-                                        <input id="sales_password" type="password" name="sales_password" value="<?php echo isset($view[0]->sale_password) ? $view[0]->sale_password : '';?>" class="form-control sales_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_sales()"></i> -->
+                                        <input id="sales_password" type="password" name="sales_password" value="<?php echo isset($view[0]->sale_password) ? $view[0]->sale_password : md5(date('Y-m-d H:i:s'));?>" class="form-control sales_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_sales()"></i> -->
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+                            <!-- </div>
+                            <div class="row"> -->
                                 <div class="form-group col-md-6">
                                     <label for="t5-n6">Address</label><span>*</span>
                                     <textarea id="t5-n6" name="sales_address" class="form-control sales_address"><?php echo isset($view[0]->sale_address) ? $view[0]->sale_address : '';?></textarea>
@@ -734,14 +734,14 @@
                                     <label for="revenue_mail">Email</label><span>*</span>
                                     <input id="revenue_mail" type="email" name="revenue_mail"  value="<?php echo isset($view[0]->revenu_mail) ? $view[0]->revenu_mail : '';?>" class="form-control revenue_mail">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 hide">
                                     <div class="form-group has-feedback">
                                         <label for="revenue_mail">Password</label><span>*</span>
-                                        <input id="revenue_password" type="password" name="revenue_password" value="<?php echo isset($view[0]->revenue_password) ? $view[0]->revenue_password : '';?>" class="form-control revenue_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_revenue()"></i> -->
+                                        <input id="revenue_password" type="password" name="revenue_password" value="<?php echo isset($view[0]->revenue_password) ? $view[0]->revenue_password : md5(date('Y-m-d H:i:s'));?>" class="form-control revenue_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_revenue()"></i> -->
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+                    <!--         </div>
+                            <div class="row"> -->
                                 <div class="form-group col-md-6">
                                     <label for="revenue_address">Address</label><span>*</span>
                                     <textarea id="revenue_address" name="revenue_address" class="form-control revenue_address"><?php echo isset($view[0]->revenu_address) ? $view[0]->revenu_address : '';?></textarea>
@@ -779,14 +779,14 @@
                                     <label for="contract_mail">Email</label><span>*</span>
                                     <input id="contract_mail" type="email" name="contract_mail" value="<?php echo isset($view[0]->contract_mail) ? $view[0]->contract_mail : '';?>" class="form-control contract_mail">
                                 </div>
-                                 <div class="form-group col-md-6">
+                                 <div class="form-group col-md-6 hide">
                                     <div class="form-group has-feedback">
                                         <label for="contract_mail">Password</label><span>*</span>
-                                        <input id="contract_password" type="password" name="contract_password" value="<?php echo isset($view[0]->contract_password) ? $view[0]->contract_password : '';?>" class="form-control contract_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_contract()"></i> -->
+                                        <input id="contract_password" type="password" name="contract_password" value="<?php echo isset($view[0]->contract_password) ? $view[0]->contract_password : md5(date('Y-m-d H:i:s'));?>" class="form-control contract_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_contract()"></i> -->
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+<!--                             </div>
+                            <div class="row"> -->
                                 <div class="form-group col-md-6">
                                     <label for="contracts_address">Address</label><span>*</span>
                                     <textarea id="contracts_address" name="contracts_address" class="form-control contracts_address"><?php echo isset($view[0]->contracts_address) ? $view[0]->contracts_address : '';?></textarea>
@@ -824,14 +824,14 @@
                                     <label for="finance_mail">Email</label><span>*</span>
                                     <input id="finance_mail" type="email" name="finance_mail" class="form-control finance_mail" value="<?php echo isset($view[0]->finance_mail) ? $view[0]->finance_mail : '';?>">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 hide">
                                     <div class="form-group has-feedback">
                                         <label for="finance_mail">Password</label><span>*</span>
-                                        <input id="finance_password" type="password" name="finance_password" value="<?php echo isset($view[0]->finance_password) ? $view[0]->finance_password : '';?>" class="form-control finance_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_finance()"></i> -->
+                                        <input id="finance_password" type="password" name="finance_password" value="<?php echo isset($view[0]->finance_password) ? $view[0]->finance_password : md5(date('Y-m-d H:i:s'));?>" class="form-control finance_password"><!-- <i class="fa fa-eye form-control-feedback" onclick="myFunction_finance()"></i> -->
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+       <!--                      </div>
+                            <div class="row"> -->
                                 <div class="form-group col-md-6">
                                     <label for="finance_address">Address</label><span>*</span>
                                     <textarea id="finance_address" name="finance_address" class="form-control finance_address"><?php echo isset($view[0]->finance_address) ? $view[0]->finance_address : '';?></textarea>

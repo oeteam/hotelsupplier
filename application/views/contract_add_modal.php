@@ -2,6 +2,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
   <!-- Select2 JS -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/prettify.css" />
     <style type="text/css">
       .ui-datepicker {
         z-index: 9999999 ! important;
@@ -232,7 +233,7 @@
                 <label for="board">Board</label>
                 <select name="board" id="board" class="form-control">
                     <?php foreach ($board as $key => $value) { 
-                        if(isset($_REQUEST['id']) && $view[0]->board==$value  ) { ?>
+                        if(isset($_REQUEST['contracts_edit_id']) && $view[0]->board==$value  ) { ?>
                         <option selected="" value="<?php echo $value ?>"><?php echo $value ?></option>
                     <?php } else { ?>
                         <option value="<?php echo $value ?>"><?php echo $value ?></option>
@@ -272,31 +273,74 @@
                 <label for="close" class="status">Close</label>
             </div>
             <div class="form-group col-md-4">
-                <label for="markup_type">Markup Type</label>
-                      <select id="markup_type" name="markup_type" class="form-control">
-                          <option value="">Select</option>
-                          <option value="percentage" <?php echo isset($view[0]->markupType) && $view[0]->markupType=='percentage' ?  'selected' : '' ?>>Percentage</option>
-                          <option value="flat" <?php echo isset($view[0]->markupType) && $view[0]->markupType=='flat' ?  'selected' : '' ?>>Flat</option>
-                      </select>
-            </div>
-            <div class="form-group col-md-4">
-                <label for="max_age">Contract Markup</label><br>
-                <?php if(isset($_REQUEST['contracts_edit_id'])&&$_REQUEST['contracts_edit_id']!="") { ?>
-                <div class="col-md-6 pad-0">
-                  <input type="checkbox" id="contractmarkup" name="contractmarkup" value="no_change" />
-                  <label for="contractmarkup" style="font-weight: 100 !important;">NoChange</label>
-                </div>
-                <?php } ?>
-                <div class="col-md-6 pad-0">
-                  <input  type="text" name="markup"  class="form-control" id="markup" value="<?php echo isset($view[0]->markup) ?  $view[0]->markup : '' ?>">
-                </div>
-            </div>
-            </div>
-        <div class="row">
-            <div class="form-group col-md-4">
                 <label for="bookingCode">Booking Code</label>
                 <input  type="text" name="bookingCode"  class="form-control" id="bookingCode"  value="<?php echo isset($view[0]->BookingCode) ?  $view[0]->BookingCode : '' ?>">
-            </div> 
+            </div>
+            <div class="form-group col-md-4">        
+                <span>Active Markets</span>
+                <?php
+                $tempmarket = array();
+                if (isset($view[0]->market) && $view[0]->market!="") {
+                    $tempmarket = explode(",", $view[0]->market);
+                }
+                ?>
+                <input type="hidden" id="market_check" value="<?php echo isset($view[0]->market) ? $view[0]->market : '' ?>">
+                <div class="multi-select-mod">
+                <select name="market[]" id="market" class="form-control"  multiple="" onchange="selectCountry();">
+                    <?php foreach ($market as $key => $value) {
+                        if (!isset($_REQUEST['contracts_edit_id'])) {
+                            $selected = 'selected';
+                        } else if (isset($_REQUEST['contracts_edit_id']) && in_array($value->continent,$tempmarket)!='') {
+                            $selected = 'selected';
+                        } else {
+                            $selected = '';
+                        }
+                     ?>
+                        <option <?php echo  $selected ?>  value="<?php echo $value->continent ?>"><?php echo $value->continent ?></option>
+                    <?php } ?>
+                </select>     
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Nationality Permission</h4>
+                <br>
+            </div>
+            <div class="row">
+                <input type="hidden" id="permission_check" value="<?php echo isset($view[0]->nationalityPermission) ? $view[0]->nationalityPermission : '' ?>">
+                <div class="col-md-12">
+                    <div class="col-xs-5">
+                        <span>Active Nationality</span>
+                        <select name="nationality_from[]" id="undo_redo" style="width:100%" size="13" multiple="multiple">
+                            <?php foreach ($nationality as $key => $value) { ?>
+                                <option value="<?php echo $value->id ?>" continent="<?php echo $value->continent!="" ? $value->continent : 'other' ?>"><?php echo $value->name ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    
+                    <div class="col-xs-2">
+                        <button type="button" id="undo_redo_undo" class="mt-6 no-border btn-sm btn-primary btn-block">Undo</button>
+                        <button type="button" id="undo_redo_rightAll" class="no-border btn-sm btn-default btn-block"><i class="fa fa-forward"></i></button>
+                        <button type="button" id="undo_redo_rightSelected" class="no-border btn-sm btn-default btn-block"><i class="fa fa-chevron-right"></i></button>
+                        <button type="button" id="undo_redo_leftSelected" class="no-border btn-sm btn-default btn-block"><i class="fa fa-chevron-left"></i></button>
+                        <button type="button" id="undo_redo_leftAll" class="no-border btn-sm btn-default btn-block"><i class="fa fa-backward"></i></button>
+                        <button type="button" id="undo_redo_redo" class="no-border btn-sm btn-primary btn-block">Redo</button>
+                    </div>
+                    
+                    <div class="col-xs-5">
+                        <span>Inactive Nationality</span>
+                        <form id="country_permission_form" method="post">
+                            <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>"> 
+                        <select name="nationality_to[]" id="undo_redo_to" style="width:100%" size="13" multiple="multiple">
+                            
+                        </select>
+                         
+                          <input type="hidden" name="context" id="context"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         </form>
       </div>
@@ -333,7 +377,28 @@
       </div>
     </div>
 </div>
+<script src="<?php echo base_url(); ?>assets/js/bootstrap-multiselect.js"></script>
 <script type="text/javascript">
+    $(document).ready(function()  {
+        $('#market').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 0
+        });
+    });
+</script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/prettify.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/multiselect.min.js"></script>
+<script type="text/javascript">
+  window.prettyPrint && prettyPrint();
+    $('#undo_redo').multiselect({
+        search: {
+            left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+            right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+        },
+        fireSearch: function(value) {
+            return value.length = 1;
+        }
+    });
    function cancellationfun() {
     var cancel = $("#cancellation").val();
     if(cancel == "refundable") {
@@ -394,6 +459,36 @@
          $('#markup').prop("disabled", false);
        }
     })
+
+  function nationatilitycheck() {
+      <?php if (isset($view[0]->nationalityPermission) && $view[0]->nationalityPermission!="") { ?>
+      var permission_check = $("#permission_check").val().split(",");
+      $.each(permission_check, function(i, v) {
+       $('#undo_redo option[value='+v+']').attr('selected','selected');
+      });
+      <?php } ?>
+
+      <?php if (isset($view[0]->nationalityPermission)  && $view[0]->nationalityPermission!="") { ?>
+      $("#undo_redo_rightSelected").trigger('click');
+      $('#undo_redo_to').prop('selectedIndex', 0).focus(); 
+      <?php } ?>
+  }
+
+  function selectCountry() {
+        $.each($("#market option:selected"), function(){ 
+            $('#undo_redo_to option[continent="'+$(this).val()+'"]').prop('selected',true); 
+            $("#undo_redo_leftSelected").trigger('click'); 
+        });
+
+        $.each($("#market option:not(:selected)"), function(){   
+            $('#undo_redo option[continent="'+$(this).val()+'"]').prop('selected',true); 
+            $("#undo_redo_rightSelected").trigger('click'); 
+        });
+    }
+    <?php if (isset($_REQUEST['contracts_edit_id']) && $view[0]->market!='') { ?>
+        selectCountry();
+    <?php } ?>
+    nationatilitycheck();
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 

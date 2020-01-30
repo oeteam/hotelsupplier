@@ -525,7 +525,11 @@ input:checked + .slider:before {
                     <div class="row m-b-1">
                       <div class="col-md-12">
                         <div class="col-md-12">
-          
+                <?php 
+            if ($view[0]->tax=="") {
+                  $view[0]->tax = 0;
+                }
+                 ?>
                 <div class="col-md-6">
                   <p>Tax</p>
                 </div>

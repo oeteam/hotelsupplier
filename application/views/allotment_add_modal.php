@@ -211,22 +211,51 @@
     .close {
       opacity: 10;
     }
+    .pre-img {
+      position: absolute;
+      z-index: 999999999;
+      left: 43%;
+      top: 30%;
+    }
+    .pre-div {
+      background: white;
+      width: 94%;
+      display: block;
+      height: 84%;
+      position: absolute;
+      z-index: 99;
+    }
 </style>
 <div class="modal-dialog" style="overflow-y:auto;height: 100%;width: 55%;">
   <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title"><span class="list-img"><?php echo $title; ?></h4>
+        <h4 class="modal-title"><span class="list-img"><?php echo $title; ?> (<?php 
+              echo $contract['0']->contract_id.'-'.$contract[0]->board;
+             ?>)</h4>
       </div>
       <div class="modal-body">
+      <div class="row preloader hide">
+          <div class="pre-div">
+            <img class="pre-img" src="<?php echo base_url().'skin/images/pre.gif'?>">
+            <p class="text-center"><b>Please wait for few moments....</p>
+          </div>
+      </div>
+      <div class="form-div">
         <form method="post" id="add_allotment" name="add_allotment" enctype="multipart/form-data"> 
         <input type="hidden" name="contractid" id="contractid" value="<?php echo $contractid ?>" >
         <input type="hidden" name="hotelid" id="hotelid" value="<?php echo $hotelid ?>" >
+        <input type="hidden" class="contract_type" value="<?php echo $contract['0']->board;  ?>">
+        <div class="row">
+          <div class="col-md-12">
+            
+          </div>
+        </div>
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="room">Room</label>
                    <div class="multi-select-mod multi-select-trans">
-                      <select id="room" name="room[]"  multiple="" class="form-control">
+                      <select id="room" name="room[]" onchange="RoomSelectFun()"  multiple="" class="form-control">
                         <?php foreach ($rooms as $value) { ?>  
                           <option value="<?php echo $value->id ?>"><?php echo $value->roomName ?></option>
                         <?php } ?>
@@ -284,39 +313,6 @@
           </div>
           <div class="clearfix"></div>
           <div class="row">
-            <div class="form-group col-md-4">
-                <label for="allotment">Allotment</label><br>
-                <div class="col-md-6 pad-0">
-                  <input type="checkbox" id="allotment_change" name="allotment_change" value="no_change" />
-                  <label for="allotment_change" style="font-weight: 100 !important;">NoChange</label>
-                </div>
-                <div class="col-md-6 pad-0">
-                  <input  type="number" id="allotment" name="allotment"  class="form-control" id="allotment">
-                </div>
-            </div>
-             <div class="form-group col-md-4">
-                <label for="price">Price</label>
-                <br>
-                <div class="col-md-6 pad-0">
-                  <input type="checkbox" id="price_change" name="price_change" value="no_change" />
-                  <label for="price_change" style="font-weight: 100 !important;">NoChange</label>
-                </div>
-                <div class="col-md-6 pad-0">
-                  <input  type="number" id="price" name="price"  class="form-control" id="price">
-                </div>
-            </div>
-            <div class="form-group col-md-4">
-                <label for="cutoff">Cut-off</label><br>
-                <div class="col-md-6 pad-0">
-                  <input type="checkbox" id="cutoff_change" name="cutoff_change" value="no_change" />
-                  <label for="cutoff_change" style="font-weight: 100 !important;">NoChange</label>
-                </div>
-                <div class="col-md-6 pad-0">
-                  <input  type="number" id="cutoff" name="cutoff"  class="form-control" id="cutoff"> 
-                </div>
-            </div>
-          </div>
-          <div class="row">
             <div class="form-group col-md-6">
               <label>Room status</label><br>
               <div class="col-md-4 pad-0">
@@ -332,62 +328,31 @@
                   <label for="Open" style="font-weight: 100 !important;">Open</label>
               </div>
             </div>
-           <?php if(!isset($view)) { ?>
-            <div class="form-group col-md-6">
-              <label>Cancellation Policy</label><br>
-                <select id="policy" name="policy" class="form-control" onchange="cancellationfun();">
-                    <option value="">No Change</option>
-                    <option value="refundable">Refundable</option>
-                    <option value="non-refundable">Non-Refundable</option>
-                </select>
-            </div>
           </div>
           <div class="row">
-            <div class="form-group col-md-6 cancel_before hide">
-              <label>Cancellation Before</label><br>
-                  <input type="number"  class="form-control" id="cancel_before"  name="cancel_before">
+            <div class="col-sm-12">
+                <table class="table table-striped center" id="roomTable">
+                    <thead class="sthead-dark">
+                        <tr>
+                            <th>Room Name</th>
+                            <th>Amount <small>(AED)</small></th>
+                            <th width="100">Allotement</th>
+                            <th width="100">Cutt off</th>
+                        </tr>
+                    </thead>
+                    <tbody class="blk-Rw-Update-tbody">
+                    </tbody>
+                </table>
             </div>
-            <div class="form-group col-md-6 deduction hide">
-              <label>Overdue Deduction</label><br>
-                <select id="deduction" name="deduction" class="form-control">
-                    <option value=""></option>
-                    <option value="FULL STAY">FULL STAY</option>
-                    <option value="FIRST NIGHT">FIRST NIGHT</option>
-                    <option value="FREE OF CHARGE">FREE OF CHARGE</option>
-                </select>
-            </div>
-          <?php } ?>
-          </div>
+        </div>
         </form>
+        </div>
       </div>
        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" name="allotment-submit" id="allotment-submit">Submit</button> <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
-           <button class="yourmodalid hide"  data-toggle="modal" data-target="#yourmodalid">modal</button><br>
-    
+          <button type="button" class="btn-sm btn-success" name="allotment-submit" id="allotment-submit">Submit</button> 
       </div>
     </div>
 </span>
-<!-- <?php if (isset($view[0]->room_id)) { ?> data-toggle="modal" data-target="#yourmodalid" onclick="update_fun();" <?php }else { ?> onclick="room_allotement_add_fun();" <?php  }?>
- -->
- 
-<div class="modal fade delete_modal" id="yourmodalid" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Update</h4>
-        </div>
-        <div class="modal-body">
-              <p>Do you want to update?</p>
-        </div>
-        <div class="modal-footer">
-              <div class="form-group col-md-12">
-                  <button type="button" class="btn-sm btn-success"  id="update_room" onclick="room_update_fun();"  data-dismiss="modal">Update</button>
-              </div>
-        </div>
-      </div>
-    </div>
-</div>
 <script type="text/javascript">
    function cancellationfun() {
     var cancel = $("#policy").val();
@@ -478,6 +443,76 @@
        }
     })
   });
+  function RoomSelectFun(){
+    var room = $('#room').val();
+    $(".blk-Rw-Update-tbody tr").remove();
+    var contract_type = $(".contract_type").val();
+    //alert(room)
+    $.ajax({
+        url: base_url+'/HotelSupplier/roomnameGet?room='+room,
+        type: "POST",
+        data: $('#bulk-update-form').serialize(),
+        dataType: "json",
+        success:function(data) {
+              ReadOnly = '';
+            if (contract_type=="Sub") {
+              ReadOnly = 'ReadOnly';
+            }
+            $.each(data, function(i, v) {
+              $(".blk-Rw-Update-tbody").append('<tr>'+
+                '<td>'+ data[i][0].room_name+' '+data[i][0].Room_Type +'</td>'+
+                '<td><input type="number"   name="price[]" id="RWAmount" /></td>'+
+                '<td><input type="number" '+ReadOnly+' name="allotment[]" id="RwAllotment" /></td>'+
+                '<td><input type="number" '+ReadOnly+' name="cutoff[]" id="RwCutoff" /></td>'+
+                '<input type="hidden"     name="RwRoomId[]" value="'+data[i][0].id+'"/>'+
+                '</tr>');
+                
+            });
+
+        }
+    });
+  }
+
+    $('#allotment-submit').click(function () {
+      var contractid = $("#contractid").val();
+      var room = $("#room").val();
+      var from_date = $("#bulk-alt-fromDate").val();
+      var to_date = $("#bulk-alt-toDate").val();
+      var dayss = [];
+      if(room==null) {
+        AddToast("danger","Room field is required","!");
+        $("#room").focus();
+      } else if(from_date=="") {
+        AddToast("danger","From date field is required","!");
+        $("#bulk-alt-fromDate").focus();
+      } else if(to_date=="") {
+        AddToast("danger","To date field is required","!");
+        $("#bulk-alt-toDate").focus();
+      } else {
+        $(".preloader").removeClass('hide');
+        $(".form-div").css('visiblity','hidden');
+        $('#allotment-submit').addClass('hide');
+        $('.close').addClass('hide');
+        $('#allotment-submit').attr('disabled', 'disabled');
+        $.ajax({
+        dataType: 'json',
+        type: "POST",
+        url: base_url+'HotelSupplier/add_allotment',
+        data:$("#add_allotment").serialize(),
+        cache: false,
+        success: function (response) {
+            $(".close").trigger('click');
+            $(".pre-page").addClass("hide");
+            if(response.status=='1') {
+              AddToast("success","Allotment added successfully","!");
+            } else {
+              AddToast("danger","Error Occured","!");
+            }
+            loadallotment(contractid);  
+          }
+        });
+      }
+   });
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 

@@ -180,8 +180,8 @@
                   <th>Roomname</th>
                   <th>Adult Occupancy</th>
                   <th>Child Occupancy</th>
-                  <!-- <th>Email</th>
-                  <th>Status</th> -->
+                  <th>Max</th>
+                  <th>Standard</th>
                   <th>Action</th>
               </tr>
           </thead>
@@ -196,14 +196,11 @@
 </div>
 <div id="delModal" class="delete_modal modal">
         <div class="modal-content modal-content  col-md-6 col-md-offset-3">
-          
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-
           <div class="modal-body">
             <h4>Do you want to send request to delete this !</h4>
             <form action="<?php echo base_url(); ?>welcome/" class="delete_id" id="delete_form">
                 <input type="hidden" id="delete_id" name="delete_id" value="<?php echo isset($_REQUEST['id']) ? $_REQUEST['id'] : '' ?>">
-                <button type="button" onclick="commonDeleteroom();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
+                <button type="button" onclick="commonDeleteroom();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><button type="button" data-dismiss="modal"  class="close-modal waves-effect waves-light btn-sm btn-primary pull-right">No</button><br><br>
             </form>
           </div>
         </div>

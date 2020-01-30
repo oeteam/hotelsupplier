@@ -154,7 +154,8 @@ class Supplier_Model extends CI_Model {
 					  'created_date' => date('Y-m-d'), 
 					  'created_by' => $this->session->userdata('supplier_id'), 
 					  'supplier' =>'1',
-					  'supplierid' => $this->session->userdata('supplier_id')
+					  'supplierid' => $this->session->userdata('supplier_id'),
+					  'delflg' => 2
 				);
 		$this->db->insert('hotel_tbl_hotels',$data);
         $hotel_id = $this->db->insert_id();
@@ -171,8 +172,8 @@ class Supplier_Model extends CI_Model {
 		$this->db->where('supplierid',$this->session->userdata('supplier_id'));
 		if($filter=='1') {
 			$this->db->where('delflg','1');
-		} else if($filter=='0') {
-			$this->db->where('delflg','0');
+		} else if($filter=='2') {
+			$this->db->where('delflg','2');
 		}
 		$this->db->order_by('id','desc');
 	    $query=$this->db->get();
@@ -470,8 +471,8 @@ class Supplier_Model extends CI_Model {
 					  'room_facilities'    => implode(",", $request['room_facilties']), 
 					  'occupancy'          => $request['occupancy'], 
 					  'occupancy_child'    => $request['occupancy_child'], 
-					  'max_total'		   => $max_total,
-					  'standard_capacity'  => $max_total,
+					  'max_total'		   => $request['max_total'],
+					  'standard_capacity'  => $request['standarad'],
 					  'updated_date'       => date('Y-m-d'), 
 					  'updated_by' => $this->session->userdata('agent_id'), 
 				);
@@ -489,7 +490,6 @@ class Supplier_Model extends CI_Model {
     	if (!isset($request['allotement_id'])) {
     		$request['allotement_id']="";
     	}
-    	$max_total = $request['occupancy'] + $request['occupancy_child'];
 		$data = array('hotel_id'               => $request['hotel_id'],
 					  'room_name'              => $request['room_name'],
 					  'room_type'              => $request['roomtype'], 
@@ -498,8 +498,8 @@ class Supplier_Model extends CI_Model {
 					  'room_facilities'        => implode(",", $request['room_facilties']), 
 					  'occupancy'              => $request['occupancy'], 
 					  'occupancy_child'        => $request['occupancy_child'], 
-					  'max_total'		   	   => $max_total,
-					  'standard_capacity'      => $max_total,
+					  'max_total'		   	   => $request['max_total'],
+					  'standard_capacity'      => $request['standarad'],
 					  'created_date'           => date('Y-m-d'), 
 					  'created_by'             => $this->session->userdata('agent_id'), 
 				);
@@ -544,6 +544,15 @@ class Supplier_Model extends CI_Model {
 		return true;
 	}
 	public function add_contract($request){
+		$nationality = '';
+    	if (isset($request['nationality_to']) && count($request['nationality_to'])!=0) {
+    		$nationality = implode(",", $request['nationality_to']);
+    	}
+    	$market = '';
+    	if (isset($request['market']) && count($request['market'])!=0) {
+    		$market = implode(",", $request['market']);
+    	}
+
     	$id=$request['id'];
     	$array= array(	
 			        	'board' 	=> $request['board'],
@@ -551,11 +560,11 @@ class Supplier_Model extends CI_Model {
 			        	'from_date' 		=> $request['date_picker'],
 			        	'to_date' 			=> $request['date_picker1'],
 			        	'contract_flg' 	=> $request['roomstatus'],
-			        	'markup' 			=> $request['markup'],
-			        	'markupType' => $request['markup_type'],
 			        	'hotel_id' 			=> $id,
 			        	'BookingCode' 		=> $request['bookingCode'],
 			        	'contract_type' => 'Main',
+			        	'nationalityPermission' => $nationality,
+			        	'market'			=> $market,
 			        	'Created_Date' => date("Y-m-d H:i:s"),
         				'Created_By' =>  $this->session->userdata('supplier_id'),
 					);
@@ -587,7 +596,7 @@ class Supplier_Model extends CI_Model {
 		return count($query);
     }
     public function contractList($hotel) {
-		$this->db->select('id,contract_id,contract_flg');
+		$this->db->select('id,contract_id,contract_flg,board');
 		$this->db->from('hotel_tbl_contract');
 		$this->db->where('hotel_id',$hotel);
 		$this->db->where('Created_By',$this->session->userdata('supplier_id'));
@@ -621,14 +630,14 @@ class Supplier_Model extends CI_Model {
 				        	$query_out[$i]=$this->db->query('select * from hotel_tbl_allotement where room_id = '.$value.' AND allotement_date = "'.$result[$i].'" AND hotel_id = '.$request['hotelid'].' AND contract_id = "'.$request['contractid'].'" ')->result();
 
 				    		if (count($query_out[$i])!=0) {
-				    			if (isset($request['price']) && $request['price']!="") {
-					    			$data['amount'] = $request['price'];
+				    			if (isset($request['price'][$key]) && $request['price'][$key]!="") {
+					    			$data['amount'] = $request['price'][$key];
 				    			}
-				    			if (isset($request['allotment']) && $request['allotment']!="") {
-					    			$data['allotement'] = $request['allotment'];
+				    			if (isset($request['allotment'][$key]) && $request['allotment'][$key]!="") {
+					    			$data['allotement'] = $request['allotment'][$key];
 				    			}
-				    			if (isset($request['cutoff']) && $request['cutoff']!="") {
-					    			$data['cut_off'] =  $request['cutoff'];
+				    			if (isset($request['cutoff'][$key]) && $request['cutoff'][$key]!="") {
+					    			$data['cut_off'] =  $request['cutoff'][$key];
 				    			}
 						    	$this->db->where('contract_id',$request['contractid']);
 					    		$this->db->where('room_id',$value);
@@ -638,19 +647,20 @@ class Supplier_Model extends CI_Model {
 						    		$this->db->update('hotel_tbl_allotement',$data);
 					    		}
 				    		} else {
-				    			if (isset($request['price']) && $request['price']!="") {
-					    			$array['amount'] = $request['price'];
+				    			if (isset($request['price'][$key]) && $request['price'][$key]!="") {
+					    			$array['amount'] = $request['price'][$key];
 				    			}
-				    			if (isset($request['allotment']) && $request['allotment']!="") {
-					    			$array['allotement'] = $request['allotment'];
+				    			if (isset($request['allotment'][$key]) && $request['allotment'][$key]!="") {
+					    			$array['allotement'] = $request['allotment'][$key];
 				    			}
-				    			if (isset($request['cutoff']) && $request['cutoff']!="") {
-					    			$array['cut_off'] =  $request['cutoff'];
+				    			if (isset($request['cutoff'][$key]) && $request['cutoff'][$key]!="") {
+					    			$array['cut_off'] =  $request['cutoff'][$key];
 				    			}
 				    			$array['allotement_date'] =  $result[$i];
 				    			$array['room_id'] =  $value;
 				    			$array['hotel_id'] =  $request['hotelid'];
 				    			$array['contract_id'] =  $request['contractid'];
+				    			$array['contract_fr_id'] = str_replace('CON0','',$request['contractid']);
 				    			// $array= array(
 				    			// 	'allotement'		=>  $request['allotment'],
 		    					//     'cut_off'			=> $request['cutoff'],
@@ -660,7 +670,7 @@ class Supplier_Model extends CI_Model {
 								   //  'hotel_id'		=> $request['hotelid'],
 							    // 	'contract_id' 	=> $request['contractid']
 							    // );
-				    			if ((isset($request['price']) && $request['price']!="") || (isset($request['allotment']) && $request['allotment']!="") || (isset($request['cutoff']) && $request['cutoff']!="")) {
+				    			if ((isset($request['price'][$key]) && $request['price'][$key]!="") || (isset($request['allotment'][$key]) && $request['allotment'][$key]!="") || (isset($request['cutoff'][$key]) && $request['cutoff'][$key]!="")) {
 					        		$this->db->insert('hotel_tbl_allotement',$array);
 				    			}
 				    		}
@@ -668,25 +678,6 @@ class Supplier_Model extends CI_Model {
 					}
 			    }
 			}
-		}
-		if(isset($request['policy'])&&$request['policy']!="") {
-			$rooms = implode(",",$request['room']);
-			if($request['policy']=="non-refundable") {
-					$application = "FULL STAY";
-			} else {
-				$application = $request['deduction'];
-			}
-			$data = array('fromDate' => $request['bulk-alt-fromDate'],
-						'toDate' => $request['bulk-alt-toDate'],
-						'roomType' => $rooms,
-						'cancellationPercentage' => 100,
-						'hotel_id' => $request['hotelid'],
-						'contract_id' => $request['contractid'],
-						'application' => $application,
-						'daysFrom' => $request['cancel_before'],
-						'CreatedDate' => date('Y-m-d'),
-						'CreatedBy' => $this->session->userdata('supplier_id'));
-			$this->db->insert('hotel_tbl_cancellationfee',$data);
 		}
 		return true;
     }
@@ -938,23 +929,32 @@ class Supplier_Model extends CI_Model {
 		return $query;
   	}
   	public function update_contract($request,$contractid){
+  		$nationality = '';
+    	if (isset($request['nationality_to']) && count($request['nationality_to'])!=0) {
+    		$nationality = implode(",", $request['nationality_to']);
+    	}
+    	$market = '';
+    	if (isset($request['market']) && count($request['market'])!=0) {
+    		$market = implode(",", $request['market']);
+    	}
   		$array= array(	
 			        	'board' 	=> $request['board'],
 			        	'max_child_age' 	=> '12',
 			        	'from_date' 		=> $request['date_picker'],
 			        	'to_date' 			=> $request['date_picker1'],
-			        	'markupType' => $request['markup_type'],
 			        	'BookingCode' 		=> $request['bookingCode'],
 			        	'contract_type' => 'Main',
+			        	'nationalityPermission' => $nationality,
+			        	'market'			=> $market,
 			        	'Created_Date' => date("Y-m-d H:i:s"),
         				'Created_By' =>  $this->session->userdata('supplier_id'),
 					);
   		if(isset($request['roomstatus']) && $request['roomstatus']!="") {
   			$array['contract_flg'] = $request['roomstatus'];
   		}
-  		if (isset($request['markup']) && $request['markup']!="") {
-			$array['markup'] = $request['markup'];
-		}
+  // 		if (isset($request['markup']) && $request['markup']!="") {
+		// 	$array['markup'] = $request['markup'];
+		// }
     	$this->db->where('id',$contractid);
 		$this->db->update('hotel_tbl_contract',$array);
 		return true;
@@ -1423,4 +1423,309 @@ class Supplier_Model extends CI_Model {
         $query = $this->db->get();
         return count($query->result());
     }
+    public function boardsupplementlist($contractid) {
+    	$this->db->select('hotel_tbl_boardsupplement.*,hotel_tbl_boardsupplement.id as edit_id');
+        $this->db->from('hotel_tbl_boardsupplement');
+        $this->db->where('hotel_tbl_boardsupplement.contract_id',$contractid);
+        return $query=$this->db->get();
+    }
+    public function generalsupplementlist($contractid) {
+    	$this->db->select('hotel_tbl_generalsupplement.*,hotel_tbl_generalsupplement.id as edit_id');
+        $this->db->from('hotel_tbl_generalsupplement');
+        $this->db->where('hotel_tbl_generalsupplement.contract_id',$contractid);
+        return $query=$this->db->get();
+    }
+    public function extrabedlist($contractid) {
+    	$this->db->select('hotel_tbl_extrabed.*,hotel_tbl_extrabed.id as edit_id');
+        $this->db->from('hotel_tbl_extrabed');
+        $this->db->where('hotel_tbl_extrabed.contract_id',$contractid);
+        return $query=$this->db->get();
+    }
+    public function minimumstaylist($contractid) {
+    	$this->db->select('hotel_tbl_minimumstay.*,hotel_tbl_minimumstay.id as edit_id');
+        $this->db->from('hotel_tbl_minimumstay');
+        $this->db->where('hotel_tbl_minimumstay.contract_id',$contractid);
+        return $query=$this->db->get();
+    }
+    public function stopSale_get_room_type($id) {
+        $this->db->select('hotel_tbl_hotel_room_type.*,hotel_tbl_room_type.Room_Type');
+        $this->db->from('hotel_tbl_hotel_room_type');
+		$this->db->join('hotel_tbl_room_type', 'hotel_tbl_room_type.id = hotel_tbl_hotel_room_type.room_type', 'left');
+        $this->db->where('hotel_tbl_hotel_room_type.delflg',1);
+        $this->db->where('hotel_tbl_hotel_room_type.hotel_id',$id);
+        // $this->db->group_by('hotel_tbl_room_type.room_type');
+        $query=$this->db->get();
+        return $query->result();
+    }
+    public function BoardSupplementSubmit($request) {
+		$implode_room_types = "";
+    	if (isset($request['room_type'])) {
+    		$implode_room_types = implode(",", $request['room_type']);
+    	}	
+		if ($request['id']!="") {
+    		$data= array( 
+			 'board' 	      => $request['board'],
+			 'roomType' 	  => $implode_room_types,
+			 'season' 	      => 'Other',
+			 'fromDate' 	  => $request['fromDate'],
+			 'toDate' 	      => $request['toDate'],
+			 'startAge' 	  => $request['StartAge'],
+			 'finalAge' 	  => $request['FinalAge'],
+			 'amount' 	      => $request['Amount'],
+			 'UpdatedDate'    => date('Y-m-d H:i:s'),
+			);
+        	$this->db->where('id',$request['id']);
+			$this->db->update('hotel_tbl_boardsupplement',$data);
+
+    	} else {
+			$data= array( 
+			 'board' 	      => $request['board'],
+			 'roomType' 	  => $implode_room_types,
+			 'season' 	      => 'Other',
+			 'fromDate' 	  => $request['fromDate'],
+			 'toDate' 	      => $request['toDate'],
+			 'startAge' 	  => $request['StartAge'],
+			 'finalAge' 	  => $request['FinalAge'],
+			 'amount' 	      => $request['Amount'],
+			 'hotel_id' 	  => $request['hotel_id'],
+			 'contract_id' 	  => $request['contract_id'],
+			 'CreatedDate'    => date('Y-m-d H:i:s'),
+			);
+			$this->db->insert('hotel_tbl_boardsupplement',$data);
+    	}
+
+		return true;
+	}
+	public function BoardSupplementDetails($id) {
+		$this->db->select('*');
+        $this->db->from('hotel_tbl_boardsupplement');
+        $this->db->where('id',$id);
+        return $query=$this->db->get()->result();
+	}
+	public function delete_board($id) {
+		$this->db->where('id',$id);
+		$this->db->delete('hotel_tbl_boardsupplement');
+		return true;
+	}
+	public function GeneralSupplementDetails($id) {
+		$this->db->select('*');
+        $this->db->from('hotel_tbl_generalsupplement');
+        $this->db->where('id',$id);
+        return $query=$this->db->get()->result();
+	}
+	public function GeneralSupplementSubmit($request) {
+		$adultAmount = $request['adultAmount'];
+		$childAmount = $request['childAmount'];
+		$implode_room_types = "";
+    	if (isset($request['room_type'])) {
+    		$implode_room_types = implode(",", $request['room_type']);
+    	}
+	    if ($request['id']!="") {
+    	    $data= array( 
+		     'type'     		=> $request['type'],
+		     'roomType'     	=> $implode_room_types,
+		     'season'     		=> 'Other',
+		     'fromDate'     	=> $request['fromDate'],
+		     'toDate'     		=> $request['toDate'],
+		     'adultAmount'    	=> $adultAmount,
+		     'childAmount'    	=> $childAmount,
+		     'application'    	=> $request['application'],
+		     'mandatory' 		=> 1,
+     		 'MinChildAge'	=> $request['MinChildAge'],
+     		 'UpdatedDate'   => date('Y-m-d H:i:s'),
+
+		    );
+		    $this->db->where('id',$request['id']);
+		    $this->db->update('hotel_tbl_generalsupplement',$data);
+	    } else {
+		    $data= array( 
+		     'type'     		=> $request['type'],
+		     'roomType'     	=> $implode_room_types,
+		     'season'     		=> 'Other',
+		     'fromDate'     	=> $request['fromDate'],
+		     'toDate'     		=> $request['toDate'],
+		     'adultAmount'    	=> $adultAmount,
+		     'childAmount'    	=> $childAmount,
+		     'hotel_id'     	=> $request['hotel_id'],
+		     'contract_id'    	=> $request['contract_id'],
+		     'application'    	=> $request['application'],
+		     'mandatory' 		=> 1,
+     		 'MinChildAge'	=> $request['MinChildAge'],
+     		 'CreatedDate'   => date('Y-m-d H:i:s'),
+		    );
+		    $this->db->insert('hotel_tbl_generalsupplement',$data);
+	    }
+		return true;
+	}
+	public function delete_general($id) {
+		$this->db->where('id',$id);
+		$this->db->delete('hotel_tbl_generalsupplement');
+		return true;
+	}
+	public function get_extrabed($id) {
+		$this->db->select('*');
+        $this->db->from('hotel_tbl_extrabed');
+        $this->db->where('id',$id);
+        return $query=$this->db->get()->result();
+	}
+	public function extrabedsubmit($request) {
+		if ($request['Amount']!='' & $request['Amount']!=0) {
+			$adultAmount = $request['Amount'];
+		} else {
+			$adultAmount = 0;
+		}
+		if ($request['ChildAmount']!='' & $request['ChildAmount']!=0) {
+			$childAmount = $request['ChildAmount'];
+		} else {
+			$childAmount = 0;
+		}
+		
+
+		$implode_room_types = "";
+    	if (isset($request['room_type'])) {
+    		$implode_room_types = implode(",", $request['room_type']);
+    	}
+	
+    	if ($request['id']!="") {
+			$data= array( 
+			 'season' 	      => 'Other',
+			 'from_date'     => $request['fromDate'],
+			 'to_date' 	     => $request['toDate'],
+			 'amount' 	     => $adultAmount,
+			 'roomType' 	 => $implode_room_types,
+		 	 'ChildAmount' 	  => $childAmount,
+			 'ChildAgeFrom' 	  => $request['ChildAgeFrom'],
+			 'ChildAgeTo' 	  => $request['ChildAgeTo'],
+			 'UpdatedDate'   => date('Y-m-d H:i:s'),
+			);	
+			$this->db->where('id',$request['id']);
+			$this->db->update('hotel_tbl_extrabed',$data);
+    	} else {
+			$data= array( 
+			 'season' 	      => 'Other',
+			 'from_date' 	  => $request['fromDate'],
+			 'to_date' 	      => $request['toDate'],
+			 'hotel_id' 	  => $request['hotel_id'],
+			 'contract_id' 	  => $request['contract_id'],
+			 'amount' 	      => $adultAmount,
+			 'roomType' 	  => $implode_room_types,
+		 	 'ChildAmount' 	  => $childAmount,
+			 'ChildAgeFrom' 	  => $request['ChildAgeFrom'],
+			 'ChildAgeTo' 	  => $request['ChildAgeTo'],
+			 'CreatedDate'   => date('Y-m-d H:i:s'),
+			);
+			$this->db->insert('hotel_tbl_extrabed',$data);
+    	}
+		return true;
+	}
+	public function delete_extrabed($id) {
+		$this->db->where('id',$id);
+		$this->db->delete('hotel_tbl_extrabed');
+		return true;
+	}
+	public function MinimumStaySubmit($request) {
+    	if ($request['id']!="") {
+			$data= array( 
+			 'season' 	     => 'Other',
+			 'fromDate'   => $request['fromDate'],
+			 'toDate' 	  => $request['toDate'],
+			 'minDay' 	  => $request['minDay'],
+			 'UpdatedDate'   => date('Y-m-d H:i:s'),
+			);
+			$this->db->where('id',$request['id']);
+			$this->db->update('hotel_tbl_minimumstay',$data);
+    	} else {
+			$data= array( 
+			 'season' 	     => 'Other',
+			 'fromDate' 	 => $request['fromDate'],
+			 'toDate' 	     => $request['toDate'],
+			 'minDay' 	     => $request['minDay'],
+			 'hotel_id' 	 => $request['hotel_id'],
+			 'contract_id' 	 => $request['contract_id'],
+			 'CreatedDate'   => date('Y-m-d H:i:s'),
+			);
+			$this->db->insert('hotel_tbl_minimumstay',$data);
+    	}
+		return true;
+	}
+	public function get_minimumstay($id) {
+		$this->db->select('*');
+        $this->db->from('hotel_tbl_minimumstay');
+        $this->db->where('id',$id);
+        return $query=$this->db->get()->result();
+	}
+	public function delete_minimumstay($id) {
+		$this->db->where('id',$id);
+		$this->db->delete('hotel_tbl_minimumstay');
+		return true;
+	}
+	public function roomName($id){
+		$query = array();
+		$roomid = explode(",", $id);
+    	foreach ($roomid as $key => $Room) {
+    		$this->db->select('hotel_tbl_hotel_room_type.*,hotel_tbl_room_type.Room_Type');
+	        $this->db->from('hotel_tbl_hotel_room_type');
+			$this->db->join('hotel_tbl_room_type','hotel_tbl_room_type.id = hotel_tbl_hotel_room_type.room_type', 'left');
+	        $this->db->where('hotel_tbl_hotel_room_type.delflg',1);
+	        $this->db->where('hotel_tbl_hotel_room_type.id',$Room);
+	        // $this->db->group_by('hotel_tbl_room_type.room_type');
+	        $query[$key]=$this->db->get()->result();
+	    }
+	    return $query;
+
+	}
+	public function cancellationsubmit($request) {
+		$implode_room_types = "";
+    	if (isset($request['room_type'])) {
+    		$implode_room_types = implode(",", $request['room_type']);
+    	}
+
+    	if ($request['application']=="FREE OF CHARGE") {
+    		$CancellationPercentage = 0;
+    	} else {
+    	    $CancellationPercentage = $request['CancellationPercentage'];
+    	}
+    	if ($request['id']!="") {
+			$data= array( 
+			 'roomType' 	          => $implode_room_types,
+			 'season' 	             => 'Other',
+			 'fromDate' 	          => $request['fromDate'],
+			 'toDate' 	              => $request['toDate'],
+			 'cancellationPercentage' => $CancellationPercentage,
+			 'application' 	          => $request['application'],
+			 'daysFrom'				 => $request['daysFrom'],
+	 		 'daysTo'				 => $request['daysTo'],
+	 		 'UpdatedDate'  		 => date('Y-m-d H:i:s'),
+			);
+			$this->db->where('id',$request['id']);
+			$this->db->update('hotel_tbl_cancellationfee',$data);
+    	} else {
+			$data= array( 
+			 'roomType' 	         => $implode_room_types,
+			 'season' 	             => 'Other',
+			 'fromDate' 	         => $request['fromDate'],
+			 'toDate' 	             => $request['toDate'],
+			 'cancellationPercentage'=> $CancellationPercentage,
+			 'hotel_id' 	         => $request['hotel_id'],
+			 'contract_id' 	         => $request['contract_id'],
+			 'application' 	         => $request['application'],
+			 'daysFrom'				 => $request['daysFrom'],
+	 		 'daysTo'				 => $request['daysTo'],
+	 		 'CreatedDate'   => date('Y-m-d H:i:s'),
+			);
+			$this->db->insert('hotel_tbl_cancellationfee',$data);
+    	}
+		return true;
+	}
+	public function nationalityList() {
+		$this->db->select('id,name,continent');
+        $this->db->from('countries');
+        $this->db->where('name !=','');
+        $query=$this->db->get();
+        return $query->result();
+	}
+	public function getMarket() {
+        $query=$this->db->query('select distinct continent from countries where continent!=""');
+        return $query->result();
+	}
 }

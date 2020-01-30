@@ -24,7 +24,7 @@ date_default_timezone_set('asia/dubai');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/works/hotelsupplier/';
+$config['base_url'] = getenv('BASE_URL');
 
 /*
 |--------------------------------------------------------------------------

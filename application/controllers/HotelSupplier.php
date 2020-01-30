@@ -63,11 +63,11 @@ class HotelSupplier extends MY_Controller {
         redirect("welcome/agent_logout");
     }
     $data['hotel_facilties'] = $this->Supplier_Model->hotel_facilties_get();
-         $data['room_type'] = $this->Supplier_Model->room_type_get();
-         $data['room_facilties'] = $this->Supplier_Model->room_facilties_get();
-         $data['room_aminities'] = $this->Supplier_Model->room_aminities_get();
-         $data['contry']= $this->Supplier_Model->SelectCountry();
-         $data['currency_list']= $this->Supplier_Model->currency();
+     $data['room_type'] = $this->Supplier_Model->room_type_get();
+     $data['room_facilties'] = $this->Supplier_Model->room_facilties_get();
+     $data['room_aminities'] = $this->Supplier_Model->room_aminities_get();
+     $data['contry']= $this->Supplier_Model->SelectCountry();
+     $data['currency_list']= $this->Supplier_Model->currency();
     if (isset($_REQUEST['hotels_edit_id'])) {
          $data['view'] =$this->Supplier_Model->hotel_detail_get($_REQUEST['hotels_edit_id']);
          $this->load->view('addhotelmodal',$data);
@@ -129,7 +129,7 @@ class HotelSupplier extends MY_Controller {
     }
     $hotel = $this->Supplier_Model->hotel_list_select($value);
     foreach($hotel->result() as $key => $r) {
-         $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
+         $cross = '<a href="#" title="click to delete" onclick="deletehotelper('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';  
          $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
         if ($r->delflg==1) {
             $switch = '<label class="switch">
@@ -142,16 +142,22 @@ class HotelSupplier extends MY_Controller {
                         <span class="slider round"></span>
                       </label>';
         }
-              $data[] = array(
-                   '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
-                   $key+1,
-                   '<a title="click to view" href="hotel_detail_view?hotel_id='.$r->id.'" style="color: #0074b9;"  class="sb2-2-1-edit">'.$r->hotel_name.'</a> '.' <small>('.$r->hotel_code.')</small> '.$edit,
-                   $r->country,
-                   $r->sale_number,
-                   $r->sale_mail,
-                   $switch,
-                   $cross,
-              );
+        if ($r->delflg==1) {
+          $status = '<span class="text-success"><b>Active</b></span>';
+        } else {
+          $status = '<span class="text-danger"><b>Stopsale</b></span>';
+        }
+
+        $data[] = array(
+             '<input type="checkbox" class="cmn-check" value="'.$r->id.'">',
+             $key+1,
+             '<a title="click to view" href="hotel_detail_view?hotel_id='.$r->id.'" style="color: #0074b9;"  class="sb2-2-1-edit">'.$r->hotel_name.'</a> '.' <small>('.$r->hotel_code.')</small> '.$edit,
+             $r->country,
+             $r->sale_number,
+             $r->sale_mail,
+             $status,
+             $cross,
+        );
     }
     $output = array(
          "draw"             => $draw,
@@ -606,7 +612,7 @@ class HotelSupplier extends MY_Controller {
       foreach($rooms->result() as $key => $r) {
         $edit='<a title="click to Edit" href="#" onclick="edithotel('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
         $edit = '<a href="#"  data-toggle="modal"onclick="editroom('.$r->id.');"  data-target="#large_modal" class="sb2-2-1-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';       
-        $delete = '<a  href="#" onclick="deleteroomfun('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';   
+        $delete = '<a  href="#" onclick="deleteroomfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i></a>';   
         if ($r->delflg==1) {
           $status = "<span class='text-success bold'>Active</span>";
         } else {
@@ -622,6 +628,8 @@ class HotelSupplier extends MY_Controller {
         $r->room_name.'-'.$r->room_type_name.' '.$edit,
         $r->occupancy,
         $r->occupancy_child,
+        $r->max_total,
+        $r->standard_capacity,
         $delete       
       );
         }
@@ -654,7 +662,7 @@ class HotelSupplier extends MY_Controller {
     }
     $config['first_link'] = 'First';
     $config['div'] = 'hotel-list'; //Div tag id
-    $config['base_url'] = base_url() . "hotelsupplier/contracts";
+    $config['base_url'] = base_url() . "HotelSupplier/contracts";
     $config['total_rows'] = $this->Supplier_Model->get_total_hotels($_REQUEST);
     $config['per_page'] = 20;
     $config['postVar'] = 'page';
@@ -673,13 +681,19 @@ class HotelSupplier extends MY_Controller {
       $value = '4';
     }
     $data['hotels'] = $this->Supplier_Model->hotel_list_select($value)->result();
-    $data['contractlist']= $this->Supplier_Model->contractlist($data['HotelList'][0]->id);
+    if (count($data['HotelList'])!=0) {
+      $data['contractlist']= $this->Supplier_Model->contractlist($data['HotelList'][0]->id);
+    } else {
+      $data['contractlist']= array();
+    }
     $this->load->view('supplierContracts',$data);
   }
   public function addcontractmodal($hotelid) {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
     }
+    $data['nationality'] = $this->Supplier_Model->nationalityList();
+    $data['market'] = $this->Supplier_Model->getMarket();
     $data['hotelid'] = $hotelid;  
     if (isset($_REQUEST['contracts_edit_id'])) {
         $data['view'] =$this->Supplier_Model->contract_detail_get($_REQUEST['contracts_edit_id']);
@@ -699,7 +713,7 @@ class HotelSupplier extends MY_Controller {
       $description = 'New contract added [Hotel Code: HE0'.$_REQUEST['id'].', Contract ID: CON0'.$view.']';
       AgentlogActivity($description);
     } 
-    redirect("hotelsupplier/contracts");
+    redirect(base_url()."/HotelSupplier/contracts");
   }
   public function hotel_contract_list($hotelid) {
     if ($this->session->userdata('supplier_name')=="") {
@@ -724,12 +738,13 @@ class HotelSupplier extends MY_Controller {
     if ($this->session->userdata('supplier_name')=="") {
       redirect("welcome/agent_logout");
     }
+    $data['contract'] = $this->Supplier_Model->contract_detail_get(str_replace("CON0","",$contractid));
     $data['rooms'] = $this->Supplier_Model->getRooms($hotelid);
     $data['contractid'] = $contractid;
     $data['hotelid'] = $hotelid;
-    $data['title'] = "Add Allotment";
+    $data['title'] = "Add Rates";
     if(isset($_REQUEST['todate'])&&isset($_REQUEST['fromdate'])) {
-      $data['title'] = "Edit Allotment";
+      $data['title'] = "Edit Rates";
       $data['view'] = array("todate" => $_REQUEST['todate'],
                             "fromdate" =>$_REQUEST['fromdate']);
     }  
@@ -815,7 +830,9 @@ class HotelSupplier extends MY_Controller {
                  $stopsale = 'stopsale';
                }
               if (count($data)!=0) {
-                $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
+                $allotement = $data[0]->allotement!="" ? $data[0]->allotement : 0;
+                $cut_off = $data[0]->cut_off!="" ? $data[0]->cut_off : 0;
+                $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$cut_off.'</p><div></td>';
               } else {
                 $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
               } 
@@ -843,7 +860,9 @@ class HotelSupplier extends MY_Controller {
              $stopsale = 'stopsale';
            }
           if (count($data)!=0) {
-            $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$data[0]->allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$data[0]->cut_off.'</p><div></td>';
+            $allotement = $data[0]->allotement!="" ? $data[0]->allotement : 0;
+            $cut_off = $data[0]->cut_off!="" ? $data[0]->cut_off : 0;
+            $output['list'] .= '<td style="padding: 3px;" class="'.$stopsale.'"><div style="position:relative;">'.$close .'<p class="date">'.date('d-m',strtotime($data[0]->allotement_date)).'</p><p class="amount">AED '.$data[0]->amount.'</p><p class="allotment">'.$allotement.'/'.$room_booking.'</p><p class="cutoff"><b>Cut Off:</b> '.$cut_off.'</p><div></td>';
           } else {
             $output['list'] .= '<td style="background-color:#cecaca"><br><p class="date">'.date('d-m',strtotime($ndate)).'</p></td>';
           } 
@@ -966,6 +985,7 @@ class HotelSupplier extends MY_Controller {
                    $r->fromDate,
                    $r->toDate,
                    $r->daysFrom,
+                   $r->daysTo,
                    $r->cancellationPercentage,
                    $r->application,
                    $edit."<br>".$delete,
@@ -1126,5 +1146,469 @@ class HotelSupplier extends MY_Controller {
     $data['accepted'] = $this->Supplier_Model->acceptbook($from,$to);
     $data['cancelled'] = $this->Supplier_Model->cancelbook($from,$to);
     echo json_encode($data);
+  }
+  public function boardsupplementlist($contractid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    $list = $this->Supplier_Model->boardsupplementlist($contractid);
+    foreach($list->result() as $key => $r) {
+         $delete = '<a  href="#" onclick="deleteboardfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+         $edit='<a title="click to Edit" href="#" onclick="editboard('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
+              $explode_data[$key]= explode(",", $r->roomType);
+              foreach ($explode_data[$key] as $key1 => $value1) {
+                $room_type_data[$key][$key1] = get_room_name_type($value1);
+              }
+              $implode_data[$key] = implode(", ", $room_type_data[$key]);
+              $data[] = array(
+                $key+1,
+                $r->board,
+                $implode_data[$key],
+                date('d/m/Y',strtotime($r->fromDate)),
+                date('d/m/Y',strtotime($r->toDate)),
+                $r->startAge,
+                $r->finalAge,
+                $r->amount,
+                $edit.$delete,
+                
+              );
+    }
+    $output = array(
+         "draw"             => $draw,
+          "recordsTotal"    => $list->num_rows(),
+          "recordsFiltered" => $list->num_rows(),
+          "data"            => $data
+    );
+    echo json_encode($output);
+  }
+  public function generalsupplementlist($contractid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    $list = $this->Supplier_Model->generalsupplementlist($contractid);
+    foreach($list->result() as $key => $r) {
+         $delete = '<a  href="#" onclick="deletegeneralfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+         $edit='<a title="click to Edit" href="#" onclick="editgeneral('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
+              $explode_data[$key]= explode(",", $r->roomType);
+              foreach ($explode_data[$key] as $key1 => $value1) {
+                $room_type_data[$key][$key1] = get_room_name_type($value1);
+              }
+              $implode_data[$key] = implode(", ", $room_type_data[$key]);
+              $data[] = array(
+              $key+1,
+              // $r->board,
+              $r->type,
+              $implode_data[$key],
+              date('d/m/Y',strtotime($r->fromDate)),
+              date('d/m/Y',strtotime($r->toDate)),
+              $r->MinChildAge,
+              $r->adultAmount,
+              $r->childAmount,
+              $r->application,
+              $edit.$delete,          
+            );
+    }
+    $output = array(
+         "draw"             => $draw,
+          "recordsTotal"    => $list->num_rows(),
+          "recordsFiltered" => $list->num_rows(),
+          "data"            => $data
+    );
+    echo json_encode($output);
+  }
+  public function extrabedlist($contractid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    $list = $this->Supplier_Model->extrabedlist($contractid);
+    foreach($list->result() as $key => $r) {
+         $delete = '<a  href="#" onclick="deleteextrabedfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+         $edit='<a title="click to Edit" href="#" onclick="editextrabed('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
+              $explode_data[$key]= explode(",", $r->roomType);
+              foreach ($explode_data[$key] as $key1 => $value1) {
+                $room_type_data[$key][$key1] = get_room_name_type($value1);
+              }
+              $implode_data[$key] = implode(", ", $room_type_data[$key]);
+              $data[] = array(
+                $key+1,
+                $implode_data[$key],
+                date('d/m/Y',strtotime($r->from_date)),
+                date('d/m/Y',strtotime($r->to_date)),
+                $r->ChildAgeFrom !=0 ? $r->ChildAgeFrom : 'N.A',
+                $r->ChildAgeTo !=0 ? $r->ChildAgeTo : 'N.A',
+                $r->ChildAmount,
+                $r->amount,
+                $edit.$delete,
+              );
+    }
+    $output = array(
+         "draw"             => $draw,
+          "recordsTotal"    => $list->num_rows(),
+          "recordsFiltered" => $list->num_rows(),
+          "data"            => $data
+    );
+    echo json_encode($output);
+  }
+  public function minimumstaylist($contractid) {
+    if ($this->session->userdata('supplier_name')=="") {
+        redirect("welcome/agent_logout");
+    }
+    $data = array();
+    // Datatables Variables
+    $draw = intval($this->input->get("draw"));
+    $start = intval($this->input->get("start"));
+    $length = intval($this->input->get("length"));
+    $list = $this->Supplier_Model->minimumstaylist($contractid);
+    foreach($list->result() as $key => $r) {
+       $delete = '<a  href="#" onclick="deleteminimumstayfun('.$r->id.');" data-toggle="modal" data-target="#delModal" class="sb2-2-1-edit delete"><i class="red accent-4 fa fa-trash-o" aria-hidden="true"></i> Delete</a>';   
+       $edit='<a title="click to Edit" href="#" onclick="editminimumstay('.$r->id.');" data-toggle="modal" data-target="#myModal" class="sb2-2-1-edit"><i style="color: #0074b9;" class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>';
+        $data[] = array(
+            $key+1,
+            date('d/m/Y',strtotime($r->fromDate)),
+            date('d/m/Y',strtotime($r->toDate)),
+            $r->minDay,
+            $edit.$delete,        
+        );
+    }
+    $output = array(
+         "draw"             => $draw,
+          "recordsTotal"    => $list->num_rows(),
+          "recordsFiltered" => $list->num_rows(),
+          "data"            => $data
+    );
+    echo json_encode($output);
+  }
+  public function addboardmodal($hotel_id,$contractid,$id = null) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['room_types'] = $this->Supplier_Model->stopSale_get_room_type($hotel_id);
+    $data['contractid'] = $contractid;  
+    $data['hotel_id'] = $hotel_id;  
+    if ($id!=null) {
+      $data['id'] = $id;  
+      $data['view'] =$this->Supplier_Model->BoardSupplementDetails($id);
+      $data['title'] = "Edit Board Supplement";
+    } else {
+        $data['title'] = "Add Board Supplement";
+    }
+    $this->load->view('boardmodal',$data);      
+  }
+  public function boardsupplementsubmit() {
+    $return = array();
+    if (!isset($_REQUEST['board']) || $_REQUEST['board']=="") {
+      $return['board'] = 1;
+    }
+
+    if (!isset($_REQUEST['room_type']) || $_REQUEST['room_type']=="") {
+      $return['room_type'] = 1;
+    }
+
+    if (!isset($_REQUEST['fromDate']) || $_REQUEST['fromDate']=="") {
+      $return['fromDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['toDate']) || $_REQUEST['toDate']=="") {
+      $return['toDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['StartAge']) || $_REQUEST['StartAge']=="") {
+      $return['StartAge'] = 1;
+    }
+
+    if (!isset($_REQUEST['FinalAge']) || $_REQUEST['FinalAge']=="") {
+      $return['FinalAge'] = 1;
+    }
+
+    if (!isset($_REQUEST['Amount']) || $_REQUEST['Amount']=="") {
+      $return['Amount'] = 1;
+    }
+
+    if (count($return)!=0) {
+      $response['status'] = 'failed';
+      $response['msg'] = $return;
+    } else {
+      $result = $this->Supplier_Model->BoardSupplementSubmit($_REQUEST);
+      $response['status'] = 'success';
+    }
+
+    echo json_encode($response);
+  }
+  public function delete_board() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_board($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $Return['table'] = 'board';
+      $description = 'Board Supplement deleted [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
+  public function addgeneralmodal($hotel_id,$contractid,$id = null) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['room_types'] = $this->Supplier_Model->stopSale_get_room_type($hotel_id);
+    $data['contractid'] = $contractid;  
+    $data['hotel_id'] = $hotel_id;  
+    if ($id!=null) {
+      $data['id'] = $id;  
+      $data['view'] =$this->Supplier_Model->GeneralSupplementDetails($id);
+      $data['title'] = "Edit General Supplement";
+    } else {
+        $data['title'] = "Add General Supplement";
+    }
+    $this->load->view('generalmodal',$data);      
+  }
+  public function generalsupplementsubmit() {
+    $return = array();
+    if (!isset($_REQUEST['type']) || $_REQUEST['type']=="") {
+      $return['type'] = 1;
+    }
+
+    if (!isset($_REQUEST['room_type']) || $_REQUEST['room_type']=="") {
+      $return['room_type'] = 1;
+    }
+
+    if (!isset($_REQUEST['fromDate']) || $_REQUEST['fromDate']=="") {
+      $return['fromDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['toDate']) || $_REQUEST['toDate']=="") {
+      $return['toDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['MinChildAge']) || $_REQUEST['MinChildAge']=="") {
+      $return['MinChildAge'] = 1;
+    }
+
+    if (!isset($_REQUEST['adultAmount']) || $_REQUEST['adultAmount']=="") {
+      $return['adultAmount'] = 1;
+    }
+
+    if (!isset($_REQUEST['childAmount']) || $_REQUEST['childAmount']=="") {
+      $return['childAmount'] = 1;
+    }
+
+    if (count($return)!=0) {
+      $response['status'] = 'failed';
+      $response['msg'] = $return;
+    } else {
+      $result = $this->Supplier_Model->GeneralSupplementSubmit($_REQUEST);
+      $response['status'] = 'success';
+    }
+
+    echo json_encode($response);
+  }
+  public function delete_general() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_general($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $Return['table'] = 'general';
+      $description = 'general Supplement deleted [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
+  public function addextrabedmodal($hotel_id,$contractid,$id = null) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['room_types'] = $this->Supplier_Model->stopSale_get_room_type($hotel_id);
+    $data['contractid'] = $contractid;  
+    $data['hotel_id'] = $hotel_id;  
+    if ($id!=null) {
+      $data['id'] = $id;  
+      $data['extrabed'] =$this->Supplier_Model->get_extrabed($id);
+      $data['title'] = "Edit Extrabed";
+    } else {
+        $data['title'] = "Add Extrabed";
+    }
+    $this->load->view('extrabedmodal',$data);      
+  }
+  public function extrabedsubmit() {
+    $return = array();
+    if (!isset($_REQUEST['room_type']) || $_REQUEST['room_type']=="") {
+      $return['room_type'] = 1;
+    }
+
+    if (!isset($_REQUEST['fromDate']) || $_REQUEST['fromDate']=="") {
+      $return['fromDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['toDate']) || $_REQUEST['toDate']=="") {
+      $return['toDate'] = 1;
+    }
+
+
+    if ((!isset($_REQUEST['ChildAmount']) || $_REQUEST['ChildAmount']=="") && (!isset($_REQUEST['Amount']) || $_REQUEST['Amount']=="")) {
+      $return['ChildAmount'] = 1;
+      $return['Amount'] = 1;
+    }
+
+
+    if (count($return)!=0) {
+      $response['status'] = 'failed';
+      $response['msg'] = $return;
+    } else {
+      $result = $this->Supplier_Model->extrabedsubmit($_REQUEST);
+      $response['status'] = 'success';
+    }
+
+    echo json_encode($response);
+  }
+  public function delete_extrabed() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_extrabed($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $Return['table'] = 'extrabed';
+      $description = 'extrabed deleted [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
+  public function addminimumstaymodal($hotel_id,$contractid,$id = null) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['contractid'] = $contractid;  
+    $data['hotel_id'] = $hotel_id;  
+    if ($id!=null) {
+      $data['id'] = $id;  
+      $data['view'] =$this->Supplier_Model->get_minimumstay($id);
+      $data['title'] = "Edit Minimum stay";
+    } else {
+        $data['title'] = "Add Minimum stay";
+    }
+    $this->load->view('minimumstaymodal',$data);      
+  }
+  public function minimumstaysubmit() {
+    $return = array();
+
+    if (!isset($_REQUEST['fromDate']) || $_REQUEST['fromDate']=="") {
+      $return['fromDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['toDate']) || $_REQUEST['toDate']=="") {
+      $return['toDate'] = 1;
+    }
+
+
+    if (!isset($_REQUEST['minDay']) || $_REQUEST['minDay']=="") {
+      $return['minDay'] = 1;
+    }
+
+    if (count($return)!=0) {
+      $response['status'] = 'failed';
+      $response['msg'] = $return;
+    } else {
+      $result = $this->Supplier_Model->minimumstaysubmit($_REQUEST);
+      $response['status'] = 'success';
+    }
+
+    echo json_encode($response);
+  }
+  public function delete_minimumstay() {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $result = $this->Supplier_Model->delete_minimumstay($_REQUEST['delete_id']);
+    if ($result==true) {
+      $Return['status'] = '1';
+      $Return['table'] = 'minimumstay';
+      $description = 'minimumstay deleted [id:'.$_REQUEST['delete_id'].']';
+      AgentlogActivity($description);
+    } else {
+      $Return['status'] = '0';
+    }
+    echo json_encode($Return);
+  }
+  public function roomnameGet(){
+    $data = $this->Supplier_Model->roomName($_REQUEST['room']);
+      echo json_encode($data);
+  }
+  public function addcancellationmodal($hotel_id,$contractid,$id = null) {
+    if ($this->session->userdata('supplier_name')=="") {
+      redirect("welcome/agent_logout");
+    }
+    $data['room_types'] = $this->Supplier_Model->stopSale_get_room_type($hotel_id);
+    $data['contractid'] = $contractid;  
+    $data['hotel_id'] = $hotel_id;  
+    if ($id!=null) {
+      $data['id'] = $id;  
+      $data['view'] =$this->Supplier_Model->get_minimumstay($id);
+      $data['title'] = "Edit Cancellation";
+    } else {
+        $data['title'] = "Add Cancellation";
+    }
+    $this->load->view('cancellationmodal',$data);      
+  }
+  public function cancellationsubmit() {
+    $return = array();
+
+    if (!isset($_REQUEST['room_type']) || $_REQUEST['room_type']=="") {
+      $return['room_type'] = 1;
+    }
+
+    if (!isset($_REQUEST['fromDate']) || $_REQUEST['fromDate']=="") {
+      $return['fromDate'] = 1;
+    }
+
+    if (!isset($_REQUEST['toDate']) || $_REQUEST['toDate']=="") {
+      $return['toDate'] = 1;
+    }
+
+
+    if (!isset($_REQUEST['daysFrom']) || $_REQUEST['daysFrom']=="") {
+      $return['daysFrom'] = 1;
+    }
+
+    if (!isset($_REQUEST['daysTo']) || $_REQUEST['daysTo']=="") {
+      $return['daysTo'] = 1;
+    }
+
+    if (!isset($_REQUEST['CancellationPercentage']) || $_REQUEST['CancellationPercentage']=="") {
+      $return['CancellationPercentage'] = 1;
+    }
+
+    if (count($return)!=0) {
+      $response['status'] = 'failed';
+      $response['msg'] = $return;
+    } else {
+      $result = $this->Supplier_Model->cancellationsubmit($_REQUEST);
+      $response['status'] = 'success';
+    }
+
+    echo json_encode($response);
   }
 }

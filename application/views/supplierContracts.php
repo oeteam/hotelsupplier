@@ -261,9 +261,9 @@ th {
         <?php if(isset($contractlist) && $contractlist!="") {
            foreach ($contractlist as $key => $value) {
             if($key==0) { ?>
-              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id; ?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
+              <li><a class="active cm-contract" id="<?php echo $value->contract_id ?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id."-".$value->board; ?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; } ?></a></li>
             <?php } else { ?>
-              <li><a class="cm-contract" id="<?php echo $value->contract_id;?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; }  ?></a></li>
+              <li><a class="cm-contract" id="<?php echo $value->contract_id;?>" onclick="loadallotment('<?php echo $value->contract_id ?>')"><?php echo $value->contract_id."-".$value->board ?> <?php if($value->contract_flg=='0') { echo "<span style='color:red;;top: 0.8em;left: -16px;'>".'【Stop sale】'."</span>"; }  ?></a></li>
             <?php } 
           }
         }
@@ -272,9 +272,12 @@ th {
     </div>
     <div class="clearfix"></div><br><br>
     <div class="col-md-12 form-group">
-      <button class="btn btn-success" style="margin-left: -15px" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(1);">Add Allotment</button> 
+      <button class="btn btn-success" style="margin-left: -15px" disabled id="allotmentlist">Rate</button> 
       <button class="btn btn-success" id="cancellationlist">Cancellation List</button> 
-      <button class="btn btn-success hide" id="allotmentlist">Allotment List</button> 
+      <button class="btn btn-success" id="boardsupplement">Board Supplements</button> 
+      <button class="btn btn-success" id="generalsupplement">General Supplements</button> 
+      <button class="btn btn-success" id="extrabed">Extrabed</button> 
+      <button class="btn btn-success" id="minimumstay">Minimum Stay</button> 
     </div>  
   <div class="row" id="allotment_list">
     <div class="col-md-12">
@@ -288,7 +291,7 @@ th {
     <div class="col-md-12 pre-page hide">
       <div class="box-inn-sp">
         <div class="inn-title">
-             <h3>Allotment List</h3>
+          <div class="row"><div class="col-md-6"><h3>Rate</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_allotment_modal(1);">Add Rate</button></div></div>
              <small class="pull-right">
              <div class="ctrl-page left-gap">
                 <label class="ctrl-label pull-left">
@@ -319,24 +322,113 @@ th {
     </div>
   </div>
 </div>
-  <div class="row hide col-md-12" id="cancellation_list">
-     <h3>Cancellation List</h3>
-      <table class="table table-hover" id="cancellation_table">
-        <thead>
-            <tr>
-                <th>Rooms</th>
-                <th>Fromdate</th>
-                <th>Todate</th>
-                <th>Cancellation Before</th>
-                <th>Cancellation Percentage</th>
-                <th>Application</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-  </div>
+<!-- cancellation list -->
+<div class="row hide col-md-12" id="cancellation_list">
+  <div class="row"><div class="col-md-6"><h3>Cancellation List</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_cancellationmodal();">Add</button></div></div>
+    <table class="table table-hover" id="cancellation_table">
+      <thead>
+          <tr>
+              <th>Rooms</th>
+              <th>Fromdate</th>
+              <th>Todate</th>
+              <th>Days From</th>
+              <th>Days To</th>
+              <th>Cancellation %</th>
+              <th>Application</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
+<!-- Board supplement list -->
+<div class="row hide col-md-12" id="boardsupplement_list">
+   <div class="row"><div class="col-md-6"><h3>Board Supplements</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_boardmodal();">Add</button></div></div>
+    <table class="table table-hover" id="boardsupplement_table">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>Board</th>
+              <th>Room name</th>
+              <th>From date</th>
+              <th>To date</th>
+              <th>Start Age</th>
+              <th>Final Age</th>
+              <th>Amount</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
+<!-- General supplement list -->
+<div class="row hide col-md-12" id="generalsupplement_list">
+  <div class="row"><div class="col-md-6"><h3>General Supplements</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_generalmodal();">Add</button></div></div>
+    <table class="table table-hover" id="generalsupplement_table">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>Room name</th>
+              <th>From date</th>
+              <th>To date</th>
+              <th>Min Child Age</th>
+              <th>Adult Amount</th>
+              <th>Child Amount</th>
+              <th>Application</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
+
+<!-- Extrabed list -->
+<div class="row hide col-md-12" id="extrabed_list">
+  <div class="row"><div class="col-md-6"><h3>Extrabed</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_extrabedmodal();">Add</button></div></div>
+    <table class="table table-hover" id="extrabed_table">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>Room name</th>
+              <th>From date</th>
+              <th>To date</th>
+              <th>Child Age from</th>
+              <th>Child Age to</th>
+              <th>Child Amount</th>
+              <th>Adult Amount</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
+<!-- Minimum stay list -->
+<div class="row hide col-md-12" id="minimumstay_list">
+  <div class="row"><div class="col-md-6"><h3>Minimum Stay</h3></div> <div class="col-md-6"><button class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal" onclick="add_minimumstaymodal();">Add</button></div></div>
+    <table class="table table-hover" id="minimumstay_table">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>From date</th>
+              <th>To date</th>
+              <th>Days</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
 </div> 
 </div>
   <div id="myModal" class="modal fade" role="dialog">
@@ -408,7 +500,7 @@ th {
           });
     }
     // function deleteroomfun(id) {
-    //   deletepopupfun(base_url+"hotelsupplier/delete_room",id);
+    //   deletepopupfun(base_url+"HotelSupplier/delete_room",id);
     // }
 
 
@@ -501,7 +593,13 @@ th {
     });     
    }
    $(document).ready(function() {
+    if ($("#contractlist").find('a').first('.active').text()=="") {
+          divLoading("stop");
+    }
     $("#contractlist").find('a').first('.active').trigger("click");
+    if ($("#hotel-list .hotels li a.active").length==0) {
+      $("#allotment_list").addClass("hide");
+    }
     $("#txtCurrentDate").datepicker({
         altField: "#alternate3",
         dateFormat: "yy-mm-dd",
@@ -596,10 +694,21 @@ th {
       });      
   }
   $("#cancellationlist").click(function() {
-        $("#cancellationlist").addClass("hide");
-        $("#allotmentlist").removeClass("hide");
+        $("#cancellationlist").prop("disabled",true);
+        $("#allotmentlist").prop("disabled",false);
+        $("#boardsupplement").prop("disabled",false);
+        $("#generalsupplement").prop("disabled",false);
+        $("#extrabed").prop("disabled",false);
+        $("#minimumstay").prop("disabled",false);
+
+
         $("#allotment_list").addClass("hide");
         $("#cancellation_list").removeClass("hide");
+        $("#boardsupplement_list").addClass("hide");
+        $("#generalsupplement_list").addClass("hide");
+        $("#extrabed_list").addClass("hide");
+        $("#minimumstay_list").addClass("hide");
+
         var contractid = $("#contractlist li a.active").attr('id');
         var cancellation_table = $('#cancellation_table').dataTable({
           "bDestroy": true,
@@ -613,14 +722,143 @@ th {
     });
        
   });
+
+// allotment list fun
   $("#allotmentlist").click(function() {
-        $("#cancellationlist").removeClass("hide");
-        $("#allotmentlist").addClass("hide");
+        $("#allotmentlist").prop("disabled",true);
+        $("#cancellationlist").prop("disabled",false);
+        $("#boardsupplement").prop("disabled",false);
+        $("#generalsupplement").prop("disabled",false);
+        $("#extrabed").prop("disabled",false);
+        $("#minimumstay").prop("disabled",false);
+
         $("#allotment_list").removeClass("hide");
         $("#cancellation_list").addClass("hide");
+        $("#boardsupplement_list").addClass("hide");
+        $("#generalsupplement_list").addClass("hide");
+        $("#extrabed_list").addClass("hide");
+        $("#minimumstay_list").addClass("hide");
   });
+
+// board supplement list fun
+  $("#boardsupplement").click(function() {
+        $("#boardsupplement").prop("disabled",true);
+        $("#allotmentlist").prop("disabled",false);
+        $("#cancellationlist").prop("disabled",false);
+        $("#generalsupplement").prop("disabled",false);
+        $("#extrabed").prop("disabled",false);
+        $("#minimumstay").prop("disabled",false);
+
+        $("#boardsupplement_list").removeClass("hide");
+        $("#allotment_list").addClass("hide");
+        $("#cancellation_list").addClass("hide");
+        $("#generalsupplement_list").addClass("hide");
+        $("#extrabed_list").addClass("hide");
+        $("#minimumstay_list").addClass("hide");
+
+        var contractid = $("#contractlist li a.active").attr('id');
+        var boardsupplement_table = $('#boardsupplement_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/boardsupplementlist/'+contractid,
+              type : 'GET'
+          },
+           "fnDrawCallback": function(settings){
+              $('[data-toggle="tooltip"]').tooltip();          
+            }
+        });
+
+  });
+
+// general supplement list fun
+  $("#generalsupplement").click(function() {
+        $("#generalsupplement").prop("disabled",true);
+        $("#boardsupplement").prop("disabled",false);
+        $("#allotmentlist").prop("disabled",false);
+        $("#cancellationlist").prop("disabled",false);
+        $("#extrabed").prop("disabled",false);
+        $("#minimumstay").prop("disabled",false);
+
+        $("#generalsupplement_list").removeClass("hide");
+        $("#boardsupplement_list").addClass("hide");
+        $("#allotment_list").addClass("hide");
+        $("#cancellation_list").addClass("hide");
+        $("#extrabed_list").addClass("hide");
+        $("#minimumstay_list").addClass("hide");
+
+        var contractid = $("#contractlist li a.active").attr('id');
+        var generalsupplement_table = $('#generalsupplement_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/generalsupplementlist/'+contractid,
+              type : 'GET'
+          },
+           "fnDrawCallback": function(settings){
+              $('[data-toggle="tooltip"]').tooltip();          
+            }
+        });
+  });
+
+// extrabed list fun
+  $("#extrabed").click(function() {
+        $("#extrabed").prop("disabled",true);
+        $("#generalsupplement").prop("disabled",false);
+        $("#boardsupplement").prop("disabled",false);
+        $("#allotmentlist").prop("disabled",false);
+        $("#cancellationlist").prop("disabled",false);
+        $("#minimumstay").prop("disabled",false);
+
+        $("#extrabed_list").removeClass("hide");
+        $("#generalsupplement_list").addClass("hide");
+        $("#boardsupplement_list").addClass("hide");
+        $("#allotment_list").addClass("hide");
+        $("#cancellation_list").addClass("hide");
+        $("#minimumstay_list").addClass("hide");
+
+        var contractid = $("#contractlist li a.active").attr('id');
+        var extrabed_table = $('#extrabed_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/extrabedlist/'+contractid,
+              type : 'GET'
+          },
+           "fnDrawCallback": function(settings){
+              $('[data-toggle="tooltip"]').tooltip();          
+            }
+        });
+  });
+
+// minimumstay list fun
+  $("#minimumstay").click(function() {
+        $("#minimumstay").prop("disabled",true);
+        $("#extrabed").prop("disabled",false);
+        $("#generalsupplement").prop("disabled",false);
+        $("#boardsupplement").prop("disabled",false);
+        $("#allotmentlist").prop("disabled",false);
+        $("#cancellationlist").prop("disabled",false);
+
+        $("#minimumstay_list").removeClass("hide");
+        $("#extrabed_list").addClass("hide");
+        $("#generalsupplement_list").addClass("hide");
+        $("#boardsupplement_list").addClass("hide");
+        $("#allotment_list").addClass("hide");
+        $("#cancellation_list").addClass("hide");
+
+        var contractid = $("#contractlist li a.active").attr('id');
+        var minimumstay_table = $('#minimumstay_table').dataTable({
+          "bDestroy": true,
+          "ajax": {
+              url : base_url+'HotelSupplier/minimumstaylist/'+contractid,
+              type : 'GET'
+          },
+           "fnDrawCallback": function(settings){
+              $('[data-toggle="tooltip"]').tooltip();          
+            }
+        });
+  });
+
   function deletepolicyfun(id) {
-      deletepopupfun(base_url+"hotelsupplier/delete_policy",id);
+      deletepopupfun(base_url+"HotelSupplier/delete_policy",id);
   }
   function editpolicy(id) {
     var hotelid = $("#hotel-list li a.active").attr('id');
@@ -630,6 +868,112 @@ th {
           keyboard: false
       });
   }
+
+  function add_boardmodal() {
+    var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addboardmodal/'+hotelid+'/'+contractid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function editboard(id) {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addboardmodal/'+hotelid+'/'+contractid+'/'+id);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function deleteboardfun(id) {
+      deletepopupfun(base_url+"HotelSupplier/delete_board",id);
+    }
+    function add_generalmodal() {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addgeneralmodal/'+hotelid+'/'+contractid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function editgeneral(id) {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addgeneralmodal/'+hotelid+'/'+contractid+'/'+id);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function deletegeneralfun(id) {
+      deletepopupfun(base_url+"HotelSupplier/delete_general",id);
+    }
+
+    function add_extrabedmodal() {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addextrabedmodal/'+hotelid+'/'+contractid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function editextrabed(id) {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addextrabedmodal/'+hotelid+'/'+contractid+'/'+id);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function deleteextrabedfun(id) {
+      deletepopupfun(base_url+"HotelSupplier/delete_extrabed",id);
+    }
+
+    function add_minimumstaymodal() {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addminimumstaymodal/'+hotelid+'/'+contractid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+    function editminimumstay(id) {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addminimumstaymodal/'+hotelid+'/'+contractid+'/'+id);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
+
+
+    function deleteminimumstayfun(id) {
+      deletepopupfun(base_url+"HotelSupplier/delete_minimumstay",id);
+    }
+
+    function add_cancellationmodal() {
+      var hotelid = $("#hotel-list li a.active").attr('id');
+      var contractid = $("#contractlist li a.active").attr('id');
+      $("#myModal").load(base_url+'HotelSupplier/addcancellationmodal/'+hotelid+'/'+contractid);
+      $('#myModal').modal({
+          backdrop: 'static',
+          keyboard: false
+      });
+    }
   </script>
   <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
 <?php init_front_head_footer(); ?> 

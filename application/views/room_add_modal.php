@@ -219,7 +219,7 @@
                     <select name="roomtype" id="room_type" class="form-control">
                         <option value="" selected="selected">Room Type</option>
                         <?php foreach ($room_type as $key => $value) { 
-                              if (isset($view[0]->Room_Type) && $value->id==$view[0]->Room_Type) { ?>
+                              if (isset($view[0]->Room_Type) && $value->id==$view[0]->room_type) { ?>
                                  <option selected="" value="<?php echo $value->id; ?>"><?php echo $value->Room_Type; ?></option>
                             <?php  }  else { ?>
                             <option value="<?php echo $value->id; ?>"><?php echo $value->Room_Type; ?></option>
@@ -280,7 +280,7 @@
                         <?php } } ?>
                     </select>
                 </div>
-              <!--   <div class="form-group col-md-6">
+                <div class="form-group col-md-6">
                     <label for="maxtotal">Maximum Capacity</label>
                     <input type="number" name="max_total" id="max_total" class="form-control" value="<?php echo isset($view[0]->max_total) ? $view[0]->max_total : '' ?>">
                 </div>
@@ -288,19 +288,7 @@
                     <label for="standard capacity">Standard capacity</label>
                     <input type="number" name="standarad" id="standarad" class="form-control" value="<?php echo isset($view[0]->standard_capacity) ? $view[0]->standard_capacity : '' ?>">
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="no_of_rooms">No of room's</label>
-                    <input type="number" name="no_of_rooms" id="no_of_rooms"  class="form-control" value="<?php echo isset($view[0]->total_rooms) ? $view[0]->total_rooms : '' ?>">
-                    <!-- <select id="no_of_rooms" name="no_of_rooms" class="form-control">
-                        <option value="" disabled selected>Room's</option>
-                        <?php for ($i=0 ; $i<=11; $i++) { 
-                          if (isset($view[0]->total_rooms) && $i+1==$view[0]->total_rooms) { ?>
-                                 <option selected="" value="<?php echo $i+1; ?>"><?php echo $i+1; ?></option>
-                            <?php  }  else { ?>
-                            <option value="<?php echo $i+1; ?>"><?php echo $i+1; ?></option>
-                        <?php } }?>
-                    </select> 
-                </div> -->
+      
             </div>
         </div>
       </form>
@@ -314,7 +302,7 @@
   </div>
 </span>
 <!-- <?php if (isset($view[0]->room_id)) { ?> data-toggle="modal" data-target="#yourmodalid" onclick="update_fun();" <?php }else { ?> onclick="room_allotement_add_fun();" <?php  }?>
- -->
+
  
 <div class="modal fade delete_modal" id="yourmodalid" role="dialog">
     <div class="modal-dialog">
@@ -337,7 +325,7 @@
   
 
 <script src="<?php echo base_url(); ?>skin/js/supplier.js"></script>
-
+-->
 <script type="text/javascript">
   $(document).ready(function() {
     $('#room_facilties').multiselect({

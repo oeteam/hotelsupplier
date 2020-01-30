@@ -177,7 +177,7 @@ input:checked + .slider:before {
             <!--   <li class="tab col s2"><a class="Pending" href="#" onclick="filter('1')">Removal Requests</a></li> -->
               <li class="tab col s2"><a class="all active" href="#" onclick="filter('4')">All</a></li>
               <li class="tab col s2"><a class="activeall" href="#" onclick="filter('1')">Active</a></li>
-              <li class="tab col s2"><a class="stopsale" href="#" onclick="filter('0')">StopSale</a></li>
+              <li class="tab col s2"><a class="stopsale" href="#" onclick="filter('2')">StopSale</a></li>
             </ul>
           </div>
         </div>
@@ -206,16 +206,15 @@ input:checked + .slider:before {
 </div>
 <div id="myModal" class="modal fade" role="dialog">
 </div>
-<div id="delModal" class="delete_modal modal">
+<div id="delModal" class=" modal" >
         <div class="modal-content modal-content  col-md-6 col-md-offset-3">
-          
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-
           <div class="modal-body">
             <h4>Do you want to delete this !</h4>
             <form action="<?php echo base_url(); ?>welcome/" class="delete_id" id="delete_form">
                 <input type="hidden" id="delete_id" name="delete_id" value="<?php echo isset($_REQUEST['id']) ? $_REQUEST['id'] : '' ?>">
-                <button type="button" onclick="commonDelete();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button><br><br>
+                <button type="button" onclick="commonDelete();" class="waves-effect waves-light btn-sm btn-danger pull-right">Delete</button>
+                <button type="button" data-dismiss="modal"  class="close-modal waves-effect waves-light btn-sm btn-primary pull-right">No</button>
+                <br><br>
             </form>
           </div>
         </div>
